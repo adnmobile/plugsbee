@@ -9,12 +9,11 @@ var Plugsbee = {
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService)
 };
 Plugsbee.connection.on('connected', function() {
-	//Create a contact for the user
-	//~ var user = Object.create(Plugsbee.Contact);
-	//~ user.jid = Plugsbee.connection.jid;
-	//~ Plugsbee.user = user;
   console.log('connected');
 	Plugsbee.getFolders();
+});
+Plugsbee.connection.on('connecting', function() {
+  console.log('connecting');
 });
 Plugsbee.connection.on('XMLInput', function(data) {
 	//~ var elm = microjungle([
@@ -178,12 +177,22 @@ Plugsbee.getFolderCreator = function(folder) {
       
       var deck = document.getElementById('deck');
       widget.panel = deck.appendChild(widget.panel);
-			//~ widget.elm.addEventListener('delete', function() {
+      
+
+			
+      //~ widget.elm.addEventListener('delete', function() {
 				//~ this.parentNode.removeChild(this);
 				//~ that.deleteFolder(folder);
 			//~ });
 
 			folder.widget = widget;
+      
+      folder.widget.tab.addEventListener('click', function(e) {
+        gUserInterface.showFolder(folder);
+        if(window.location.protocol === 'http:')
+          history.replaceState(null, null, this.href);
+        e.preventDefault();
+      });
 
 			Plugsbee.folders[folder.jid] = folder;
       that.getFiles(folder);
@@ -233,7 +242,8 @@ Plugsbee.getFiles = function(folder) {
 			if(file.thumbnail)
 				widget.thumbnail = file.thumbnail;
 			widget.type = file.type;
-			widget.href = '/'+file.folder.name+'/'+file.name;
+			//~ widget.href = '/'+file.folder.name+'/'+file.name;
+			widget.href = file.folder.name+'/'+file.name;
       var panel = folder.widget.panel;
       var dropbox = folder.widget.panel.querySelector('.file.upload');
 			widget.elm = panel.insertBefore(widget.elm, dropbox);
@@ -244,7 +254,13 @@ Plugsbee.getFiles = function(folder) {
 			folder.widget.counter = folder.counter;
 			//~ if(folder.creator === Plugsbee.user.jid)
       widget.deletable = true;
-				
+
+      widget.elm.addEventListener('click', function(e) {
+        history.pushState(null, null, this.href);
+        gUserInterface.showFile(file);
+        e.preventDefault();
+      });
+
 			widget.elm.addEventListener('delete', function() {
 				file.widget.elm.parentNode.removeChild(file.widget.elm);
 				that.deleteFile(file);

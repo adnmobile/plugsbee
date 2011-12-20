@@ -34,17 +34,12 @@ Widget.Folder = function() {
   this.tab = microjungle([
     ['a', {class: 'folder tab'},
       ['li', {class: 'folder tab'},
-        ['img', {src: '/themes/default/toto.png'}],
+        ['img', {src: 'themes/default/toto.png'}],
         ['span', {class: 'label'}]
       ],
       ['div', {class: 'arrow'}]
     ]
   ]);
-  this.tab.addEventListener('click', function(e) {
-    history.pushState(null, null, this.href);
-    gUserInterface.handlePath();
-    e.preventDefault();
-  });
   this.panel = microjungle([
     ['div', {class: 'panel', hidden: 'hidden'},
       ['figure', {class: 'file upload'},
@@ -145,7 +140,7 @@ Widget.Folder.prototype.__defineGetter__('id', function() {
 Widget.Folder.prototype.__defineSetter__('label', function(aLabel) {
 	this._label = aLabel;
 	this.tab.querySelector('.label').textContent = aLabel;
-	this.tab.href = '/'+aLabel;
+	this.tab.href = aLabel;
 });
 Widget.Folder.prototype.__defineGetter__('label', function() {
 	return this._label;

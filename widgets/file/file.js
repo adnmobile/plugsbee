@@ -16,11 +16,11 @@ Widget.File = function() {
 		['a', {class: 'file', draggable: 'true'},
 			['figure',
         ['div', {class: 'thumbnail'},
-					['img', {src: '/widgets/file/file.svg', class: 'img'}]
+					['img', {src: 'widgets/file/file.svg', class: 'img'}]
         ],
         ['figcaption', {'class': 'name'}]
 			],
-      ['img', {src: '/widgets/file/delete.svg', class: 'delete'}]
+      ['img', {src: 'widgets/file/delete.svg', class: 'delete'}]
     ]
 	]);
   this.preview = microjungle([
@@ -142,7 +142,7 @@ Widget.File.prototype.__defineSetter__('type', function(aType) {
 			break;
 		default:
 			var previewElm = microjungle([
-				['img', {src: '/widgets/file/file.svg', id: 'preview'}]
+				['img', {src: 'widgets/file/file.svg', id: 'preview'}]
 			]);
 	}
 	this.preview = previewElm;
