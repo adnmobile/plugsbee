@@ -1,0 +1,55 @@
+sidebar li {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow-x: hidden;
+  list-style: none;
+	font-size: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+/*
+	padding-right: 5px;
+*/
+}
+sidebar a {
+	display: block;
+}
+.group, li#home-tab, li#console-tab, li#settings-tab {
+	text-indent: 20px;
+}
+.contact {
+	text-indent: 35px;
+}
+sidebar > li span {
+  display: block;
+}
+.group > span {
+  cursor: pointer;
+  display: block;
+}
+sidebar li a {
+	display: block;
+}
+.group {
+	background-image: url("triangle-left.svg");
+	background-repeat: no-repeat;
+	background-position: 5px 13px;
+}
+.group[data-open] {
+	background-image: url("triangle-bottom.svg");
+}
+.contact .image {
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	visibility: hidden;
+}
+.contact:hover .image {
+/*
+	max-width: 200px;
+	max-height: 200px;
+*/
+/*
+	-moz-transition: max-width .5s ease-in-out, transform .5s ease-in-out;
+	-moz-transition: max-height .5s ease-in-out, transform .5s ease-in-out;
+*/
+}
