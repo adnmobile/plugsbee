@@ -41,11 +41,6 @@ Widget.File = function() {
 			//~ window.location.assign(that._src);
 			window.open(that.src);
 		}
-		else {
-			history.pushState(null, null, this.href);
-			gUserInterface.handlePath();
-      evt.preventDefault();
-		}
 		evt.preventDefault();
 	});
 	return this;

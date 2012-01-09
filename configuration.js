@@ -1,5 +1,4 @@
 var gConfiguration = {
-	WebsocketService : "ws://plugsbee.com:5280",
 	PubSubService : "pubsub.plugsbee.com",
 	uploadService : 'http://upload.plugsbee.com',
 	plugsbeeInstance : 'http://dev.plugsbee.com',
@@ -16,4 +15,8 @@ var gConfiguration = {
 		return 'Hello, I shared the folder "'+aFolderName+'" with you on '+this.plugsbeeInstance; 
 	}
 };
-
+//WORKAROUND Safari implements an older WebSocket protocol revision
+if(window.navigator.userAgent.match('AppleWebKit'))
+  gConfiguration.WebsocketService = "ws://plugsbee.com:5281";
+else
+  gConfiguration.WebsocketService = "ws://plugsbee.com:5280";

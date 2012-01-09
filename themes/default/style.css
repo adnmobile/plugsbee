@@ -3,7 +3,7 @@ html {
   height: 100%;
 }
 body {
-  width: 960px;
+  max-width: 960px;
 	height: 100%;
 	margin: 0px;
 	background-color: #e2e3e4;
@@ -45,7 +45,7 @@ body > header > * {
 }
 
 body > header > .title {
-  width: 80%;
+  max-width: 80%;
   text-align: start;
 }
 body > header > .account {
@@ -153,7 +153,7 @@ button.upload {
 	background-color: white;
 	color: black;
   /* 704 -1px border*/
-  width: 703px;
+  max-width: 703px;
   display: inline-block;
   min-height: 90%;
   vertical-align: top;

@@ -189,8 +189,8 @@ Plugsbee.getFolderCreator = function(folder) {
       
       folder.widget.tab.addEventListener('click', function(e) {
         gUserInterface.showFolder(folder);
-        if(window.location.protocol === 'http:')
-          history.replaceState(null, null, this.href);
+        if(window.location.protocol !== 'file:')
+          history.pushState(null, null, this.href);
         e.preventDefault();
       });
 
@@ -256,7 +256,8 @@ Plugsbee.getFiles = function(folder) {
       widget.deletable = true;
 
       widget.elm.addEventListener('click', function(e) {
-        history.pushState(null, null, this.href);
+        if(window.location.protocol !== 'file:')
+          history.pushState(null, null, this.href);
         gUserInterface.showFile(file);
         e.preventDefault();
       });
