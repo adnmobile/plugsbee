@@ -4,7 +4,21 @@ Plugsbee.connection.on('connected', function() {
   gUserInterface.showSection('data');
 	//~ gUserInterface.handlePath();
 	//~ gUserInterface.menu.hidden = false;
-	//~ document.getElementById('account-tab').textContent = Plugsbee.connection.jid;
+	Plugsbee.connection.user = Plugsbee.connection.jid.split('@')[0];
+  
+  var accountText = document.getElementById('account-text')
+  if(accountText) {
+    accountText.textContent = Plugsbee.connection.user;
+    document.getElementById('account-text').style.display = 'inline-block';
+  }
+  
+  var uploadButton = document.getElementById('upload-button')
+  if(uploadButton)
+    uploadButton.style.display = 'inline-block';
+    
+  var logoutButton = document.getElementById('logout-button');
+  if(logoutButton)
+    logoutButton.style.display = 'inline-block';
 });
 
 //FIXME nice UI for those events
@@ -52,6 +66,7 @@ shareEvent.initCustomEvent('share', false, false, '');
 
 var gUserInterface = {
 	init : function() {
+    var that = this;
 		this.panels = {};
 		this.__defineGetter__('themeFolder', function() {
 			return 'themes/'+gConfiguration.theme+'/';
@@ -61,14 +76,33 @@ var gUserInterface = {
       var name = panels[i].getAttribute('id');
       this.panels[name] = panels[i];
     }
-    var uploadInput = document.getElementById('upload');
-    uploadInput.addEventListener('change', function upload(evt) {
-      var file = evt.target.files[0];
 
-      var folder = gUserInterface.currentFolder;
+    //
+    //Uploader
+    //
+    var filePicker = document.getElementById('file-picker');
+    var uploadButton = document.getElementById('upload-button');
+    //Disable it on Safari mobile since uploading file isn't possible
+    if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile')) {
+      filePicker.parentNode.removeChild(filePicker);
+      uploadButton.parentNode.removeChild(uploadButton);
+    }
+    else {
+      filePicker.addEventListener('change', function upload(evt) {
+        var file = evt.target.files[0];
 
-      Plugsbee.upload(file, folder);
-    });
+        var folder = gUserInterface.currentFolder;
+
+        Plugsbee.upload(file, folder);
+      });
+      
+      uploadButton.addEventListener('click', function() {
+        that.openFilePicker();
+      });
+    }
+
+    
+    
     this.menu = document.getElementById('menu');
 		var password = localStorage.getItem('password');
 		var login = localStorage.getItem('login');
@@ -76,9 +110,9 @@ var gUserInterface = {
 			//~ this.showPanel("home");
 			Plugsbee.connection.connect(login, password);
 		}
-		document.getElementById('logout').onclick = function(event) {
-			localStorage.removeItem("password");
+		document.getElementById('logout-button').onclick = function(event) {
 			localStorage.removeItem("login");
+			localStorage.removeItem("password");
 			Plugsbee.connection.disconnect();
 		}
 		var settingsForm = document.getElementById("settings-form");
@@ -143,10 +177,10 @@ var gUserInterface = {
 		loginForm.onsubmit = function(aEvent) {
 			loginHandler(loginForm, aEvent);
 		}
-		//~ var registerForm = document.getElementById("register-form");
-		//~ registerForm.onsubmit = function(aEvent) {
-			//~ registerHandler(registerForm, aEvent);
-		//~ }
+		var registerForm = document.getElementById("register-form");
+		registerForm.onsubmit = function(aEvent) {
+			registerHandler(registerForm, aEvent);
+		}
 		this.groupsFieldset = document.getElementById("groups-fieldset");
 		this.tabsList = document.getElementById("tabs-list");
 		this.sidebar = document.querySelector("sidebar");
@@ -157,6 +191,9 @@ var gUserInterface = {
 				this.modifyAElement(links[y]);
 		}
 	},
+  openFilePicker: function() {
+    document.getElementById('file-picker').click();
+  },
 	modifyAElement: function(aElm) {
 		aElm.addEventListener("click", function(evt) {
       if(window.location.protocol === 'http:')
@@ -316,21 +353,51 @@ var gUserInterface = {
 };
 
 function loginHandler(aForm, aEvent) {
-	//~ document.getElementById('menu').hidden = false;
 	var login = aForm.elements["login"].value;
+  if(!login.match('@'))
+    login += '@plugsbee.com';
 	var password = aForm.elements["password"].value;
-	localStorage.setItem('login', login);
-	localStorage.setItem('password', password);
+  var remember = aForm.elements["remember"].checked;
+  if(remember) {
+    localStorage.setItem('login', login);
+    localStorage.setItem('password', password);
+  }
+  else {
+    localStorage.removeItem('login', login);
+    localStorage.removeItem('password', password);
+  }
   Plugsbee.connection.connect(login, password);
   aEvent.preventDefault();
 }
 
 function registerHandler(aForm, aEvent) {
-	account.BOSHService = gConfiguration.BOSHService;
-	account.address = aForm.elements["login"].value;
-	account.password = aForm.elements["password"].value;
-	account.register();
-	aEvent.preventDefault();
+	var login = aForm.elements["login"].value;
+	var password = aForm.elements["password"].value;
+
+	var fd = new FormData;
+	fd.append('login', login);
+	fd.append('password', password);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load",
+		function() {
+      if(xhr.responseText === 'ok')
+        Plugsbee.connection.connect(login+'@plugsbee.com', password);
+		}, false
+	);
+
+	xhr.open('POST', 'http://plugsbee.com:8282');
+	xhr.send(fd);
+	//~ localStorage.setItem('login', login);
+	//~ localStorage.setItem('password', password);
+  //~ Plugsbee.connection.connect(login, password);
+  aEvent.preventDefault();
+  
+	//~ account.BOSHService = gConfiguration.BOSHService;
+	//~ account.address = aForm.elements["login"].value;
+	//~ account.password = aForm.elements["password"].value;
+	//~ account.register();
+	//~ aEvent.preventDefault();
 }
 
 window.addEventListener("load",
@@ -360,3 +427,11 @@ function saveSettings(aForm, aEvent) {
 	account.send(vCard.set(name, email));
 	aEvent.preventDefault();
 }
+
+// BUG 2 "no file upload on Safari"
+window.addEventListener("load",function() {
+
+});
+
+
+

@@ -15,7 +15,19 @@ Plugsbee.connection.on('connected', function() {
 Plugsbee.connection.on('connecting', function() {
   console.log('connecting');
 });
+Plugsbee.connection.on('disconnecting', function() {
+  console.log('disconnecting');
+});
+Plugsbee.connection.on('disconnected', function() {
+  console.log('disconnected');
+  //~ delete Plugsbee.folders;
+  //~ delete Plugsbee.files;
+  //~ delete Plugsbee.contacts;  
+  //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
+  location.reload();
+});
 Plugsbee.connection.on('XMLInput', function(data) {
+  //~ console.log('in: \n'+data);
 	//~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint in"}]
 	//~ ]);
@@ -25,7 +37,8 @@ Plugsbee.connection.on('XMLInput', function(data) {
 	//~ prettyPrint();
 });
 Plugsbee.connection.on('XMLOutput', function(data) {
-	//~ var elm = microjungle([
+	//~ console.log('out: \n'+data);
+  //~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint out"}]
 	//~ ]);
 	//~ elm.textContent = formatXML(data);
@@ -187,6 +200,8 @@ Plugsbee.getFolderCreator = function(folder) {
 
 			folder.widget = widget;
       
+      // BUG iOS
+      folder.widget.tab.addEventListener('touchstart', function() {});
       folder.widget.tab.addEventListener('click', function(e) {
         gUserInterface.showFolder(folder);
         if(window.location.protocol !== 'file:')
@@ -255,6 +270,7 @@ Plugsbee.getFiles = function(folder) {
 			//~ if(folder.creator === Plugsbee.user.jid)
       widget.deletable = true;
 
+      widget.elm.addEventListener('touchstart', function() {});
       widget.elm.addEventListener('click', function(e) {
         if(window.location.protocol !== 'file:')
           history.pushState(null, null, this.href);

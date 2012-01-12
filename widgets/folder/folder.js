@@ -52,6 +52,9 @@ Widget.Folder = function() {
 			]
     ]
   ]);
+  // BUG 1 "no file upload on Safari"
+  if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile'))
+    this.panel.firstChild.style.display = 'none';
 	//~ this._counter = 0;
 	//~ this.elm = microjungle([
 		//~ ['article', {draggable: 'true', class: 'folder', hidden: 'hidden'},

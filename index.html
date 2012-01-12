@@ -3,6 +3,8 @@
   <head>
     <title>iPressbook</title>
     <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel="shortcut icon" href="themes/default/favicon.ico">
  		<!-- Theme -->
 			<!-- Default -->
@@ -28,14 +30,17 @@
 	<body>
 		<header>
       <span class="title">iPressbook</span>
-      <span class="account">John Do</span>
-      <button id="logout">Logout</button>
+      <span id="account-text">John Do</span>
+      <button id="upload-button">
+        Upload files
+      </button>
+      <button id="logout-button">Logout</button>
 		</header>
     <section id="welcome">
       <form id="login-form">
         <p>
           <label for="login">Login: </label>
-          <input name="login" type="email" autofocus="" required=""/>
+          <input name="login" autofocus="" required=""/>
         </p>
         <p>
           
@@ -43,24 +48,24 @@
           <input name="password" type="password" required=""/>
         </p>
         <p id="remember-input">
-          <input type="checkbox" name="remember"/>
-          <label for="checkbox">Remember</label>
+          <input type="checkbox" name="remember" checked="checked"/>
+          <label for="checkbox">Remember me</label>
         </p>
         <input type="submit" value="Login"/>
       </form>
-    </section>
-    <section id="upgrade" hidden="true">
-      Upgrade! \o/
+      <form id="register-form">
+        <p>
+          <label for="login">Login: </label>
+          <input name="login" required=""/>
+        </p>
+        <p>
+          <label for="password">Password: </label>
+          <input name="password" type="password" required=""/>
+        </p>
+        <input type="submit" value="Register"/>
+      </form>
     </section>
 		<section id="data" hidden="true">
-      <header>
-        <div class="quota">
-          60% <progress value="60" max="100"/> 69.91 MB from 100 MB <a href="/upgrade"><strong>upgrade for more</strong></a>
-        </div>
-        <button class="upload" onclick="document.getElementById('upload').click();">
-          Upload files
-        </button>
-      </header>
       <nav>
         <ul id="folders">
         
@@ -69,7 +74,7 @@
       <div id="deck">
       </div>
     </section>
-		<footer>about blabla bla bla<input type="file" id="upload" style="visibility: hidden;"/></footer>
     <div id="popup" hidden="hidden"></div>
+    <input id="file-picker" type="file"/>
 	</body>
 </html>

@@ -28,8 +28,6 @@ a.folder {
   display: inline-block;
 }
 .panel {
-	overflow-x: auto;
-  width: 100%;
 /*
   height: 100%;
 */
