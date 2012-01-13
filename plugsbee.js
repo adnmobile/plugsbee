@@ -10,6 +10,7 @@ var Plugsbee = {
 };
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
+  Plugsbee.connection.user = Plugsbee.connection.jid.split('@')[0];
 	Plugsbee.getFolders();
 });
 Plugsbee.connection.on('connecting', function() {
@@ -157,12 +158,12 @@ Plugsbee.createFolder = function (aName, aAccessmodel, onSuccess) {
 		widget.label = folder.name;
 		var parent = document.getElementById('folders-list');
 		widget.elm = parent.insertBefore(widget.elm, parent.querySelector('#newfolder'));
-		widget.deletable= true;
-		widget.uploadable = true;
-		widget.elm.addEventListener('delete', function() {
-			this.parentNode.removeChild(this);
-			that.deleteFolder(folder);
-		});
+		//~ widget.deletable= true;
+		//~ widget.uploadable = true;
+		//~ widget.elm.addEventListener('delete', function() {
+			//~ this.parentNode.removeChild(this);
+			//~ that.deleteFolder(folder);
+		//~ });
 		folder.widget = widget;
 		widget.hidden = false;
 		widget.uploadable = true;
@@ -179,39 +180,54 @@ Plugsbee.createFolder = function (aName, aAccessmodel, onSuccess) {
 Plugsbee.getFolderCreator = function(folder) {
 	var that = this;
 	Lightstring.discoInfo(this.connection, gConfiguration.PubSubService, folder.node, function(aCreator) {
-		folder.creator = aCreator;
-		if(folder.creator === Plugsbee.connection.jid) {
-			var widget = new Widget.Folder();
-			widget.id = folder.jid;
-			widget.label = folder.name;
-      
-			var folders = document.getElementById('folders');
-			widget.tab = folders.appendChild(widget.tab);
-      
-      var deck = document.getElementById('deck');
-      widget.panel = deck.appendChild(widget.panel);
-      
+		if(aCreator !== Plugsbee.connection.jid) {
+      delete Plugsbee.Folder[folder.jid];
+      return;
+    }
 
-			
-      //~ widget.elm.addEventListener('delete', function() {
-				//~ this.parentNode.removeChild(this);
-				//~ that.deleteFolder(folder);
-			//~ });
+    folder.creator = aCreator;
+    
+    //Thumbnail widget
+    var thumbnail = new Widget.Thumbnail();
+    var folders = document.getElementById('folders');
+    thumbnail.elm = folders.appendChild(thumbnail.elm);
+    thumbnail.jid = folder.jid;
+    thumbnail.label = folder.name;
+    thumbnail.href = folder.name;
+    thumbnail.miniature = 'themes/'+gConfiguration.theme+'/'+'file.png';
+    thumbnail.elm.classList.add('folder');
 
-			folder.widget = widget;
-      
-      // BUG iOS
-      folder.widget.tab.addEventListener('touchstart', function() {});
-      folder.widget.tab.addEventListener('click', function(e) {
-        gUserInterface.showFolder(folder);
-        if(window.location.protocol !== 'file:')
-          history.pushState(null, null, this.href);
-        e.preventDefault();
+    //Panel widget
+    var panel = new Widget.Panel();
+    var deck = document.getElementById('deck');
+    panel.elm = deck.appendChild(panel.elm);
+    panel.id = folder.jid;
+
+    //Makes the first element of the panel clickable
+    panel.elm.firstChild.addEventListener('click', function() {
+        gUserInterface.openFilePicker();
       });
 
-			Plugsbee.folders[folder.jid] = folder;
-      that.getFiles(folder);
-    }
+    folder.panel = panel;
+    folder.thumbnail = thumbnail;
+    
+      //~ widget.elm.addEventListener('delete', function() {
+      //~ this.parentNode.removeChild(this);
+      //~ that.deleteFolder(folder);
+    //~ });  
+  
+    // BUG iOS
+    folder.thumbnail.elm.addEventListener('touchstart', function() {});
+    folder.thumbnail.elm.addEventListener('click', function(e) {
+      gUserInterface.showFolder(folder);
+      if(window.location.protocol !== 'file:')
+        history.pushState(null, null, this.href);
+      e.preventDefault();
+    });
+
+    Plugsbee.folders[folder.jid] = folder;
+    that.getFiles(folder);
+
 	});
 };
 Plugsbee.getFolders = function() {
@@ -244,44 +260,48 @@ Plugsbee.getFiles = function(folder) {
 			file.name = item.name;
 			file.type = item.type;
 			file.src = item.src;
-			if(item.thumbnail)
-				file.thumbnail = item.thumbnail;
+			if(!item.miniature)
+        file.miniature = "themes/"+gConfiguration.theme+'/file.png';
+      else
+        file.miniature = item.miniature;
 			file.id = item.id;
 			file.folder = folder;
 
-			var widget = new Widget.File();
-			widget.id = file.jid;
-			widget.label = file.name;
-			widget.src = file.src;
-			widget.type = file.type;
-			if(file.thumbnail)
-				widget.thumbnail = file.thumbnail;
-			widget.type = file.type;
-			//~ widget.href = '/'+file.folder.name+'/'+file.name;
-			widget.href = file.folder.name+'/'+file.name;
-      var panel = folder.widget.panel;
-      var dropbox = folder.widget.panel.querySelector('.file.upload');
-			widget.elm = panel.insertBefore(widget.elm, dropbox);
-			file.widget = widget;
-			
-			folder.files[file.jid] = file;
-			folder.counter++
-			folder.widget.counter = folder.counter;
-			//~ if(folder.creator === Plugsbee.user.jid)
-      widget.deletable = true;
 
-      widget.elm.addEventListener('touchstart', function() {});
-      widget.elm.addEventListener('click', function(e) {
+      var thumbnail = new Widget.Thumbnail();
+      thumbnail.elm = folder.panel.elm.appendChild(thumbnail.elm);
+      thumbnail.id = file.jid;
+      thumbnail.label = file.name;
+      thumbnail.miniature = file.miniature;
+      thumbnail.href = file.folder.name+'/'+file.name;
+      thumbnail.elm.classList.add('file');
+      thumbnail.elm.addEventListener('click', function(evt) {
         if(window.location.protocol !== 'file:')
           history.pushState(null, null, this.href);
         gUserInterface.showFile(file);
-        e.preventDefault();
+        evt.preventDefault();
       });
+			
+			file.thumbnail = thumbnail;
+			
+			folder.files[file.jid] = file;
+			//~ folder.counter++
+			//~ folder.widget.counter = folder.counter;
+			//~ if(folder.creator === Plugsbee.user.jid)
+      //~ widget.deletable = true;
 
-			widget.elm.addEventListener('delete', function() {
-				file.widget.elm.parentNode.removeChild(file.widget.elm);
-				that.deleteFile(file);
-			});
+      //~ widget.elm.addEventListener('touchstart', function() {});
+      //~ widget.elm.addEventListener('click', function(e) {
+        //~ if(window.location.protocol !== 'file:')
+          //~ history.pushState(null, null, this.href);
+        //~ gUserInterface.showFile(file);
+        //~ e.preventDefault();
+      //~ });
+//~ 
+			//~ widget.elm.addEventListener('delete', function() {
+				//~ file.widget.elm.parentNode.removeChild(file.widget.elm);
+				//~ that.deleteFile(file);
+			//~ });
 		});
 	});
 };

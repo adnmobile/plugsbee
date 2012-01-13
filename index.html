@@ -19,22 +19,25 @@
 		<script type="text/javascript" src="userinterface.js"></script>
     
 		<!-- Widgets -->
-			<!-- Folder -->
-				<script type="text/javascript" src="widgets/folder/folder.js"></script>
-				<link rel="stylesheet" href="widgets/folder/folder.css" type="text/css">
-			<!-- File -->
-				<script type="text/javascript" src="widgets/file/file.js"></script>
-				<link rel="stylesheet" href="widgets/file/file.css" type="text/css">
-    
+			<!-- Thumbnail -->
+				<script type="text/javascript" src="widgets/thumbnail/thumbnail.js"></script>
+				<link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css">
+			<!-- Panel -->
+				<script type="text/javascript" src="widgets/panel/panel.js"></script>
+				<link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
 	</head>
 	<body>
 		<header>
-      <span class="title">iPressbook</span>
-      <span id="account-text">John Do</span>
-      <button id="upload-button">
-        Upload files
-      </button>
-      <button id="logout-button">Logout</button>
+      <div class="left">
+        <a id="nav-button" href="/">Folders</a>
+      </div>
+      <div class="center">
+        <span id="title">iPressbook</span>
+      </div>
+      <div class="right">
+        <button id="upload-button">Upload files</button>
+        <button id="account-menu">John</button>
+      </div>
 		</header>
     <section id="welcome">
       <form id="login-form">
@@ -43,7 +46,6 @@
           <input name="login" autofocus="" required=""/>
         </p>
         <p>
-          
           <label for="password">Password: </label>
           <input name="password" type="password" required=""/>
         </p>
@@ -65,16 +67,11 @@
         <input type="submit" value="Register"/>
       </form>
     </section>
-		<section id="data" hidden="true">
-      <nav>
-        <ul id="folders">
-        
-        </ul>
-      </nav>
-      <div id="deck">
-      </div>
+		<section id="deck" hidden="true">
+      <div id="folders" class="panel"></div>
     </section>
-    <div id="popup" hidden="hidden"></div>
+		<section id="viewer" hidden="true">
+    </section>
     <input id="file-picker" type="file"/>
 	</body>
 </html>
