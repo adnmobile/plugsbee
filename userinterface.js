@@ -131,6 +131,7 @@ var gUserInterface = {
 		//~ }
 	//~ },
   showFolders: function() {
+    document.querySelector('header').style.width = "1024px";
     var navButton = document.getElementById('nav-button')
     if(navButton)
       navButton.style.visibility = 'hidden';
@@ -143,6 +144,7 @@ var gUserInterface = {
 		this.showPanel('folders');
   },
   showFolder: function(aFolder) {
+    document.querySelector('header').style.width = "1024px";
     this.showSection('folders');
     
     var navButton = document.getElementById('nav-button')
@@ -285,13 +287,20 @@ var gUserInterface = {
       case 'video/webm':
       case 'video/ogg':
       case 'video/mp4':
-        var previewElm = '<video id="preview" src="'+aFile.src+'" controls/>';
+        var previewElm = '<video id="preview" src="'+aFile.src+'" autoplay controls/>';
+        //Chrome canno't autoplay if injected
+        //~ previewElm.addEventListener('canplay', function() { this.play(); } );
         break;
       case 'audio/webm':
       case 'audio/ogg':
       case 'audio/wave':
       case 'audio/mpeg':
-        var previewElm = '<audio id="preview" src="'+aFile.src+'" controls/>';
+        var previewElm = '<audio id="preview" src="'+aFile.src+'" autoplay controls/>';
+        //~ var titi = Widget.parse(previewElm);
+        //~ console.log(titi);
+        //~ console.log(titi.firstChild);
+        //Chrome canno't autoplay if injected
+        //~ previewElm.addEventListener('canplay', function() { this.play(); } );
         break;
       //~ case 'text/plain':
       //~ case 'text/xml':

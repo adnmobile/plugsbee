@@ -1,6 +1,11 @@
 'use strict';
 
-var Widget = {};
+var Widget = {
+  parser : new DOMParser(),
+  parse: function(aStr) {
+    return this.parser.parseFromString(aStr, "text/xml");
+  }
+};
 
 var Plugsbee = {
 	folders: {},
@@ -11,6 +16,7 @@ var Plugsbee = {
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
   Plugsbee.connection.user = Plugsbee.connection.jid.split('@')[0];
+  Lightstring.presence(Plugsbee.connection, "0");
 	Plugsbee.getFolders();
 });
 Plugsbee.connection.on('connecting', function() {
@@ -25,7 +31,7 @@ Plugsbee.connection.on('disconnected', function() {
   //~ delete Plugsbee.files;
   //~ delete Plugsbee.contacts;  
   //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
-  location.reload();
+  //~ location.reload();
 });
 Plugsbee.connection.on('XMLInput', function(data) {
   //~ console.log('in: \n'+data);
@@ -60,12 +66,24 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	file.folder = aFolder;
 	aFolder.files[jid] = file;
 
-	var widget = new Widget.File();
-	widget.label = file.name;
-	widget.id = jid;
-	widget.elm = aFolder.widget.panel.insertBefore(widget.elm, aFolder.widget.panel.lastChild);
-	file.widget = widget;
 
+  var thumbnail = new Widget.Thumbnail();
+  thumbnail.elm = file.folder.panel.elm.appendChild(thumbnail.elm);
+  thumbnail.id = file.jid;
+  thumbnail.label = file.name;
+  thumbnail.elm.classList.add('file');
+  var progress = document.createElement('progress');
+  progress.setAttribute('max', '100');
+  progress.setAttribute('value', '0');
+  var span = document.createElement('span');
+  
+  var img = thumbnail.elm.querySelector('img');
+  img.hidden = true;
+  thumbnail.elm.querySelector('div.miniature').appendChild(span);
+  thumbnail.elm.querySelector('div.miniature').appendChild(progress);
+  
+  file.thumbnail = thumbnail;
+  
 	var fd = new FormData;
 	fd.append(jid, aDOMFile);
 	
@@ -74,9 +92,11 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	xhr.upload.addEventListener("progress",
 		function(evt) {
 			var progression = (evt.loaded/evt.total)*100;
-      console.log(progression);
-			if(onProgress)
-				onProgress(file, progression);
+      thumbnail.elm.querySelector('progress').setAttribute('value', progression);
+      thumbnail.elm.querySelector('span').textContent = Math.round(progression)+'%';
+      //~ console.log(progression);
+			//~ if(onProgress)
+				//~ onProgress(file, progression);
 		}, false
 	);
 	
@@ -85,13 +105,22 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 		function(evt) {
 			var answer = JSON.parse(xhr.responseText);
 			file.src = answer.src;
-			file.widget.src = file.src;
-			if(answer.thumbnail) {
-				file.thumbnail = answer.thumbnail;
-				file.widget.thumbnail = file.thumbnail;
-			}
-			file.widget.type = file.type;
-			file.widget.href = '/'+file.folder.name+'/'+file.name;
+			if(answer.thumbnail)
+				file.miniature = answer.thumbnail;
+      else
+        file.miniature = "themes/"+gConfiguration.theme+'/file.png';
+  
+      file.thumbnail.miniature = file.miniature;
+      file.thumbnail.elm.querySelector('span').hidden = true;
+      file.thumbnail.elm.querySelector('progress').hidden = true;
+      file.thumbnail.elm.querySelector('img').hidden = false;
+			file.thumbnail.elm.href = file.folder.name+'/'+file.name;
+      file.thumbnail.elm.addEventListener('click', function(evt) {
+        if(window.location.protocol !== 'file:')
+          history.pushState(null, null, this.href);
+        gUserInterface.showFile(file);
+        evt.preventDefault();
+      });
 			that.addFile(file, onSuccess);
 		}, false
 	);
@@ -115,8 +144,8 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	xhr.send(fd);
 }
 Plugsbee.addFile = function(aFile, onSuccess) {
-	if(aFile.thumbnail)
-		var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>"+aFile.name+"</title><content src='"+aFile.src+"' type='"+aFile.type+"'/><link rel='preview' type='image/png' href='"+aFile.thumbnail+"'/></entry>";
+	if(aFile.miniature)
+		var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>"+aFile.name+"</title><content src='"+aFile.src+"' type='"+aFile.type+"'/><link rel='preview' type='image/png' href='"+aFile.miniature+"'/></entry>";
 	else
 		var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>"+aFile.name+"</title><content src='"+aFile.src+"' type='"+aFile.type+"'/></entry>";
 	var that = this;
@@ -124,14 +153,12 @@ Plugsbee.addFile = function(aFile, onSuccess) {
 	Lightstring.pubsubPublish(this.connection, aFile.folder.server, aFile.folder.node, entry, aFile.id, function(err, answer) {
 		if(err)
 			return;
-
-		aFile.folder.counter++
-		aFile.folder.widget.counter = aFile.folder.counter;
-		aFile.widget.deletable = true;
-		aFile.widget.elm.addEventListener('delete', function() {
-			aFile.widget.elm.parentNode.removeChild(aFile.widget.elm);
-			that.deleteFile(aFile);
-		});
+    
+    
+		//~ aFile.widget.elm.addEventListener('delete', function() {
+			//~ aFile.widget.elm.parentNode.removeChild(aFile.widget.elm);
+			//~ that.deleteFile(aFile);
+		//~ });
 	});
 };
 Plugsbee.createFolder = function (aName, aAccessmodel, onSuccess) {
@@ -194,7 +221,7 @@ Plugsbee.getFolderCreator = function(folder) {
     thumbnail.jid = folder.jid;
     thumbnail.label = folder.name;
     thumbnail.href = folder.name;
-    thumbnail.miniature = 'themes/'+gConfiguration.theme+'/'+'file.png';
+    thumbnail.miniature = gUserInterface.themeFolder+'/'+'file.png';
     thumbnail.elm.classList.add('folder');
 
     //Panel widget

@@ -11,6 +11,10 @@ Widget.Thumbnail = function() {
 			]
     ]
 	]);
+	//~ this.elm = Widget.parse(
+    //~ "<a class='thumbnail' draggable='true'><figure><div class='miniature'><img/></div><figcaption class='label'/></figure></a>"
+  //~ ).firstChild;
+  //~ alert(this.elm);
 	return this;
 };
 //
