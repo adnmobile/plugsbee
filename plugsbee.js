@@ -67,6 +67,19 @@ Plugsbee.connection.on('disconnecting', function() {
   console.log('disconnecting');
 });
 Plugsbee.connection.on('message', function(data) {
+
+  if(data.firstChild.tagName !== 'event')
+    return;
+  
+  //Folder deletion  
+  if(data.firstChild.firstChild.tagName === 'delete')
+    return;
+
+  //Items retract
+  if((data.firstChild.firstChild.tagName === 'items') && (data.firstChild.firstChild.firstChild.tagName === 'retract'))
+    return;
+    
+  
   var service = data.getAttribute('from');
   var nodeid = data.querySelector('items').getAttribute('node');
   var folderjid = service+"/"+nodeid;
@@ -342,12 +355,13 @@ Plugsbee.getFolderCreator = function(folder) {
     thumbnail.href = folder.name;
     thumbnail.miniature = gUserInterface.themeFolder+'/'+'file.png';
     thumbnail.elm.classList.add('folder');
+    thumbnail.elm.setAttribute('contextmenu', 'foldermenu');
 
     //Panel widget
     var panel = new Widget.Panel();
     var deck = document.getElementById('deck');
     panel.elm = deck.appendChild(panel.elm);
-    panel.id = folder.jid;
+    panel.jid = folder.jid;
 
     //Makes the first element of the panel clickable
     panel.elm.firstChild.addEventListener('click', function() {
@@ -390,9 +404,17 @@ Plugsbee.getFolders = function() {
 	});
 };
 Plugsbee.deleteFile = function(file) {
+  var elms = document.querySelectorAll('[data-jid="'+file.jid+'"]');
+  for(var i = 0; i < elms.length; i++) {
+    elms[i].parentNode.removeChild(elms[i]);
+  }
 	Lightstring.pubsubRetract(this.connection, file.folder.server, file.folder.node, file.id);
 };
 Plugsbee.deleteFolder = function(folder) {
+  var elms = document.querySelectorAll('[data-jid="'+folder.jid+'"]');
+  for(var i = 0; i < elms.length; i++) {
+    elms[i].parentNode.removeChild(elms[i]);
+  }
 	Lightstring.pubsubDelete(this.connection, folder.server, folder.node);
 };
 Plugsbee.getFiles = function(folder) {
@@ -416,11 +438,12 @@ Plugsbee.getFiles = function(folder) {
 
       var thumbnail = new Widget.Thumbnail();
       thumbnail.elm = folder.panel.append(thumbnail.elm);
-      thumbnail.id = file.jid;
+      thumbnail.jid = file.jid;
       thumbnail.label = file.name;
       thumbnail.miniature = file.miniature;
       thumbnail.href = file.folder.name+'/'+file.name;
       thumbnail.elm.classList.add('file');
+      thumbnail.elm.setAttribute('contextmenu', 'filemenu');
       thumbnail.elm.addEventListener('click', function(evt) {
         if(window.location.protocol !== 'file:')
           history.pushState(null, null, this.href);
@@ -430,6 +453,7 @@ Plugsbee.getFiles = function(folder) {
 			
 			file.thumbnail = thumbnail;
 			
+      Plugsbee.files[file.jid] = file;
 			folder.files[file.jid] = file;
 			//~ folder.counter++
 			//~ folder.widget.counter = folder.counter;

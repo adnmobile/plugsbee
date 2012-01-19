@@ -136,6 +136,24 @@ var gUserInterface = {
   openFilePicker: function() {
     document.getElementById('file-picker').click();
   },
+  deleteFile: function() {
+    var elm = document.activeElement;
+    var jid = elm.getAttribute('data-jid');
+    var file = Plugsbee.files[jid];
+    Plugsbee.deleteFile(file);
+  },
+  renameFile: function() {
+    console.log(document.activeElement);
+  },
+  deleteFolder: function() {
+    var elm = document.activeElement;
+    var jid = elm.getAttribute('data-jid');
+    var folder = Plugsbee.folders[jid];
+    Plugsbee.deleteFolder(folder);
+  },
+  renameFolder: function() {
+    console.log(document.activeElement);
+  },
 	//~ newFolder: function() {
 		//~ this.showMyFolders();
 		//~ var elm = document.getElementById('newfolder');

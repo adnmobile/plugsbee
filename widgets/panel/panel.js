@@ -19,7 +19,7 @@ Widget.Panel = function() {
   if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile'))
     this.elm.querySelector('.upload').hidden = true;
 };
-Widget.Panel.prototype.__defineSetter__('jd', function(aId) {
+Widget.Panel.prototype.__defineSetter__('jid', function(aId) {
 	this._jid = aId;
 	this.elm.setAttribute('data-jd', aId);
 });

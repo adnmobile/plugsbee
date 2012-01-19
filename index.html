@@ -87,5 +87,29 @@
 		<section id="viewer" hidden="true">
     </section>
     <input id="file-picker" type="file"/>
+    <menu type="context" id="filemenu">
+      <menuitem label="Delete" onclick="gUserInterface.deleteFile();">
+      </menuitem>
+      <menuitem label="Rename" onclick="gUserInterface.renameFile();">
+      </menuitem>
+<!--
+      <menu label="Share">
+        <menuitem label="twitter" onclick="alert('not yet')"></menuitem>
+        <menuitem label="facebook" onclick="alert('not yet')"></menuitem>
+      </menu>
+-->
+    </menu>
+    <menu type="context" id="foldermenu">
+      <menuitem label="Delete" onclick="gUserInterface.deleteFolder();">
+      </menuitem>
+      <menuitem label="Rename" onclick="gUserInterface.renameFolder();">
+      </menuitem>
+<!--
+      <menu label="Share">
+        <menuitem label="twitter" onclick="alert('not yet')"></menuitem>
+        <menuitem label="facebook" onclick="alert('not yet')"></menuitem>
+      </menu>
+-->
+    </menu>
 	</body>
 </html>
