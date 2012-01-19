@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel="shortcut icon" href="themes/default/favicon.ico">
+    <base href="/"> 
  		<!-- Theme -->
 			<!-- Default -->
 				<link rel="stylesheet" href="themes/default/style.css" type="text/css">
@@ -28,10 +29,6 @@
 	</head>
 	<body>
 		<header>
-      
-<!--
-      <button onclick="shakeit();">shakeit</button>
--->
       <div class="left">
         <a id="nav-button" href="/">Folders</a>
       </div>
@@ -39,11 +36,15 @@
         <span id="title">iPressbook</span>
       </div>
       <div class="right">
+        <button onclick="shakeit();">shakeit</button>
         <button id="upload-button">Upload files</button>
         <button id="account-menu">John</button>
       </div>
 		</header>
     <section id="welcome">
+      <noscript>  
+        <span>Sorry you must allow JavaScript.</span>  
+      </noscript>  
       <form id="login-form">
         <p>
           <label for="login">Login: </label>
@@ -72,7 +73,16 @@
       </form>
     </section>
 		<section id="deck" hidden="true">
-      <div id="folders" class="panel"></div>
+      <div id="folders" class="panel">
+        <a id="folder-adder" class="thumbnail upload"><figure>
+            <div class="miniature">
+              <div class="area">
+              </div>
+            </div>
+            <figcaption class="label">New folder</figcaption> 
+          </figure>
+        </a>
+      </div>
     </section>
 		<section id="viewer" hidden="true">
     </section>

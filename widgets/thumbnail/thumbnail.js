@@ -11,11 +11,11 @@ Widget.Thumbnail = function() {
 			]
     ]
 	]);
-	//~ this.elm = Widget.parse(
-    //~ "<a class='thumbnail' draggable='true'><figure><div class='miniature'><img/></div><figcaption class='label'/></figure></a>"
-  //~ ).firstChild;
-  //~ alert(this.elm);
-	return this;
+  this.form = microjungle([
+    ['form',
+      ['input', {type: 'text', autofocus: 'autofocus'}]
+    ]
+  ]);
 };
 //
 //jid property
@@ -58,3 +58,23 @@ Widget.Thumbnail.prototype.__defineSetter__('label', function(aLabel) {
 Widget.Thumbnail.prototype.__defineGetter__('label', function() {
 	return this._label;
 });
+//
+//edit property
+//
+Widget.Thumbnail.prototype.__defineSetter__('edit', function(aBool) {
+	this._edit = aBool;
+  var that = this;
+  var figcaption = that.elm.querySelector("figcaption");
+  if(aBool === true) {
+    figcaption.textContent = '';
+    figcaption.appendChild(that.form);
+  }
+  if(aBool === false) {
+    figcaption.removeChild(figcaption.firstChild);
+    figcaption.textContent = this.label;
+  }
+});
+Widget.Thumbnail.prototype.__defineGetter__('edit', function() {
+	return this._edit;
+});
+

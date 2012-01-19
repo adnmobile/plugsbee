@@ -1,35 +1,4 @@
 'use strict';
-//~ 
-//FIXME newfolder widget, where should it be?
-//~ window.addEventListener('load', function() {
-	//~ var elm = document.getElementById('newfolder');
-	//~ var form = elm.querySelector('form');
-//~ 
-	//~ form.addEventListener('submit', 
-		//~ function(event) {
-			//~ var name = form.elements['title'].value;
-			//~ var accessmodel = form.elements['public'].checked ? 'open' : 'whitelist';
-//~ 
-			//~ 
-			//~ Plugsbee.createFolder(name, accessmodel, function(aFolder) {
-				//~ form.reset();
-				//~ elm.hidden = true;
-				//~ aFolder.widget.open();
-			//~ });
-			//~ 
-			//~ event.preventDefault();
-		//~ }
-	//~ );
-	//~ form.addEventListener('cancel', 
-		//~ function(event) {
-			//~ //FIXME We MUST remove the listener
-			//~ document.removeEventListener('click', test, true);
-			//~ form.reset();
-			//~ elm.hidden = true;
-		//~ }
-	//~ );
-//~ }, false);
-
 
 Widget.Panel = function() {
   this.elm = microjungle([
@@ -47,13 +16,8 @@ Widget.Panel = function() {
     ]
   ]);
   // No file upload on Safari mobile.
-  if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile')) {
+  if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile'))
     this.elm.querySelector('.upload').hidden = true;
-  }
-  else {
-
-  }
-	return this;
 };
 Widget.Panel.prototype.__defineSetter__('jd', function(aId) {
 	this._jid = aId;
@@ -69,3 +33,6 @@ Widget.Panel.prototype.__defineSetter__('hidden', function(aBool) {
 Widget.Panel.prototype.__defineGetter__('hidden', function() {
 	return this._hidden;
 });
+Widget.Panel.prototype.append = function (aElm) {
+  return this.elm.insertBefore(aElm,this.elm.firstChild);
+}

@@ -13,13 +13,35 @@ Plugsbee.connection.on('connected', function() {
 
 var gUserInterface = {
   currentFolder: {},
+  currentFile: {},
+  themeFolder : 'themes/'+gConfiguration.theme+'/',
 	init: function() {
     var that = this;
-    
 
-		this.__defineGetter__('themeFolder', function() {
-			return 'themes/'+gConfiguration.theme+'/';
-		});
+    //
+    //Folder adder
+    //
+    var folderAdder = new Widget.Thumbnail;
+    folderAdder.elm = document.getElementById('folder-adder');
+    var input =  folderAdder.form.querySelector('input');
+    folderAdder.elm.onclick = function(aEvent) {
+      folderAdder.edit = true;
+      //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
+      folderAdder.form.querySelector('input').focus();
+    };
+    folderAdder.form.onsubmit = function(aEvent) {
+      Plugsbee.createFolder(input.value, 'whitelist');
+      folderAdder.edit = false;
+      input.value = '';
+      return false;
+    }
+    input.onblur = function(aEvent) {
+      folderAdder.edit = false;
+      input.value = '';
+      return false;
+    }
+    
+    
     
     //
     //Uploader
@@ -50,6 +72,7 @@ var gUserInterface = {
 			localStorage.removeItem("login");
 			localStorage.removeItem("password");
 			Plugsbee.connection.disconnect();
+      window.location.reload();
 		});
     
     //Settings

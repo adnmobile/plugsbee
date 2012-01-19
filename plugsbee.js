@@ -105,7 +105,7 @@ Plugsbee.connection.on('message', function(data) {
 
 
   var thumbnail = new Widget.Thumbnail();
-  thumbnail.elm = folder.panel.elm.appendChild(thumbnail.elm);
+  thumbnail.elm = folder.panel.append(thumbnail.elm);
   thumbnail.id = file.jid;
   thumbnail.label = file.name;
   thumbnail.miniature = file.miniature;
@@ -165,7 +165,7 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 
 
   var thumbnail = new Widget.Thumbnail();
-  thumbnail.elm = file.folder.panel.elm.appendChild(thumbnail.elm);
+  thumbnail.elm = file.folder.panel.elm.insertBefore(thumbnail.elm, file.folder.panel.elm.firstChild);
   thumbnail.id = file.jid;
   thumbnail.label = file.name;
   thumbnail.elm.classList.add('file');
@@ -271,34 +271,56 @@ Plugsbee.createFolder = function (aName, aAccessmodel, onSuccess) {
 			console.log('ERROR');
 			return;
 		}
-		var folder = Object.create(Plugsbee.Folder);
-		folder.jid = gConfiguration.PubSubService+"/"+id;
-		folder.name = aName;
-		folder.creator = Plugsbee.user.jid;
+    
+    var folder = Object.create(Plugsbee.Folder);
+    folder.jid = gConfiguration.PubSubService+'/'+id;
+    folder.name = aName;
+		folder.creator = Plugsbee.connection.jid;
 		folder.accessmodel = aAccessmodel;
-		
-		var widget = new Widget.Folder();
-		widget.id = folder.jid;
-		widget.label = folder.name;
-		var parent = document.getElementById('folders-list');
-		widget.elm = parent.insertBefore(widget.elm, parent.querySelector('#newfolder'));
-		//~ widget.deletable= true;
-		//~ widget.uploadable = true;
-		//~ widget.elm.addEventListener('delete', function() {
-			//~ this.parentNode.removeChild(this);
-			//~ that.deleteFolder(folder);
-		//~ });
-		folder.widget = widget;
-		widget.hidden = false;
-		widget.uploadable = true;
-		if(aAccessmodel === 'whitelist')
-			widget.sharable = true;
-		else
-			widget.public = true;
+    
 
-		Plugsbee.folders[folder.jid] = folder;
-		
-		onSuccess(folder);
+    //Thumbnail widget
+    var thumbnail = new Widget.Thumbnail();
+    var folders = document.getElementById('folders');
+    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
+    thumbnail.jid = folder.jid;
+    thumbnail.label = folder.name;
+    thumbnail.href = folder.name;
+    thumbnail.miniature = gUserInterface.themeFolder+'/'+'file.png';
+    thumbnail.elm.classList.add('folder');
+
+    //Panel widget
+    var panel = new Widget.Panel();
+    var deck = document.getElementById('deck');
+    panel.elm = deck.appendChild(panel.elm);
+    panel.id = folder.jid;
+
+    //Makes the first element of the panel clickable
+    panel.elm.firstChild.addEventListener('click', function() {
+        gUserInterface.openFilePicker();
+      });
+
+    folder.panel = panel;
+    folder.thumbnail = thumbnail;
+    
+      //~ widget.elm.addEventListener('delete', function() {
+      //~ this.parentNode.removeChild(this);
+      //~ that.deleteFolder(folder);
+    //~ });  
+  
+    // BUG iOS
+    folder.thumbnail.elm.addEventListener('touchstart', function() {});
+    folder.thumbnail.elm.addEventListener('click', function(e) {
+      gUserInterface.showFolder(folder);
+      if(window.location.protocol !== 'file:')
+        history.pushState(null, null, this.href);
+      e.preventDefault();
+    });
+
+    Plugsbee.folders[folder.jid] = folder;
+
+    if(onSuccess)
+      onSuccess(folder);
 	});
 }
 Plugsbee.getFolderCreator = function(folder) {
@@ -314,7 +336,7 @@ Plugsbee.getFolderCreator = function(folder) {
     //Thumbnail widget
     var thumbnail = new Widget.Thumbnail();
     var folders = document.getElementById('folders');
-    thumbnail.elm = folders.appendChild(thumbnail.elm);
+    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
     thumbnail.jid = folder.jid;
     thumbnail.label = folder.name;
     thumbnail.href = folder.name;
@@ -393,7 +415,7 @@ Plugsbee.getFiles = function(folder) {
 
 
       var thumbnail = new Widget.Thumbnail();
-      thumbnail.elm = folder.panel.elm.appendChild(thumbnail.elm);
+      thumbnail.elm = folder.panel.append(thumbnail.elm);
       thumbnail.id = file.jid;
       thumbnail.label = file.name;
       thumbnail.miniature = file.miniature;

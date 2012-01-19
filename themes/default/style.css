@@ -150,6 +150,15 @@ span#preview {
 }
 
 /*
+ * Folder adder
+ */
+#folder-adder input {
+  border: none;
+  background: none;
+  font-size: inherit;
+}
+
+/*
  * Folders
  */
 .thumbnail.folder {
