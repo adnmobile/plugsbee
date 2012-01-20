@@ -5,10 +5,10 @@ var gConfiguration = {
 };
 // If safari mobile
 if(navigator.userAgent.match('AppleWebKit') && !navigator.userAgent.match('Chrome') && navigator.userAgent.match('Mobile'))
-  gConfiguration.WebsocketService = "ws://plugsbee.com:5281";
+  gConfiguration.WebsocketService = "wsold://ws.plugsbee.com";
 // If safari desktop
 else if(navigator.userAgent.match('AppleWebKit') && !navigator.userAgent.match('Chrome') && !navigator.userAgent.match('Mobile'))
   window.WEB_SOCKET_FORCE_FLASH = true;
 else
-  gConfiguration.WebsocketService = "ws://plugsbee.com:5280";
+  gConfiguration.WebsocketService = "ws://ws.plugsbee.com";
 

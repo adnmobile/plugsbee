@@ -1,7 +1,8 @@
 'use strict';
 
 Plugsbee.connection.on('connected', function() {
-  gUserInterface.showSection('deck');
+  //~ gUserInterface.showSection('deck');
+  gUserInterface.handlePath();
 	//~ gUserInterface.handlePath();
 	//~ gUserInterface.menu.hidden = false;
 	
@@ -226,7 +227,9 @@ var gUserInterface = {
   showFile: function(aFile) {
     this.showSection('viewer');
     
-    var viewer = document.getElementById('viewer');
+    var preview = document.getElementById('preview');
+    var download = document.getElementById('download');
+    download.href = aFile.src;
 
     document.querySelector('header').style.width = "100%";
     
@@ -252,8 +255,8 @@ var gUserInterface = {
       uploadButton.style.visibility = 'hidden';
     }
 
-    var preview = this.previewBuilder(aFile);
-    viewer.innerHTML = preview;
+    var elm = this.previewBuilder(aFile);
+    preview.innerHTML = elm;
   },
 	handlePath: function() {
 		var path = document.location.pathname.split('/');
@@ -323,12 +326,12 @@ var gUserInterface = {
       case 'image/jpeg':
       case 'image/gif':
       case 'image/svg+xml':
-        var previewElm = '<img id="preview" src="'+aFile.src+'"/>';
+        var previewElm = '<img src="'+aFile.src+'"/>';
         break;
       case 'video/webm':
       case 'video/ogg':
       case 'video/mp4':
-        var previewElm = '<video id="preview" src="'+aFile.src+'" autoplay controls/>';
+        var previewElm = '<video src="'+aFile.src+'" autoplay controls/>';
         //Chrome canno't autoplay if injected
         //~ previewElm.addEventListener('canplay', function() { this.play(); } );
         break;
@@ -336,7 +339,7 @@ var gUserInterface = {
       case 'audio/ogg':
       case 'audio/wave':
       case 'audio/mpeg':
-        var previewElm = '<audio id="preview" src="'+aFile.src+'" autoplay controls/>';
+        var previewElm = '<audio src="'+aFile.src+'" autoplay controls/>';
         //~ var titi = Widget.parse(previewElm);
         //~ console.log(titi);
         //~ console.log(titi.firstChild);
@@ -357,7 +360,7 @@ var gUserInterface = {
         //~ ]);
         //~ break;
       default:
-        var previewElm = '<span id="preview">'+'No preview available yet.'+'</span>';
+        var previewElm = '<span>'+'No preview available yet.'+'</span>';
     }
     return previewElm;
   }

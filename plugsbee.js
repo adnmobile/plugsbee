@@ -455,44 +455,9 @@ Plugsbee.getFiles = function(folder) {
 			
       Plugsbee.files[file.jid] = file;
 			folder.files[file.jid] = file;
-			//~ folder.counter++
-			//~ folder.widget.counter = folder.counter;
-			//~ if(folder.creator === Plugsbee.user.jid)
-      //~ widget.deletable = true;
-
-      //~ widget.elm.addEventListener('touchstart', function() {});
-      //~ widget.elm.addEventListener('click', function(e) {
-        //~ if(window.location.protocol !== 'file:')
-          //~ history.pushState(null, null, this.href);
-        //~ gUserInterface.showFile(file);
-        //~ e.preventDefault();
-      //~ });
-//~ 
-			//~ widget.elm.addEventListener('delete', function() {
-				//~ file.widget.elm.parentNode.removeChild(file.widget.elm);
-				//~ that.deleteFile(file);
-			//~ });
 		});
 	});
 };
-//~ Plugsbee.getUserProfile = function() {
-	//~ var aTo = Plugsbee.user.jid;
-	//~ var that = this;
-	//~ Lightstring.getVcard(this.connection, aTo, function(vcard) {
-		//~ if(!vcard)
-			//~ return;
-		//~ var FN = vcard.querySelector('FN');
-		//~ if(FN) {
-			//~ FN = FN.textContent;
-			//~ document.getElementById("settings-form").elements["name"].value = FN;
-		//~ }
-		//~ var EMAIL = vcard.querySelector('USERID');
-		//~ if(EMAIL) {
-			//~ EMAIL = EMAIL.textContent;
-			//~ document.getElementById("settings-form").elements["email"].value = EMAIL;
-		//~ }
-	//~ });
-
 //
 // Folder
 //

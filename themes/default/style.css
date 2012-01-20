@@ -86,26 +86,37 @@ section {
   -webkit-box-pack: center;
   -moz-box-align: center;
   -webkit-box-align: center;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
   border: none;
 }
 #preview {
+  width: 80%;
+  height: 80%;
+  display: -moz-box;
+  display: -webkit-box;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+}
+#viewer #download {
+  color: white;
+}
+#preview span {
+  color: white;
+}
+#preview iframe,
+#preview img,
+#preview audio,
+#preview video {
+  max-width: 100%;
+  max-height: 100%;
+  border: none;
   display: -webkit-box;
   display: -moz-box;
-	cursor: default;
-	max-width: 80%;
-	max-height: 80%;
-}
-iframe#preview {
-  min-width: 80%;
-  min-height: 80%;
-  border: none;
-}
-video#preview {
-  min-width: 80%;
-  min-height: 80%;
-}
-span#preview {
-  color: white;
 }
 /*
  * Uploader
@@ -325,6 +336,9 @@ a {
   -ms-animation-timing-function: linear;
   -moz-animation-timing-function: linear;
   -webkit-animation-timing-function: linear;
+}
+menu {
+  display: none;
 }
 /*
 .thumbnail.edit:nth-of-type(2n+1) {
