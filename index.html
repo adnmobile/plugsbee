@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>iPressbook</title>
+    <title>Plugsbee</title>
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel="shortcut icon" href="themes/default/favicon.ico">
-    <!-- Comment the following line if you are running Plugsbee withou web server (file://) -->
-<!--
     <base href="/"> 
--->
  		<!-- Theme -->
 			<!-- Default -->
 				<link rel="stylesheet" href="themes/default/style.css" type="text/css">
-<!--
-    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
--->
     <script type="text/javascript" src="configuration.js"></script>
     <script type="text/javascript" src="lib/microjungle.min.js"></script>
     <script type="text/javascript" src="lib/lightstring/lightstring.js"></script>
@@ -39,12 +33,11 @@
         <a id="nav-button" href="/">Folders</a>
       </div>
       <div class="center">
-        <span id="title">iPressbook</span>
+        <span id="title">Plugsbee</span>
       </div>
       <div class="right">
-        <button onclick="shakeit();">shakeit</button>
         <button id="upload-button">Upload files</button>
-        <button id="account-menu">John</button>
+        <button id="account-menu"></button>
       </div>
 		</header>
     <section id="welcome">
@@ -95,29 +88,10 @@
       <a id="download">Download</a>
     </section>
     <input id="file-picker" type="file"/>
-    <menu type="context" id="filemenu">
-      <menuitem label="Delete" onclick="gUserInterface.deleteFile();">
-      </menuitem>
-<!--
-      <menuitem label="Rename" onclick="gUserInterface.renameFile();">
-      </menuitem>
-      <menu label="Share">
-        <menuitem label="twitter" onclick="alert('not yet')"></menuitem>
-        <menuitem label="facebook" onclick="alert('not yet')"></menuitem>
-      </menu>
--->
-    </menu>
-    <menu type="context" id="foldermenu">
-      <menuitem label="Delete" onclick="gUserInterface.deleteFolder();">
-      </menuitem>
-<!--
-      <menuitem label="Rename" onclick="gUserInterface.renameFolder();">
-      </menuitem>
-      <menu label="Share">
-        <menuitem label="twitter" onclick="alert('not yet')"></menuitem>
-        <menuitem label="facebook" onclick="alert('not yet')"></menuitem>
-      </menu>
--->
-    </menu>
+    <ul id="dock" hidden="hidden">
+      <li id="trash">
+        Trash
+      </li>
+    </ul>
 	</body>
 </html>

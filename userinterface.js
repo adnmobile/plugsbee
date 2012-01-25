@@ -20,6 +20,43 @@ var gUserInterface = {
     var that = this;
 
     //
+    //No panning on safari mobile
+    //
+    document.addEventListener("touchmove", function(evt) {
+      evt.preventDefault();
+    });
+
+    //
+    //Dock
+    //
+    var dock  = document.getElementById('dock');
+    var trash = document.getElementById('trash');
+    trash.addEventListener('dragenter', function(evt) {
+      trash.classList.add('dragenter');
+    });
+    trash.addEventListener('dragover', function(evt) {
+      trash.classList.add('dragenter');
+      evt.preventDefault()
+    });
+    trash.addEventListener('dragleave', function(evt) {
+      trash.classList.remove('dragenter');
+    });
+    trash.addEventListener('drop', function(evt) {
+      trash.classList.remove('dragenter');
+      dock.hidden = true;
+      var jid = evt.dataTransfer.getData('Text');
+      
+      var folder = Plugsbee.folders[jid];
+      var file = Plugsbee.files[jid];
+      if(folder)
+        Plugsbee.deleteFolder(folder);
+      else if(Plugsbee.files[jid])
+        Plugsbee.deleteFile(file);
+        
+      evt.preventDefault();
+    });
+
+    //
     //Folder adder
     //
     var folderAdder = new Widget.Thumbnail;
@@ -41,7 +78,6 @@ var gUserInterface = {
       input.value = '';
       return false;
     }
-    
     
     
     //
@@ -181,7 +217,7 @@ var gUserInterface = {
     if(uploadButton)
       uploadButton.style.visibility = 'hidden';
     var title = document.getElementById('title');
-    title.textContent = 'iPressbook';
+    title.textContent = 'Plugsbee';
     this.showSection('deck');
 		this.showPanel('folders');
   },
