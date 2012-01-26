@@ -2,14 +2,28 @@
 <html>
   <head>
     <title>Plugsbee</title>
-    <meta charset="UTF-8">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<link rel="shortcut icon" href="themes/default/favicon.ico">
     <base href="/"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="apple-touch-icon" href="icon.png" />
+		<link rel="shortcut icon" href="themes/default/favicon.ico">
+    
+    <!-- Browser detector :-/ -->
+    <script type="text/javascript" src="lib/bowser/bowser.min.js"></script>
+    
+    <!-- Add to homescreen iOS specific -->
+    <link rel="stylesheet" href="lib/add-to-homescreen/style/add2home.css">
+    <script type="text/javascript" src="lib/add-to-homescreen/src/add2home.js"></script>
+
+    
  		<!-- Theme -->
 			<!-- Default -->
 				<link rel="stylesheet" href="themes/default/style.css" type="text/css">
+
     <script type="text/javascript" src="configuration.js"></script>
     <script type="text/javascript" src="lib/microjungle.min.js"></script>
     <script type="text/javascript" src="lib/lightstring/lightstring.js"></script>
@@ -26,6 +40,9 @@
 			<!-- Panel -->
 				<script type="text/javascript" src="widgets/panel/panel.js"></script>
 				<link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
+			<!-- Editabletext -->
+				<script type="text/javascript" src="widgets/editabletext/editabletext.js"></script>
+				<link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css">
 	</head>
 	<body>
 		<header>

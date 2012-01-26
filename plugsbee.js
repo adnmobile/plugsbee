@@ -241,7 +241,15 @@ Plugsbee.addFile = function(aFile, onSuccess) {
 		//~ });
 	});
 };
-Plugsbee.createFolder = function (aName, aAccessmodel, onSuccess) {
+Plugsbee.renameFolder = function(aFolder, aNewName) {
+  aFolder.name = aNewName;
+	var fields = [];
+	
+	fields.push("<field var='pubsub#title'><value>"+aNewName+"</value></field>");
+	
+  this.connection.send(Lightstring.stanza.pubsub.config(gConfiguration.PubSubService, aFolder.nodeId, fields));
+}; 
+Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess) {
 	var id = Math.random().toString().split('.')[1];
 	var fields = [];
 	
@@ -366,6 +374,7 @@ Plugsbee.getFolders = function() {
 			
 			var folder = Object.create(Plugsbee.Folder);
 			folder.jid = item.jid+'/'+item.node;
+			folder.nodeId = item.node;
 			folder.name = item.name;
 
 			that.getFolderCreator(folder);

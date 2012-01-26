@@ -1,14 +1,10 @@
 var gConfiguration = {
-	PubSubService : "pubsub.plugsbee.com",
+	PubSubService : 'pubsub.plugsbee.com',
 	uploadService : 'http://upload.plugsbee.com',
 	theme: 'default',
+  WebsocketService: 'ws://ws.plugsbee.com'
 };
-  
-//If safari
-if(navigator.userAgent.match('AppleWebKit') && !navigator.userAgent.match('Chrome')) {
+//Safari implements and old non-compatible WebSocket version
+if(bowser.safari || bowser.ipad || bowser.iphone) {
   gConfiguration.WebsocketService = "ws://plugsbee.com:5281";
 }
-//Else
-else
-  gConfiguration.WebsocketService = "ws://ws.plugsbee.com";
-

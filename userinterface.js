@@ -20,11 +20,10 @@ var gUserInterface = {
     var that = this;
 
     //
-    //No panning on safari mobile
+    //Title
     //
-    document.addEventListener("touchmove", function(evt) {
-      evt.preventDefault();
-    });
+    var title = document.getElementById('title');
+    this.title =  new Widget.Editabletext(title);
 
     //
     //Dock
@@ -79,14 +78,13 @@ var gUserInterface = {
       return false;
     }
     
-    
     //
     //Uploader
     //
     var filePicker = document.getElementById('file-picker');
     var uploadButton = document.getElementById('upload-button');
     //Disable it on Safari mobile since uploading file isn't possible
-    if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile')) {
+    if(bowser.ipad || bowser.iphone) {
       filePicker.parentNode.removeChild(filePicker);
       uploadButton.parentNode.removeChild(uploadButton);
     }
@@ -179,35 +177,12 @@ var gUserInterface = {
     var file = Plugsbee.files[jid];
     Plugsbee.deleteFile(file);
   },
-  renameFile: function() {
-    console.log(document.activeElement);
-  },
   deleteFolder: function() {
     var elm = document.activeElement;
     var jid = elm.getAttribute('data-jid');
     var folder = Plugsbee.folders[jid];
     Plugsbee.deleteFolder(folder);
   },
-  renameFolder: function() {
-    console.log(document.activeElement);
-  },
-	//~ newFolder: function() {
-		//~ this.showMyFolders();
-		//~ var elm = document.getElementById('newfolder');
-		//~ elm.hidden = false;
-//~ 
-		//~ history.pushState(null, null, '/');
-		//~ this.handlePath();
-//~ 
-		//~ elm.querySelector('input').focus();
-//~ 
-//~ 
-		//~ document.addEventListener('click', test, true);
-		//~ function test(evt) {
-			//~ if(!elm.contains(evt.target))			
-				//~ elm.querySelector('form').dispatchEvent(eventCancel);
-		//~ }
-	//~ },
   showFolders: function() {
     document.querySelector('header').style.width = "1024px";
     var navButton = document.getElementById('nav-button')
@@ -216,8 +191,11 @@ var gUserInterface = {
     var uploadButton = document.getElementById('upload-button')
     if(uploadButton)
       uploadButton.style.visibility = 'hidden';
-    var title = document.getElementById('title');
-    title.textContent = 'Plugsbee';
+      
+    var title = this.title;
+    title.value = 'Plugsbee';
+    title.elm.onclick = null;
+
     this.showSection('deck');
 		this.showPanel('folders');
   },
@@ -240,8 +218,23 @@ var gUserInterface = {
     if(uploadButton)
       uploadButton.style.visibility = 'visible';
     gUserInterface.showPanel(aFolder.panel);
-    var title = document.getElementById('title');
-    title.textContent = aFolder.name;
+    
+    var title = this.title;
+    title.value = aFolder.name;
+    
+    title.elm.onclick = function(evt) {
+      if(title.edit !== true)
+        title.edit = true;
+    };
+    title.form.onsubmit = function(evt) {
+      var value = title.value;
+      title.edit = false;
+      title.value = value;
+      //~ aFolder.name = value;
+      Plugsbee.renameFolder(aFolder, value);
+      event.preventDefault();
+    };
+
     this.currentFolder = aFolder;
   },
   getFolderFromName: function(aName) {
@@ -269,8 +262,21 @@ var gUserInterface = {
 
     document.querySelector('header').style.width = "100%";
     
-    var title = document.getElementById('title');
-    title.textContent = aFile.name;
+    var title = this.title;
+    title.value = aFile.name;
+    //~ 
+    title.elm.onclick = function(evt) {
+      if(title.edit !== true)
+        title.edit = true;
+    };
+    title.form.onsubmit = function(evt) {
+      var value = title.value;
+      title.edit = false;
+      title.value = value;
+      aFile.name = value;
+      Plugsbee.addFile(aFile);
+      event.preventDefault();
+    };
 
     var navButton = document.getElementById('nav-button');
     navButton.style.visibility = 'visible';
@@ -286,10 +292,11 @@ var gUserInterface = {
       e.preventDefault();
     };
     
-    if(!(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile'))) {
+    //~ if(!bowser.iphone || !bowser.ipad) {
       var uploadButton = document.getElementById('upload-button');
-      uploadButton.style.visibility = 'hidden';
-    }
+      if(uploadButton)
+        uploadButton.style.visibility = 'hidden';
+    //~ }
 
     var elm = this.previewBuilder(aFile);
     preview.innerHTML = elm;

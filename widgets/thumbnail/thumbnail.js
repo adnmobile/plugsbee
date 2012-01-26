@@ -27,22 +27,6 @@ Widget.Thumbnail = function() {
   this.elm.addEventListener('dragend', function(evt) {
     document.getElementById('dock').hidden = true;
   });
-
-
-
-  //Safari mobile
-  this.elm.addEventListener("touchstart", function(evt) {
-    
-  });
-  this.elm.addEventListener("touchmove", function(evt) {
-    document.getElementById('dock').hidden = false;
-  });
-  this.elm.addEventListener("touchend", function(evt) {
-    document.getElementById('dock').hidden = true;
-  });
-  this.elm.addEventListener("touchcancel", function(evt) {
-    document.getElementById('dock').hidden = true;
-  });
 };
 //
 //jid property

@@ -16,7 +16,7 @@ Widget.Panel = function() {
     ]
   ]);
   // No file upload on Safari mobile.
-  if(navigator.userAgent.match('AppleWebKit') && navigator.userAgent.match('Mobile'))
+  if(bowser.ipad || bowser.iphone)
     this.elm.querySelector('.upload').hidden = true;
 };
 Widget.Panel.prototype.__defineSetter__('jid', function(aId) {
