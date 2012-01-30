@@ -20,11 +20,6 @@ var gUserInterface = {
     var that = this;
     
     
-    if(location.protocol !== 'file:') {
-      var base = document.createElement('base');
-      base.href = '/';
-      document.head.appendChild(base);
-    }
     //
     //Title
     //
@@ -453,3 +448,8 @@ window.addEventListener("popstate",
 
 
 
+if(location.protocol !== 'file:') {
+  var base = document.createElement('base');
+  base.href = '/';
+  document.head.appendChild(base);
+}
