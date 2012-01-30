@@ -1,20 +1,22 @@
 'use strict';
 
 Widget.Panel = function() {
-  this.elm = microjungle([
-    ['div', {class: 'panel', hidden: 'hidden'},
-      ['a', {class: 'thumbnail upload'},
-        ['figure',
-          ['div', {class: 'miniature'},
-            ['div', {class: 'area'}, 
-              ['div', {class: 'text'}, 'Drop files here to upload']
-            ]
-          ],
-          ['figcaption', {'class': 'label'}, 'Upload files']
-        ]
-      ]
-    ]
-  ]);
+  
+  var thumbnail = (new Widget.Thumbnail()).elm;
+  thumbnail.classList.add('upload');
+  thumbnail.querySelector('.miniature').innerHTML =  
+    "<div class='area'>"+
+      "<div class='text'>Drop files here to upload</div>"+
+    "</div>";
+
+  var div = document.createElement('div');
+  div.classList.add('panel');
+  div.hidden = true;
+  
+  div.appendChild(thumbnail);
+  
+  this.elm = div;
+
   // No file upload on Safari mobile.
   if(bowser.ipad || bowser.iphone)
     this.elm.querySelector('.upload').hidden = true;

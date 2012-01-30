@@ -1,22 +1,25 @@
 'use strict';
 
 Widget.Thumbnail = function() {
-	this.elm = microjungle([
-		['a', {class: 'thumbnail', draggable: 'true'},
-			['figure',
-        ['div', {class: 'miniature'},
-					['img']
-        ],
-        ['figcaption', {'class': 'label'}]
-			]
-    ]
-	]);
-  this.form = microjungle([
-    ['form',
-      ['input', {type: 'text', autofocus: 'autofocus'}]
-    ]
-  ]);
+  var elm = document.createElement('div');
+  elm.innerHTML = 
+    "<a class='thumbnail' draggable='true'>"+
+      "<figure>"+
+        "<div class='miniature'>"+
+          "<img/>"+
+        "</div>"+
+        "<figcaption class='label'/>"+
+      "</figure>"+
+    "</a>";
+  this.elm = elm.firstChild;
   
+  elm = document.createElement('div');
+  elm.innerHTML = 
+    "<form>"+
+      "<input type='text' autofocus='autofocus'/>"+
+    "</form>";
+  this.form = elm.firstChild;
+      
   this.elm.addEventListener('dragstart', function(evt) {
     var img = this.querySelector('img');
     evt.dataTransfer.setDragImage(img, -10, -10);

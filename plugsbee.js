@@ -1,21 +1,21 @@
 'use strict';
 
-function shakeit() {
-  var elms = document.querySelectorAll('.thumbnail');
-  for (var i = 0; i < elms.length; i++) {
-    if(elms[i].classList.contains('edit'))
-      elms[i].classList.remove('edit');
-    else
-      elms[i].classList.add('edit');
-    
-  }
-};
+//~ function shakeit() {
+  //~ var elms = document.querySelectorAll('.thumbnail');
+  //~ for (var i = 0; i < elms.length; i++) {
+    //~ if(elms[i].classList.contains('edit'))
+      //~ elms[i].classList.remove('edit');
+    //~ else
+      //~ elms[i].classList.add('edit');
+    //~ 
+  //~ }
+//~ };
 
 var Widget = {
-  parser : new DOMParser(),
-  parse: function(aStr) {
-    return this.parser.parseFromString(aStr, "text/xml");
-  }
+  //~ parser : new DOMParser(),
+  //~ parse: function(aStr) {
+    //~ return this.parser.parseFromString(aStr, "application/xhtml+xml").documentElement;
+  //~ }
 };
 
 var Plugsbee = {
@@ -320,13 +320,14 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess) {
 }
 Plugsbee.getFolderCreator = function(folder) {
 	var that = this;
-	Lightstring.discoInfo(this.connection, gConfiguration.PubSubService, folder.node, function(aCreator) {
-		if(aCreator !== Plugsbee.connection.jid) {
+	Lightstring.discoInfo(this.connection, gConfiguration.PubSubService, folder.node, function(formated, stanza) {
+    var creator = formated.fields['pubsub#creator'].value;
+		if(creator !== Plugsbee.connection.jid.bare) {
       delete Plugsbee.Folder[folder.jid];
       return;
     }
 
-    folder.creator = aCreator;
+    folder.creator = creator;
     
     //Thumbnail widget
     var thumbnail = new Widget.Thumbnail();
