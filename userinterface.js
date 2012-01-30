@@ -185,7 +185,7 @@ var gUserInterface = {
     Plugsbee.deleteFolder(folder);
   },
   showFolders: function() {
-    document.querySelector('header').style.width = "1024px";
+    document.querySelector('header').style.maxWidth = "1024px";
     var navButton = document.getElementById('nav-button')
     if(navButton)
       navButton.style.visibility = 'hidden';
@@ -201,7 +201,7 @@ var gUserInterface = {
 		this.showPanel('folders');
   },
   showFolder: function(aFolder) {
-    document.querySelector('header').style.width = "1024px";
+    document.querySelector('header').style.maxWidth = "1024px";
     this.showSection('folders');
     
     var navButton = document.getElementById('nav-button')

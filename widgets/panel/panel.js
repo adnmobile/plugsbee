@@ -4,6 +4,7 @@ Widget.Panel = function() {
   
   var thumbnail = (new Widget.Thumbnail()).elm;
   thumbnail.classList.add('upload');
+  thumbnail.removeAttribute('draggable');
   thumbnail.querySelector('.miniature').innerHTML =  
     "<div class='area'>"+
       "<div class='text'>Drop files here to upload</div>"+

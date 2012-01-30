@@ -16,7 +16,7 @@ body {
   -webkit-box-align: center;
 }
 body section, body header {
-  width: 1024px;
+  max-width: 1024px;
 }
 
 /*
