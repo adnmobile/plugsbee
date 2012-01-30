@@ -453,3 +453,13 @@ if(location.protocol !== 'file:') {
   base.href = '/';
   document.head.appendChild(base);
 }
+if(bowser.ipad || bowser.iphone) {
+  var style = document.createElement('style');
+  style.setAttribute('rel', 'stylesheet');
+  style.setAttribute('href', 'lib/add-to-homescreen/style/add2home.css');
+  document.head.appendChild(style);
+  var script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('href', 'lib/add-to-homescreen/src/add2home.js');
+  document.head.appendChild(script);
+}

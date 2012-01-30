@@ -375,7 +375,6 @@ Plugsbee.getFolders = function() {
 	var that = this;
 	Lightstring.discoItems(this.connection, gConfiguration.PubSubService, function(items) {
 		items.forEach(function(item) {
-			alert(item);
 			var folder = Object.create(Plugsbee.Folder);
 			folder.jid = item.jid+'/'+item.node;
 			folder.nodeId = item.node;
