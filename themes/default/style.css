@@ -202,11 +202,13 @@ a {
 	color: inherit;
 	text-decoration: none;
 }
+/*
 @media all and (orientation: portrait) {
   #deck, header, section, body{
     width: 100% !important;
   }
 }
+*/
 
 /*
   Thumbnails shaking
