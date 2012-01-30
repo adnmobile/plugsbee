@@ -232,7 +232,7 @@ var gUserInterface = {
       title.value = value;
       //~ aFolder.name = value;
       Plugsbee.renameFolder(aFolder, value);
-      event.preventDefault();
+      evt.preventDefault();
     };
 
     this.currentFolder = aFolder;
@@ -274,8 +274,8 @@ var gUserInterface = {
       title.edit = false;
       title.value = value;
       aFile.name = value;
-      Plugsbee.addFile(aFile);
-      event.preventDefault();
+      Plugsbee.renameFile(aFile);
+      evt.preventDefault();
     };
 
     var navButton = document.getElementById('nav-button');
@@ -285,11 +285,11 @@ var gUserInterface = {
     navButton.style.visibility = 'visible';
     navButton.textContent = aFile.folder.name;
     navButton.href = '/'+aFile.folder.name;
-    navButton.onclick = function(e) {
+    navButton.onclick = function(evt) {
       if(window.location.protocol !== 'file:')
         history.pushState(null, null, this.href);
       gUserInterface.showFolder(aFile.folder);
-      e.preventDefault();
+      evt.preventDefault();
     };
     
     //~ if(!bowser.iphone || !bowser.ipad) {

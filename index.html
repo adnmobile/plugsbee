@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <link rel="apple-touch-icon" href="icon.png" />
-		<link rel="shortcut icon" href="themes/default/favicon.ico">
+    <link rel="shortcut icon" href="themes/default/favicon.ico">
     
     <!-- Browser detector :-/ -->
     <script type="text/javascript" src="lib/bowser/bowser.min.js"></script>
@@ -20,32 +20,39 @@
     <script type="text/javascript" src="lib/add-to-homescreen/src/add2home.js"></script>
 
     
- 		<!-- Theme -->
-			<!-- Default -->
-				<link rel="stylesheet" href="themes/default/style.css" type="text/css">
+    <!-- Theme -->
+      <!-- Default -->
+        <link rel="stylesheet" href="themes/default/style.css" type="text/css">
 
     <script type="text/javascript" src="configuration.js"></script>
     <script type="text/javascript" src="lib/microjungle.min.js"></script>
     <script type="text/javascript" src="lib/lightstring/lightstring.js"></script>
-    <script type="text/javascript" src="lib/lightstring/plugins.js"></script>
+    <script type="text/javascript" src="lib/lightstring/jid.js"></script>
+    <script type="text/javascript" src="lib/lightstring/stanza.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/disco.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/im.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/presence.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/pubsub.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/roster.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/vcard.js"></script>
     <script type="text/javascript" src="lib/lightstring/md5.js"></script>
 
-		<script type="text/javascript" src="plugsbee.js"></script>
-		<script type="text/javascript" src="userinterface.js"></script>
+    <script type="text/javascript" src="plugsbee.js"></script>
+    <script type="text/javascript" src="userinterface.js"></script>
     
-		<!-- Widgets -->
-			<!-- Thumbnail -->
-				<script type="text/javascript" src="widgets/thumbnail/thumbnail.js"></script>
-				<link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css">
-			<!-- Panel -->
-				<script type="text/javascript" src="widgets/panel/panel.js"></script>
-				<link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
-			<!-- Editabletext -->
-				<script type="text/javascript" src="widgets/editabletext/editabletext.js"></script>
-				<link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css">
-	</head>
-	<body>
-		<header>
+    <!-- Widgets -->
+      <!-- Thumbnail -->
+        <script type="text/javascript" src="widgets/thumbnail/thumbnail.js"></script>
+        <link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css">
+      <!-- Panel -->
+        <script type="text/javascript" src="widgets/panel/panel.js"></script>
+        <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
+      <!-- Editabletext -->
+        <script type="text/javascript" src="widgets/editabletext/editabletext.js"></script>
+        <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css">
+  </head>
+  <body>
+    <header>
       <div class="left">
         <a id="nav-button" href="/">Folders</a>
       </div>
@@ -56,7 +63,7 @@
         <button id="upload-button">Upload files</button>
         <button id="account-menu"></button>
       </div>
-		</header>
+    </header>
     <section id="welcome">
       <noscript>  
         <span>Sorry you must allow JavaScript.</span>  
@@ -88,7 +95,7 @@
         <input type="submit" value="Register"/>
       </form>
     </section>
-		<section id="deck" hidden="true">
+    <section id="deck" hidden="true">
       <div id="folders" class="panel">
         <a id="folder-adder" class="thumbnail upload"><figure>
             <div class="miniature">
@@ -100,7 +107,7 @@
         </a>
       </div>
     </section>
-		<section id="viewer" hidden="true">
+    <section id="viewer" hidden="true">
       <div id="preview"></div>
       <a id="download">Download</a>
     </section>
@@ -110,5 +117,5 @@
         Trash
       </li>
     </ul>
-	</body>
+  </body>
 </html>

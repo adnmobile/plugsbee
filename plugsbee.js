@@ -26,7 +26,7 @@ var Plugsbee = {
 };
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
-  Plugsbee.connection.user = Plugsbee.connection.jid.split('@')[0];
+  Plugsbee.connection.user = Plugsbee.connection.jid.node;
   Lightstring.presence(Plugsbee.connection, "0");
 	Plugsbee.getFolders();
 });
@@ -113,8 +113,8 @@ Plugsbee.connection.on('disconnected', function() {
   //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
   //~ location.reload();
 });
-Plugsbee.connection.on('XMLInput', function(data) {
-  //~ console.log('in: \n'+data);
+Plugsbee.connection.on('input', function(stanza) {
+  console.log('in: \n'+stanza.XML);
 	//~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint in"}]
 	//~ ]);
@@ -123,8 +123,8 @@ Plugsbee.connection.on('XMLInput', function(data) {
 	//FIXME
 	//~ prettyPrint();
 });
-Plugsbee.connection.on('XMLOutput', function(data) {
-	//~ console.log('out: \n'+data);
+Plugsbee.connection.on('output', function(stanza) {
+	console.log('out: \n'+stanza.XML);
   //~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint out"}]
 	//~ ]);
@@ -244,10 +244,14 @@ Plugsbee.addFile = function(aFile, onSuccess) {
 Plugsbee.renameFolder = function(aFolder, aNewName) {
   aFolder.name = aNewName;
 	var fields = [];
-	
+	aFolder.thumbnail.label = aFolder.name;
 	fields.push("<field var='pubsub#title'><value>"+aNewName+"</value></field>");
 	
   this.connection.send(Lightstring.stanza.pubsub.config(gConfiguration.PubSubService, aFolder.nodeId, fields));
+}; 
+Plugsbee.renameFile = function(aFile) {
+  this.addFile(aFile);
+  aFile.thumbnail.label = aFile.name;
 }; 
 Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess) {
 	var id = Math.random().toString().split('.')[1];
@@ -371,7 +375,7 @@ Plugsbee.getFolders = function() {
 	var that = this;
 	Lightstring.discoItems(this.connection, gConfiguration.PubSubService, function(items) {
 		items.forEach(function(item) {
-			
+			alert(item);
 			var folder = Object.create(Plugsbee.Folder);
 			folder.jid = item.jid+'/'+item.node;
 			folder.nodeId = item.node;
