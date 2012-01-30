@@ -114,7 +114,7 @@ Plugsbee.connection.on('disconnected', function() {
   //~ location.reload();
 });
 Plugsbee.connection.on('input', function(stanza) {
-  console.log('in: \n'+stanza.XML);
+  //~ console.log('in: \n'+stanza.XML);
 	//~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint in"}]
 	//~ ]);
@@ -124,7 +124,7 @@ Plugsbee.connection.on('input', function(stanza) {
 	//~ prettyPrint();
 });
 Plugsbee.connection.on('output', function(stanza) {
-	console.log('out: \n'+stanza.XML);
+	//~ console.log('out: \n'+stanza.XML);
   //~ var elm = microjungle([
 		//~ ['pre', {class: "prettyprint out"}]
 	//~ ]);

@@ -8,7 +8,7 @@ Widget.Panel = function() {
     "<div class='area'>"+
       "<div class='text'>Drop files here to upload</div>"+
     "</div>";
-
+  thumbnail.querySelector('.label').textContent = "Upload files";
   var div = document.createElement('div');
   div.classList.add('panel');
   div.hidden = true;
