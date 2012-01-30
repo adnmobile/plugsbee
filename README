@@ -1,0 +1,6 @@
+Install:
+cd lib/
+git clone https://github.com/ded/bowser
+git clone https://github.com/cubiq/add-to-homescreen
+git clone https://github.com/sonnyp/lightstring
+
