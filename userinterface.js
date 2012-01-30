@@ -18,7 +18,13 @@ var gUserInterface = {
   themeFolder : 'themes/'+gConfiguration.theme+'/',
 	init: function() {
     var that = this;
-
+    
+    
+    if(location.protocol !== 'file:') {
+      var base = document.createElement('base');
+      base.href = '/';
+      document.head.appendChild(base);
+    }
     //
     //Title
     //
