@@ -1,16 +1,5 @@
 'use strict';
 
-//~ function shakeit() {
-  //~ var elms = document.querySelectorAll('.thumbnail');
-  //~ for (var i = 0; i < elms.length; i++) {
-    //~ if(elms[i].classList.contains('edit'))
-      //~ elms[i].classList.remove('edit');
-    //~ else
-      //~ elms[i].classList.add('edit');
-    //~ 
-  //~ }
-//~ };
-
 var Widget = {
   //~ parser : new DOMParser(),
   //~ parse: function(aStr) {
@@ -24,10 +13,22 @@ var Plugsbee = {
 	contacts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService)
 };
+
+Plugsbee.connection.load('DIGEST-MD5');
+Plugsbee.connection.load('events');
+Plugsbee.connection.load('presence');
+Plugsbee.connection.load('dataforms');
+Plugsbee.connection.load('disco');
+Plugsbee.connection.load('pubsub');
+
+var password = localStorage.getItem('password');
+var login = localStorage.getItem('login');
+if(password && login)
+  Plugsbee.connection.connect(login, password);
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
+  Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.connection.user = Plugsbee.connection.jid.node;
-  Lightstring.presence(Plugsbee.connection, "0");
 	Plugsbee.getFolders();
 });
 Plugsbee.connection.on('connecting', function() {
@@ -114,24 +115,12 @@ Plugsbee.connection.on('disconnected', function() {
   //~ location.reload();
 });
 Plugsbee.connection.on('input', function(stanza) {
-  //~ console.log('in: \n'+stanza.XML);
-	//~ var elm = microjungle([
-		//~ ['pre', {class: "prettyprint in"}]
-	//~ ]);
-	//~ elm.textContent = formatXML(data);
-	//~ document.getElementById('console').querySelector('div').appendChild(elm);
-	//FIXME
-	//~ prettyPrint();
+  //~ console.log('in:');
+  //~ console.log(stanza.DOM);
 });
 Plugsbee.connection.on('output', function(stanza) {
-	//~ console.log('out: \n'+stanza.XML);
-  //~ var elm = microjungle([
-		//~ ['pre', {class: "prettyprint out"}]
-	//~ ]);
-	//~ elm.textContent = formatXML(data);
-	//~ document.getElementById('console').querySelector('div').appendChild(elm);
-	//FIXME
-	//~ prettyPrint();
+	//~ console.log('out:');
+	//~ console.log(stanza.DOM);
 });
 
 Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
@@ -320,9 +309,14 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess) {
 }
 Plugsbee.getFolderCreator = function(folder) {
 	var that = this;
-	Lightstring.discoInfo(this.connection, gConfiguration.PubSubService, folder.node, function(formated, stanza) {
-    var creator = formated.fields['pubsub#creator'].value;
-		if(creator !== Plugsbee.connection.jid.bare) {
+	Plugsbee.connection.disco.info(gConfiguration.PubSubService, folder.node, function(stanza) {
+    var creator = '';
+    stanza.fields.fields.forEach(function(field) {
+      if (field['var'] === 'pubsub#creator')
+        creator = field.values[0];
+    });
+
+		if (creator !== Plugsbee.connection.jid.bare) {
       delete Plugsbee.Folder[folder.jid];
       return;
     }
@@ -347,26 +341,12 @@ Plugsbee.getFolderCreator = function(folder) {
 
     //Makes the first element of the panel clickable
     panel.elm.firstChild.addEventListener('click', function() {
-        gUserInterface.openFilePicker();
-      });
+      gUserInterface.openFilePicker();
+    });
 
     folder.panel = panel;
     folder.thumbnail = thumbnail;
     
-      //~ widget.elm.addEventListener('delete', function() {
-      //~ this.parentNode.removeChild(this);
-      //~ that.deleteFolder(folder);
-    //~ });  
-  
-    // BUG iOS
-    folder.thumbnail.elm.addEventListener('touchstart', function() {});
-    folder.thumbnail.elm.addEventListener('click', function(e) {
-      gUserInterface.showFolder(folder);
-      if(window.location.protocol !== 'file:')
-        history.pushState(null, null, this.href);
-      e.preventDefault();
-    });
-
     Plugsbee.folders[folder.jid] = folder;
     that.getFiles(folder);
 
@@ -374,7 +354,8 @@ Plugsbee.getFolderCreator = function(folder) {
 };
 Plugsbee.getFolders = function() {
 	var that = this;
-	Lightstring.discoItems(this.connection, gConfiguration.PubSubService, function(items) {
+  Plugsbee.connection.disco.items(gConfiguration.PubSubService, function(stanza) {
+    var items = stanza.items
 		items.forEach(function(item) {
 			var folder = Object.create(Plugsbee.Folder);
 			folder.jid = item.jid+'/'+item.node;
@@ -402,7 +383,7 @@ Plugsbee.deleteFolder = function(folder) {
 Plugsbee.getFiles = function(folder) {
 	var that = this;
 	//Retrives nodes
-	Lightstring.pubsubItems(this.connection, folder.server, folder.node, function(items) {
+	Plugsbee.connection.pubsub.items(folder.server, folder.node, function(items) {
 		items.forEach(function(item) {
 
 			var file = Object.create(Plugsbee.File);
@@ -425,12 +406,6 @@ Plugsbee.getFiles = function(folder) {
       thumbnail.miniature = file.miniature;
       thumbnail.href = file.folder.name+'/'+file.name;
       thumbnail.elm.classList.add('file');
-      thumbnail.elm.addEventListener('click', function(evt) {
-        if(window.location.protocol !== 'file:')
-          history.pushState(null, null, this.href);
-        gUserInterface.showFile(file);
-        evt.preventDefault();
-      });
 			
 			file.thumbnail = thumbnail;
 			

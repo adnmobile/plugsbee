@@ -1,30 +1,47 @@
 'use strict';
 
 Plugsbee.connection.on('connected', function() {
-  //~ gUserInterface.showSection('deck');
-  gUserInterface.handlePath();
-	//~ gUserInterface.handlePath();
-	//~ gUserInterface.menu.hidden = false;
-	
-  
-  var accountMenu = document.getElementById('account-menu');
-  accountMenu.textContent = Plugsbee.connection.user;
-  accountMenu.style.visibility = 'visible';
+  gUserInterface.showSection('deck');
+  //~ gUserInterface.accountMenu.hidden = false;
 });
 
 var gUserInterface = {
   currentFolder: {},
   currentFile: {},
   themeFolder : 'themes/'+gConfiguration.theme+'/',
-	init: function() {
-    var that = this;
-    
-    
+	init: function(e) {
+    //
+    //Add to homescreen iOS
+    //
+    if(bowser.ipad || bowser.iphone) {
+      var style = document.createElement('style');
+      style.setAttribute('rel', 'stylesheet');
+      style.setAttribute('href', 'lib/add-to-homescreen/style/add2home.css');
+      document.head.appendChild(style);
+      var script = document.createElement('script');
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('href', 'lib/add-to-homescreen/src/add2home.js');
+      document.head.appendChild(script);
+    }
+
     //
     //Title
     //
     var title = document.getElementById('title');
-    this.title =  new Widget.Editabletext(title);
+    this.title = new Widget.Editabletext(title);
+
+    //
+    //Account menu
+    //
+    this.accountMenu = document.getElementById('account-menu');
+    this.accountMenu.textContent = Plugsbee.connection.jid.node;
+    this.accountMenu.style.visibility = 'visible';
+    this.accountMenu.addEventListener('click', function() {
+			localStorage.removeItem("login");
+			localStorage.removeItem("password");
+			Plugsbee.connection.disconnect();
+      window.location.reload();
+		});
 
     //
     //Dock
@@ -102,14 +119,6 @@ var gUserInterface = {
         that.openFilePicker();
       });
     }
-
-    //Account menu
-    document.getElementById('account-menu').addEventListener('click', function() {
-			localStorage.removeItem("login");
-			localStorage.removeItem("password");
-			Plugsbee.connection.disconnect();
-      window.location.reload();
-		});
     
     //Settings
 		//~ var settingsForm = document.getElementById("settings-form");
@@ -185,52 +194,61 @@ var gUserInterface = {
     Plugsbee.deleteFolder(folder);
   },
   showFolders: function() {
-    document.querySelector('header').style.maxWidth = "1024px";
     var navButton = document.getElementById('nav-button')
     if(navButton)
       navButton.style.visibility = 'hidden';
     var uploadButton = document.getElementById('upload-button')
     if(uploadButton)
       uploadButton.style.visibility = 'hidden';
-      
-    var title = this.title;
-    title.value = 'Plugsbee';
-    title.elm.onclick = null;
+    
+    this.title.value = 'Plugsbee';
+    this.title.elm.onclick = null;
 
     this.showSection('deck');
 		this.showPanel('folders');
   },
   showFolder: function(aFolder) {
-    document.querySelector('header').style.maxWidth = "1024px";
     this.showSection('folders');
     
     var navButton = document.getElementById('nav-button')
     navButton.style.visibility = 'visible';
     navButton.textContent = 'Folders';
-    navButton.href = '/';
-    navButton.onclick = function(e) {
-      if(window.location.protocol !== 'file:')
+    if(location.protocol !== 'file:') {
+      navButton.href = '/';
+      navButton.onclick = function(e) {
         history.pushState(null, null, this.href);
-      gUserInterface.showFolders();
-      e.preventDefault();
-    };
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+        e.preventDefault();
+      };
+    }
+    else {
+      navButton.href = '';
+      navButton.onclick = function(e) {
+        history.pushState(null, null, this.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+        e.preventDefault();
+      };
+    }
     
     var uploadButton = document.getElementById('upload-button')
     if(uploadButton)
       uploadButton.style.visibility = 'visible';
     gUserInterface.showPanel(aFolder.panel);
     
-    var title = this.title;
-    title.value = aFolder.name;
+    this.title.value = aFolder.name;
     
-    title.elm.onclick = function(evt) {
-      if(title.edit !== true)
-        title.edit = true;
+    this.title.elm.onclick = function(evt) {
+      if(this.title.edit !== true)
+        this.title.edit = true;
     };
-    title.form.onsubmit = function(evt) {
-      var value = title.value;
-      title.edit = false;
-      title.value = value;
+    this.title.form.onsubmit = function(evt) {
+      var value = this.title.value;
+      this.title.edit = false;
+      this.title.value = value;
       //~ aFolder.name = value;
       Plugsbee.renameFolder(aFolder, value);
       evt.preventDefault();
@@ -260,20 +278,17 @@ var gUserInterface = {
     var preview = document.getElementById('preview');
     var download = document.getElementById('download');
     download.href = aFile.src;
-
-    document.querySelector('header').style.width = "100%";
     
-    var title = this.title;
-    title.value = aFile.name;
-    //~ 
-    title.elm.onclick = function(evt) {
-      if(title.edit !== true)
-        title.edit = true;
+    this.title.value = aFile.name;
+
+    this.title.elm.onclick = function(evt) {
+      if(this.title.edit !== true)
+        this.title.edit = true;
     };
-    title.form.onsubmit = function(evt) {
+    this.title.form.onsubmit = function(evt) {
       var value = title.value;
-      title.edit = false;
-      title.value = value;
+      this.title.edit = false;
+      this.title.value = value;
       aFile.name = value;
       Plugsbee.renameFile(aFile);
       evt.preventDefault();
@@ -285,13 +300,28 @@ var gUserInterface = {
     var navButton = document.getElementById('nav-button');
     navButton.style.visibility = 'visible';
     navButton.textContent = aFile.folder.name;
-    navButton.href = '/'+aFile.folder.name;
-    navButton.onclick = function(evt) {
-      if(window.location.protocol !== 'file:')
+    
+    if(location.protocol !== 'file:') {
+      navButton.href = '/'+aFile.folder.name;
+      navButton.onclick = function(e) {
         history.pushState(null, null, this.href);
-      gUserInterface.showFolder(aFile.folder);
-      evt.preventDefault();
-    };
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+        e.preventDefault();
+      };
+    }
+    else {
+      navButton.href = '#'+aFile.folder.name;
+      navButton.onclick = function(e) {
+        history.pushState(null, null, this.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+        e.preventDefault();
+      };
+    }
+    
     
     //~ if(!bowser.iphone || !bowser.ipad) {
       var uploadButton = document.getElementById('upload-button');
@@ -303,45 +333,20 @@ var gUserInterface = {
     preview.innerHTML = elm;
   },
 	handlePath: function() {
-		var path = document.location.pathname.split('/');
-		switch(path[1]) {
-			case 'settings':
-				this.showPanel("settings");
-				this.setActive('li#settings-tab');
-				break;
-			case 'help':
-				this.showPanel("help");
-				this.setActive('li#help-tab');
-				break;
-			case 'addcontact':
-				this.showPanel("addcontact");
-				this.setActive('a#addcontact-tab');
-				break;
-			case 'console':
-				this.showPanel('console');
-				this.setActive('li#console-tab');
-				break;
-			case 'upgrade':
-				this.showSection('upgrade');
-				break;
-			//~ case '':
-				//~ this.showFolders();
-				//~ break;
-			default:
-        //~ this.showFolders();
-        var folder = this.getFolderFromName(unescape(path[1]));
-        
-        if(!folder) {
-          this.showFolders();
-          return;
-        }
 
-        this.showFolder(folder);
-				if(path[2]) {
-          var file = this.getFileFromName(folder, unescape(path[2]));
-          this.showFile(file);
-				}
-		}
+    //~ alert(node instanceof Array);
+    //~ alert(node);
+    //~ var location = location;
+    //~ alert);
+    //~ if(loecation.protocol === 'file:')
+      //~ var path = document.location.pathname.split('#');
+    //~ a
+		//~ var path = 
+    //~ if(!path)
+      //~ path = '';
+    //~ alert(path);
+    //~ alert(path.length);
+		//~ Router.route(path);
 	},
 	showPanel: function(aPanel) {
     var deck = document.getElementById('deck');
@@ -376,33 +381,13 @@ var gUserInterface = {
       case 'video/ogg':
       case 'video/mp4':
         var previewElm = '<video src="'+aFile.src+'" autoplay controls/>';
-        //Chrome canno't autoplay if injected
-        //~ previewElm.addEventListener('canplay', function() { this.play(); } );
         break;
       case 'audio/webm':
       case 'audio/ogg':
       case 'audio/wave':
       case 'audio/mpeg':
         var previewElm = '<audio src="'+aFile.src+'" autoplay controls/>';
-        //~ var titi = Widget.parse(previewElm);
-        //~ console.log(titi);
-        //~ console.log(titi.firstChild);
-        //Chrome canno't autoplay if injected
-        //~ previewElm.addEventListener('canplay', function() { this.play(); } );
         break;
-      //~ case 'text/plain':
-      //~ case 'text/xml':
-      //~ case 'text/html':
-      //~ case 'application/xml':
-        //~ var previewElm = microjungle([
-          //~ ['iframe', {src: aFile.src, id: 'preview'}]
-        //~ ]);
-        //~ break;
-      //~ case 'application/pdf':
-        //~ var previewElm = microjungle([
-          //~ ['iframe', {src: 'http://docs.google.com/viewer?url='+aFile.src+'&embedded=true', id: 'preview'}]
-        //~ ]);
-        //~ break;
       default:
         var previewElm = '<span>'+'No preview available yet.'+'</span>';
     }
@@ -422,44 +407,6 @@ var gUserInterface = {
 	//~ }
 };
 
-window.addEventListener("load",
-	function() {
-		var password = localStorage.getItem('password');
-		var login = localStorage.getItem('login');
-		if(password && login)
-			Plugsbee.connection.connect(login, password);
-		gUserInterface.init();
-	}, false
-);
-
-var toto = 0;
-window.addEventListener("popstate",
-	function(e) {
-    // Webkit emit a popstate event on load
-    if(toto === 0) {
-      toto = 1;
-      return;
-      e.preventDefault();
-    }
-    gUserInterface.handlePath();
-    
-	}, false
-);
-
-
-
-if(location.protocol !== 'file:') {
-  var base = document.createElement('base');
-  base.href = '/';
-  document.head.appendChild(base);
-}
-if(bowser.ipad || bowser.iphone) {
-  var style = document.createElement('style');
-  style.setAttribute('rel', 'stylesheet');
-  style.setAttribute('href', 'lib/add-to-homescreen/style/add2home.css');
-  document.head.appendChild(style);
-  var script = document.createElement('script');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('href', 'lib/add-to-homescreen/src/add2home.js');
-  document.head.appendChild(script);
-}
+window.addEventListener("load", function() {
+  gUserInterface.init();
+});

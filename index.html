@@ -3,23 +3,44 @@
   <head>
     <title>Plugsbee</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+    <!-- iOS - !standard -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--
+    <link rel="apple-touch-startup-image" href="/startup.png">
+    1004*768 for ipad and 320 x 460 for ipod portrait for both
+    -->
 
-    <link rel="apple-touch-icon" href="icon.png" />
-    <link rel="shortcut icon" href="themes/default/favicon.ico">
-    
-    <!-- Browser detector :-/ -->
+
+    <!-- base href -->
+    <base href="/"/>
+    <script type="text/javascript">
+      if(location.protocol === 'file:') {
+        var head = document.head;
+        var base = head.querySelector('base');
+        head.removeChild(base);
+      }
+    </script>
+
+    <!-- icons -->
+    <link rel="icon" type="image/png" sizes="16x16" href="themes/default/icons/16x16.png"/>
+    <!-- iOS - !standard -->
+    <link rel="apple-touch-icon" href="themes/default/icons/57x57.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="themes/default/icons/72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="themes/default/icons/114x114.png"/>
+
+    <!-- browser detection -->
     <script type="text/javascript" src="lib/bowser/bowser.min.js"></script>
     
-    <!-- Theme -->
-      <!-- Default -->
-        <link rel="stylesheet" href="themes/default/style.css" type="text/css">
-
+    <!-- theme -->
+    <link rel="stylesheet" href="themes/default/style.css" type="text/css">
+   
+    <!-- configuration -->
     <script type="text/javascript" src="configuration.js"></script>
 
+    <!-- lightstring -->
     <script type="text/javascript" src="lib/lightstring/lightstring.js"></script>
     <script type="text/javascript" src="lib/lightstring/jid.js"></script>
     <script type="text/javascript" src="lib/lightstring/stanza.js"></script>
@@ -29,22 +50,22 @@
     <script type="text/javascript" src="lib/lightstring/plugins/presence.js"></script>
     <script type="text/javascript" src="lib/lightstring/plugins/pubsub.js"></script>
     <script type="text/javascript" src="lib/lightstring/plugins/roster.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/dataforms.js"></script>
+    <script type="text/javascript" src="lib/lightstring/plugins/DIGEST-MD5.js"></script>
     <script type="text/javascript" src="lib/lightstring/plugins/vcard.js"></script>
 
-
+    <!-- content -->
     <script type="text/javascript" src="plugsbee.js"></script>
     <script type="text/javascript" src="userinterface.js"></script>
+    <script type="text/javascript" src="router.js"></script>
     
-    <!-- Widgets -->
-      <!-- Thumbnail -->
-        <script type="text/javascript" src="widgets/thumbnail/thumbnail.js"></script>
-        <link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css">
-      <!-- Panel -->
-        <script type="text/javascript" src="widgets/panel/panel.js"></script>
-        <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
-      <!-- Editabletext -->
-        <script type="text/javascript" src="widgets/editabletext/editabletext.js"></script>
-        <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css">
+    <!-- widgets -->
+    <script type="text/javascript" src="widgets/thumbnail/thumbnail.js"></script>
+    <link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css">
+    <script type="text/javascript" src="widgets/panel/panel.js"></script>
+    <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css">
+    <script type="text/javascript" src="widgets/editabletext/editabletext.js"></script>
+    <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css">
   </head>
   <body>
     <header>

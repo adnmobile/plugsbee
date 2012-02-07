@@ -19,7 +19,17 @@ Widget.Thumbnail = function() {
       "<input type='text' autofocus='autofocus'/>"+
     "</form>";
   this.form = elm.firstChild;
-      
+
+  this.elm.addEventListener('click', function(e) {
+    if(location.protocol !== 'file:') {
+      history.pushState(null, null, this.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
+      e.preventDefault();
+    }
+  }, true);
+
   this.elm.addEventListener('dragstart', function(evt) {
     var img = this.querySelector('img');
     evt.dataTransfer.setDragImage(img, -10, -10);
@@ -56,8 +66,11 @@ Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
 //
 Widget.Thumbnail.prototype.__defineSetter__('href', function(aHref) {
 	this._href = aHref;
-  this.elm.setAttribute('href', aHref);
-	 //~ gUserInterface.modifyAElement(this.elm.querySelector('a.link'));
+  var href = aHref;
+  if(location.protocol === 'file:')
+    href = '#'+aHref
+
+  this.elm.setAttribute('href', href);
 });
 Widget.Thumbnail.prototype.__defineGetter__('href', function() {
 	return this._href;

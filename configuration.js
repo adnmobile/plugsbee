@@ -5,6 +5,6 @@ var gConfiguration = {
   WebsocketService: 'ws://ws.plugsbee.com'
 };
 //Safari implements and old non-compatible WebSocket version
-if(bowser.safari || bowser.ipad || bowser.iphone) {
+if(bowser.safari || bowser.ipad || bowser.iphone || bowser.opera) {
   gConfiguration.WebsocketService = "ws://plugsbee.com:5281";
 }
