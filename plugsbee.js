@@ -25,6 +25,7 @@ var password = localStorage.getItem('password');
 var login = localStorage.getItem('login');
 if(password && login)
   Plugsbee.connection.connect(login, password);
+
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
   Plugsbee.connection.presence.send({priority: '0'});
@@ -37,75 +38,7 @@ Plugsbee.connection.on('connecting', function() {
 Plugsbee.connection.on('disconnecting', function() {
   console.log('disconnecting');
 });
-Plugsbee.connection.on('message', function(data) {
 
-  if(data.firstChild.tagName !== 'event')
-    return;
-  
-  //Folder deletion  
-  if(data.firstChild.firstChild.tagName === 'delete')
-    return;
-
-  //Items retract
-  if((data.firstChild.firstChild.tagName === 'items') && (data.firstChild.firstChild.firstChild.tagName === 'retract'))
-    return;
-    
-  
-  var service = data.getAttribute('from');
-  var nodeid = data.querySelector('items').getAttribute('node');
-  var folderjid = service+"/"+nodeid;
-  
-  var elm = data.querySelector('item');
-  var itemid = elm.getAttribute('id');
-  var filejid = folderjid+"/"+itemid;
-  
-  var folder = Plugsbee.folders[folderjid]
-  
-  //Return if the folder doesn't exist or if the file already exist
-  if(!folder || folder.files[filejid])
-    return;
-  
-  var item = {
-    id: itemid,
-    name: elm.querySelector('title').textContent,
-    src: elm.querySelector('content').getAttribute('src'),
-    type: elm.querySelector('content').getAttribute('type'),
-  }
-  var miniature = elm.querySelector('link');
-  if(miniature)
-    item.miniature = miniature.getAttribute('href');
-
-  var file = Object.create(Plugsbee.File);
-  file.jid = folder.jid+'/'+item.id
-  file.name = item.name;
-  file.type = item.type;
-  file.src = item.src;
-  if(!item.miniature)
-    file.miniature = "themes/"+gConfiguration.theme+'/file.png';
-  else
-    file.miniature = item.miniature;
-  file.id = item.id;
-  file.folder = folder;
-
-
-  var thumbnail = new Widget.Thumbnail();
-  thumbnail.elm = folder.panel.append(thumbnail.elm);
-  thumbnail.id = file.jid;
-  thumbnail.label = file.name;
-  thumbnail.miniature = file.miniature;
-  thumbnail.href = file.folder.name+'/'+file.name;
-  thumbnail.elm.classList.add('file');
-  thumbnail.elm.addEventListener('click', function(evt) {
-    if(window.location.protocol !== 'file:')
-      history.pushState(null, null, this.href);
-    gUserInterface.showFile(file);
-    evt.preventDefault();
-  });
-  
-  file.thumbnail = thumbnail;
-  
-  folder.files[file.jid] = file;
-});
 Plugsbee.connection.on('disconnected', function() {
   console.log('disconnected');
   //~ delete Plugsbee.folders;
@@ -116,11 +49,11 @@ Plugsbee.connection.on('disconnected', function() {
 });
 Plugsbee.connection.on('input', function(stanza) {
   //~ console.log('in:');
-  //~ console.log(stanza.DOM);
+  //~ console.log(stanza.XML);
 });
 Plugsbee.connection.on('output', function(stanza) {
 	//~ console.log('out:');
-	//~ console.log(stanza.DOM);
+	//~ console.log(stanza.XML);
 });
 
 Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
@@ -219,16 +152,7 @@ Plugsbee.addFile = function(aFile, onSuccess) {
 		var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>"+aFile.name+"</title><content src='"+aFile.src+"' type='"+aFile.type+"'/></entry>";
 	var that = this;
 	
-	Lightstring.pubsubPublish(this.connection, aFile.folder.server, aFile.folder.node, entry, aFile.id, function(err, answer) {
-		if(err)
-			return;
-    
-    
-		//~ aFile.widget.elm.addEventListener('delete', function() {
-			//~ aFile.widget.elm.parentNode.removeChild(aFile.widget.elm);
-			//~ that.deleteFile(aFile);
-		//~ });
-	});
+	Plugsbee.connection.pubsub.publish(aFile.folder.server, aFile.folder.node, entry, aFile.id);
 };
 Plugsbee.renameFolder = function(aFolder, aNewName) {
   aFolder.name = aNewName;
@@ -250,11 +174,7 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess) {
 	fields.push("<field var='pubsub#access_model'><value>"+aAccessmodel+"</value></field>");
 	
 	var that = this;
-	Lightstring.pubsubCreate(this.connection, gConfiguration.PubSubService, id, fields, function(err) {
-		if(err) {
-			console.log('ERROR');
-			return;
-		}
+  Plugsbee.connection.pubsub.create(gConfiguration.PubSubService, id, fields, function() {
     
     var folder = Object.create(Plugsbee.Folder);
     folder.jid = gConfiguration.PubSubService+'/'+id;
@@ -371,14 +291,14 @@ Plugsbee.deleteFile = function(file) {
   for(var i = 0; i < elms.length; i++) {
     elms[i].parentNode.removeChild(elms[i]);
   }
-	Lightstring.pubsubRetract(this.connection, file.folder.server, file.folder.node, file.id);
+  Plugsbee.connection.pubsub.retract(file.folder.server, file.folder.node, file.id);
 };
 Plugsbee.deleteFolder = function(folder) {
   var elms = document.querySelectorAll('[data-jid="'+folder.jid+'"]');
   for(var i = 0; i < elms.length; i++) {
     elms[i].parentNode.removeChild(elms[i]);
   }
-	Lightstring.pubsubDelete(this.connection, folder.server, folder.node);
+	Plugsbee.connection.pubsub['delete'](folder.server, folder.node);
 };
 Plugsbee.getFiles = function(folder) {
 	var that = this;

@@ -14,16 +14,9 @@ var gUserInterface = {
     //
     //Add to homescreen iOS
     //
-    if (platform.os.match('iOS')) {
-      var style = document.createElement('style');
-      style.setAttribute('rel', 'stylesheet');
-      style.setAttribute('href', 'lib/add-to-homescreen/style/add2home.css');
-      document.head.appendChild(style);
-      var script = document.createElement('script');
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('href', 'lib/add-to-homescreen/src/add2home.js');
-      document.head.appendChild(script);
-    }
+    //~ if (platform.os.match('iOS')) {
+
+    //~ }
 
     //
     //Title
@@ -116,7 +109,7 @@ var gUserInterface = {
       });
       
       uploadButton.addEventListener('click', function() {
-        that.openFilePicker();
+        gUserInterface.openFilePicker();
       });
     }
     
@@ -323,31 +316,15 @@ var gUserInterface = {
     }
     
     
-    //~ if(!bowser.iphone || !bowser.ipad) {
+    if(!platform.os.match('iOS')) {
       var uploadButton = document.getElementById('upload-button');
       if(uploadButton)
         uploadButton.style.visibility = 'hidden';
-    //~ }
+    }
 
     var elm = this.previewBuilder(aFile);
     preview.innerHTML = elm;
   },
-	handlePath: function() {
-
-    //~ alert(node instanceof Array);
-    //~ alert(node);
-    //~ var location = location;
-    //~ alert);
-    //~ if(loecation.protocol === 'file:')
-      //~ var path = document.location.pathname.split('#');
-    //~ a
-		//~ var path = 
-    //~ if(!path)
-      //~ path = '';
-    //~ alert(path);
-    //~ alert(path.length);
-		//~ Router.route(path);
-	},
 	showPanel: function(aPanel) {
     var deck = document.getElementById('deck');
     deck.hidden = false;
@@ -380,31 +357,19 @@ var gUserInterface = {
       case 'video/webm':
       case 'video/ogg':
       case 'video/mp4':
-        var previewElm = '<video src="'+aFile.src+'" autoplay controls/>';
+        var previewElm = '<video src="'+aFile.src+'" autoplay="autoplay" controls="controls"/>';
         break;
       case 'audio/webm':
       case 'audio/ogg':
       case 'audio/wave':
       case 'audio/mpeg':
-        var previewElm = '<audio src="'+aFile.src+'" autoplay controls/>';
+        var previewElm = '<audio src="'+aFile.src+'" autoplay="autoplay" controls="controls"/>';
         break;
       default:
         var previewElm = '<span>'+'No preview available yet.'+'</span>';
     }
     return previewElm;
   }
-	//~ removeFile : function(aFile) {
-		//~ var fileElm = document.getElementById(aFile.jid);
-		//~ fileElm.parentNode.removeChild(fileElm);
-		//~ var folderElm = document.getElementById(aFile.folder.jid)
-		//~ folderElm.querySelector('span.size').textContent = ' ('+aFile.folder.count+') ';
-		//~ aFile.remove();
-	//~ },
-	//~ removeFolder : function(aFolder) {
-		//~ var folderElm = document.getElementById(aFolder.jid);
-		//~ folderElm.parentNode.removeChild(folderElm);
-		//~ aFolder.delete();
-	//~ }
 };
 
 window.addEventListener("load", function() {

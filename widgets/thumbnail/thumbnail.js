@@ -91,13 +91,12 @@ Widget.Thumbnail.prototype.__defineGetter__('label', function() {
 Widget.Thumbnail.prototype.__defineSetter__('edit', function(aBool) {
 	this._edit = aBool;
   var that = this;
-  var figcaption = that.elm.querySelector("figcaption");
+  var figcaption = this.elm.getElementsByTagName('figcaption')[0];
   if(aBool === true) {
     figcaption.textContent = '';
     figcaption.appendChild(that.form);
   }
   if(aBool === false) {
-    figcaption.removeChild(figcaption.firstChild);
     figcaption.textContent = this.label;
   }
 });
