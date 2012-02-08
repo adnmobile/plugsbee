@@ -11,17 +11,12 @@ var gUserInterface = {
   currentFile: {},
   themeFolder : 'themes/'+gConfiguration.theme+'/',
 	init: function(e) {
-    //
-    //Add to homescreen iOS
-    //
-    //~ if (platform.os.match('iOS')) {
-
-    //~ }
-
+    
     //
     //Title
     //
     var title = document.getElementById('title');
+    title.textContent = gConfiguration.name;
     this.title = new Widget.Editabletext(title);
 
     //
@@ -194,7 +189,7 @@ var gUserInterface = {
     if(uploadButton)
       uploadButton.style.visibility = 'hidden';
     
-    this.title.value = 'Plugsbee';
+    this.title.value = gConfiguration.name;
     this.title.elm.onclick = null;
 
     this.showSection('deck');
