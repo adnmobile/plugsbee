@@ -2,7 +2,8 @@
 
 Plugsbee.connection.on('connected', function() {
   gUserInterface.showSection('deck');
-  //~ gUserInterface.accountMenu.hidden = false;
+  gUserInterface.accountMenu.textContent = Plugsbee.connection.jid.node;
+  gUserInterface.accountMenu.style.visibility = 'visible';
 });
 
 var gUserInterface = {
@@ -13,7 +14,7 @@ var gUserInterface = {
     //
     //Add to homescreen iOS
     //
-    if(bowser.ipad || bowser.iphone) {
+    if (platform.os.match('iOS')) {
       var style = document.createElement('style');
       style.setAttribute('rel', 'stylesheet');
       style.setAttribute('href', 'lib/add-to-homescreen/style/add2home.css');
@@ -34,8 +35,7 @@ var gUserInterface = {
     //Account menu
     //
     this.accountMenu = document.getElementById('account-menu');
-    this.accountMenu.textContent = Plugsbee.connection.jid.node;
-    this.accountMenu.style.visibility = 'visible';
+
     this.accountMenu.addEventListener('click', function() {
 			localStorage.removeItem("login");
 			localStorage.removeItem("password");
@@ -102,7 +102,7 @@ var gUserInterface = {
     var filePicker = document.getElementById('file-picker');
     var uploadButton = document.getElementById('upload-button');
     //Disable it on Safari mobile since uploading file isn't possible
-    if(bowser.ipad || bowser.iphone) {
+    if (platform.os.match('iOS')) {
       filePicker.parentNode.removeChild(filePicker);
       uploadButton.parentNode.removeChild(uploadButton);
     }

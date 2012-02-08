@@ -19,7 +19,7 @@ Widget.Panel = function() {
   this.elm = div;
 
   // No file upload on Safari mobile.
-  if(bowser.ipad || bowser.iphone)
+  if (platform.os.match('iOS'))
     this.elm.querySelector('.upload').hidden = true;
 };
 Widget.Panel.prototype.__defineSetter__('jid', function(aId) {
