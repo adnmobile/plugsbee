@@ -243,7 +243,7 @@ Plugsbee.getFolderCreator = function(folder) {
     thumbnail.jid = folder.jid;
     thumbnail.label = folder.name;
     thumbnail.href = folder.name;
-    thumbnail.miniature = gUserInterface.themeFolder+'/'+'file.png';
+    thumbnail.miniature = gUserInterface.themeFolder+'folder.png';
     thumbnail.elm.classList.add('folder');
 
     //Panel widget
@@ -305,7 +305,7 @@ Plugsbee.getFiles = function(folder) {
 			file.type = item.type;
 			file.src = item.src;
 			if(!item.miniature)
-        file.miniature = "themes/"+gConfiguration.theme+'/file.png';
+        file.miniature = "themes/"+gConfiguration.theme+'file.png';
       else
         file.miniature = item.miniature;
 			file.id = item.id;

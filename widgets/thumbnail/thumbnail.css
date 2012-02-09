@@ -11,7 +11,6 @@
 	max-width: 125px;
 	max-height: 125px;
   display: block;
-  box-shadow: 0 0 0.5em black;
 }
 .thumbnail .miniature {
   width: 100%;

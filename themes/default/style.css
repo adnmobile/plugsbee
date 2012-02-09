@@ -117,7 +117,7 @@ section {
   max-height: 100%;
 }
 #preview video {
-  min-height: 100%;
+  height: 80%;
 }
 /*
  * Uploader
@@ -174,14 +174,15 @@ section {
 /*
  * Folders
  */
-.thumbnail.folder {
-
+.thumbnail.folder .miniature img {
+  width: 85px;
 }
 
 /*
  * Files
  */
-.thumbnail.file {
+.thumbnail.file .miniature img {
+  box-shadow: 0 0 0.5em black;
 }
 
 /*
