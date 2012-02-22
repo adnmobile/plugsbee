@@ -44,4 +44,8 @@
   if((platform.name === 'Safari') || (platform.name === 'Opera')) {
     gConfiguration.WebsocketService = "ws://plugsbee.com:5281";
   }
+  
+  //~ window.addEventListener('error', function(aMessage, aURL, aLineNumber) {
+    //~ console.log(aMessage + ':' + aURL + ':' + aLineNumber);
+  //~ });
 })();

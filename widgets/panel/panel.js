@@ -7,9 +7,8 @@ Widget.Panel = function() {
   thumbnail.removeAttribute('draggable');
   thumbnail.querySelector('.miniature').innerHTML =  
     "<div class='area'>"+
-      "<div class='text'>Drop files here to upload</div>"+
     "</div>";
-  thumbnail.querySelector('.label').textContent = "Upload files";
+  thumbnail.querySelector('.label').textContent = "Upload";
   var div = document.createElement('div');
   div.classList.add('panel');
   div.hidden = true;
@@ -22,6 +21,8 @@ Widget.Panel = function() {
   if (platform.os.match('iOS'))
     this.elm.querySelector('.upload').hidden = true;
 };
+
+//Properties
 Widget.Panel.prototype.__defineSetter__('jid', function(aId) {
 	this._jid = aId;
 	this.elm.setAttribute('data-jd', aId);
@@ -36,6 +37,8 @@ Widget.Panel.prototype.__defineSetter__('hidden', function(aBool) {
 Widget.Panel.prototype.__defineGetter__('hidden', function() {
 	return this._hidden;
 });
+
+//Methods
 Widget.Panel.prototype.append = function (aElm) {
   return this.elm.insertBefore(aElm,this.elm.firstChild);
 }

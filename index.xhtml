@@ -6,16 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
     <base href="/"/>
+    <!-- Support for file:// -->
     <script type="application/javascript">
-    // Support for file://
-    //<![CDATA[
-      if(location.protocol === 'file:') {
-        var head = document.head;
-        var base = head.getElementsByTagName('base')[0];
-        head.removeChild(base);
-      }
-    //]]>
+      //<![CDATA[
+        if(location.protocol === 'file:') {
+          var head = document.head;
+          var base = head.getElementsByTagName('base')[0];
+          head.removeChild(base);
+        }
+      //]]>
     </script>
+    
+    <!-- Firebug -->
+    <!--
+    <script type="application/javascript" src="https://getfirebug.com/firebug-lite.js">
+      { startOpened: true }
+    </script>
+    -->
     
     <!-- configuration -->
     <script type="application/javascript" src="configuration.js"/>
@@ -29,6 +36,13 @@
     <!-- init -->
     <script type="application/javascript" src="init.js"/>
 
+    <!-- XML prettify -->
+    <script type="application/javascript" src="lib/vkbeautify.0.93.beta.js"/>
+    <!--
+    <link rel="stylesheet" href="lib/google-code-prettify/prettify.css" type="text/css"/>
+    <script type="application/javascript" src="lib/google-code-prettify/prettify.js"/>
+    -->
+
     <!-- XMPP / WebSocket -->
     <script type="application/javascript" src="lib/lightstring/lightstring.js"/>
     <script type="application/javascript" src="lib/lightstring/polyfill.js"/>
@@ -41,12 +55,15 @@
     <script type="application/javascript" src="lib/lightstring/plugins/dataforms.js"/>
     <script type="application/javascript" src="lib/lightstring/plugins/DIGEST-MD5.js"/>
 
-    <!-- application -->
+    <!-- Modules -->
+<!--
+    <script type="application/javascript" src="modules/http.js"/>
+    <script type="application/javascript" src="modules/storage.js"/>
+    <script type="application/javascript" src="modules/base64.js"/>
+-->
+
     <script type="application/javascript" src="widgets.js"/>
-    <script type="application/javascript" src="plugsbee.js"/>
-    <script type="application/javascript" src="userinterface.js"/>
-    <script type="application/javascript" src="router.js"/>
-    
+
     <!-- widgets -->
     <script type="application/javascript" src="widgets/thumbnail/thumbnail.js"/>
     <link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css"/>
@@ -54,9 +71,12 @@
     <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css"/>
     <script type="application/javascript" src="widgets/editabletext/editabletext.js"/>
     <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css"/>
-    
-    
-    <link rel="widget" href="test.xml" type="application/xhtml+im"/>
+
+    <!-- application -->
+    <script type="application/javascript" src="plugsbee.js"/>
+    <script type="application/javascript" src="datas.js"/>
+    <script type="application/javascript" src="userinterface.js"/>
+    <script type="application/javascript" src="router.js"/>
 
   </head>
   <body>
@@ -68,8 +88,8 @@
         <span id="title">Plugsbee</span>
       </div>
       <div class="right">
-        <button id="upload-button">Upload files</button>
-        <button id="account-menu"></button>
+        <button id="upload-button">Upload</button>
+        <button id="account-menu">Log out</button>
       </div>
     </header>
     <section id="welcome">
@@ -103,27 +123,18 @@
         <input type="submit" value="Register"/>
       </form>
     </section>
-    <section id="deck" hidden="true">
-      <div id="folders" class="panel">
-        <a id="folder-adder" class="thumbnail upload"><figure>
-            <div class="miniature">
-              <div class="area">
-              </div>
-            </div>
-            <figcaption class="label">New folder</figcaption> 
-          </figure>
-        </a>
-      </div>
+    <section id="deck" hidden="hidden">
+      <ul id="folders" class="panel"/>
+      <!-- Trash folder panel -->
+      <ul class="panel trash" hidden="true"/>
     </section>
     <section id="viewer" hidden="true">
       <div id="preview"></div>
       <a id="download">Download</a>
+      <button id="get-link">Get link</button>
     </section>
     <input id="file-picker" type="file"/>
-    <ul id="dock" hidden="hidden">
-      <li id="trash">
-        Trash
-      </li>
-    </ul>
+    <div id="dock" hidden="hidden"/>
+    <div id="xmpp-console" hidden="hidden"/>
   </body>
 </html>

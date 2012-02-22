@@ -3,14 +3,16 @@
 Widget.Thumbnail = function() {
   var elm = document.createElement('div');
   elm.innerHTML = 
-    "<a class='thumbnail' draggable='true'>"+
-      "<figure>"+
-        "<div class='miniature'>"+
-          "<img/>"+
-        "</div>"+
-        "<figcaption class='label'/>"+
-      "</figure>"+
-    "</a>";
+    "<li class='thumbnail'>"+
+      "<a>"+
+        "<figure>"+
+          "<div class='miniature'>"+
+            "<img crossorigin='Anonymous'/>"+
+          "</div>"+
+          "<figcaption class='label'/>"+
+        "</figure>"+
+      "</a>"+
+    "</li>";
   this.elm = elm.firstChild;
   
   elm = document.createElement('div');
@@ -22,24 +24,52 @@ Widget.Thumbnail = function() {
 
   this.elm.addEventListener('click', function(e) {
     if(location.protocol !== 'file:') {
-      history.pushState(null, null, this.href);
+      history.pushState(null, null, this.firstChild.href);
       var event = document.createEvent('Event');
       event.initEvent('popstate', true, true);
       window.dispatchEvent(event);
       e.preventDefault();
     }
   }, true);
-
-  this.elm.addEventListener('dragstart', function(evt) {
-    var img = this.querySelector('img');
+  
+  
+  this.dragStart = function(evt) {
+    //Set the drag image
+    var img = this;
     evt.dataTransfer.setDragImage(img, -10, -10);
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('Text', this.getAttribute('data-jid'));
+    //Show the dock
     document.getElementById('dock').hidden = false;
-  });
-  this.elm.addEventListener('dragend', function(evt) {
+  };
+  this.dragEnd = function(evt) {
+    //Hide the dock
     document.getElementById('dock').hidden = true;
-  });
+  };
+
+  this.dragEnter = function(evt) {
+    this.classList.add('dragenter');
+  };
+  this.dragOver = function(evt) {
+    this.classList.add('dragenter');
+    evt.preventDefault();
+  };
+  this.dragLeave = function(evt) {
+    this.classList.remove('dragenter');
+  };
+  this.drop = function(evt) {
+    this.classList.remove('dragenter');
+    var jid = evt.dataTransfer.getData('Text');
+    var folder = Plugsbee.folders[this.getAttribute('data-jid', jid)];
+    var file = Plugsbee.files[jid];
+    
+    //Hide the dock
+    document.getElementById('dock').hidden = true;
+    
+    Plugsbee.moveFile(file, folder);
+
+    evt.preventDefault();
+  };
 };
 //
 //jid property
@@ -52,14 +82,51 @@ Widget.Thumbnail.prototype.__defineGetter__('jid', function() {
 	return this._jid;
 });
 //
+//draggable property
+//
+Widget.Thumbnail.prototype.__defineSetter__('draggable', function(aBool) {
+	this._draggable = aBool;
+  if (aBool === false) {
+    this.elm.removeAttribute('draggable');
+    this.elm.removeEventListener('dragstart', this.dragStart);
+    this.elm.removeEventListener('dragend', this.dragEnd);
+  }
+  else if (aBool === true) {
+    this.elm.setAttribute('draggable', 'draggable');
+    this.elm.addEventListener('dragstart', this.dragStart);
+    this.elm.addEventListener('dragend', this.dragEnd);
+  }
+});
+//
+//dropbox property
+//
+Widget.Thumbnail.prototype.__defineSetter__('dropbox', function(aBool) {
+	this._draggable = aBool;
+  if (aBool === false) {
+    this.elm.classList.remove('dragenter');
+    this.elm.removeEventListener('dragenter', this.dragEnter);
+    this.elm.removeEventListener('dragover', this.dragOver);
+    this.elm.removeEventListener('dragleave', this.dragLeave);
+    this.elm.removeEventListener('drop', this.drop);
+  }
+  else if (aBool === true) {
+    this.elm.addEventListener('dragenter', this.dragEnter);
+    this.elm.addEventListener('dragover', this.dragOver);
+    this.elm.addEventListener('dragleave', this.dragLeave);
+    this.elm.addEventListener('drop', this.drop);
+  }
+});
+Widget.Thumbnail.prototype.__defineGetter__('dropbox', function() {
+	return this._dropbox;
+});
+//
 //miniature property
 //
 Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aSrc) {
-	this._miniature = aSrc;
-	this.elm.querySelector('img').setAttribute('src', aSrc);
+	this.elm.getElementsByTagName('img')[0].src = aSrc;
 });
 Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
-	return this._miniature;
+	return this.elm.getElementsByTagName('img')[0].src;
 });
 //
 //href property
@@ -70,7 +137,7 @@ Widget.Thumbnail.prototype.__defineSetter__('href', function(aHref) {
   if(location.protocol === 'file:')
     href = '#'+aHref
 
-  this.elm.setAttribute('href', href);
+  this.elm.getElementsByTagName('a')[0].setAttribute('href', href);
 });
 Widget.Thumbnail.prototype.__defineGetter__('href', function() {
 	return this._href;

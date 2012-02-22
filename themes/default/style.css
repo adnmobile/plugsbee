@@ -4,12 +4,13 @@ html, body{
 }
 body {
 	margin: 0px;
-	background-color: #e2e3e4;
 	color: black;
+/*
   display: -moz-box;
   display: -webkit-box;
   -moz-box-orient: vertical;
   -webkit-box-orient: vertical;
+*/
 }
 /*
  *header
@@ -21,46 +22,75 @@ header {
   background: -webkit-linear-gradient(top, #5A5A5A, #010101);  
   background: -moz-linear-gradient(top, #5A5A5A, #010101); 
 	height: 40px;
-  display: -moz-box;
-  display: -webkit-box;
+  position: fixed;
+  width: 100%;
 }
+/*
 #title {
     cursor: pointer;
 }
+*/
 #upload-button, #account-menu, #nav-button {
   visibility: hidden;
 }
+/*
 header > * {
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-flex: 1;
-  -webkit-box-flex: 1;
-  -moz-box-align: center;
-  -webkit-box-align: center;
+  display: inline;
 }
-header > .left {
-  -moz-box-pack: start;
-  -webkit-box-pack: start;
+*/
+header .center * {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  max-height: 100%;
+  text-align: center;
 }
-header > .center {
-  -moz-box-pack: center;
-  -webkit-box-pack: center;
+header .center {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  text-align: center;
+  padding-top: 5px;
 }
-header > .right {
-  -moz-box-pack: end;
-  -webkit-box-pack: end;
+header .right {
+  position: fixed;
+  right: 5px;
+  top: 5px;
 }
-
+header .left {
+  position: fixed;
+  left: 5px;
+  top: 5px;
+}
 /*
  * Dock
  */
+#dock {
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: fixed;
+  bottom: 0;
+}
 #dock ul {
   list-style: none;
-}
-#dock li {
   display: inline-block;
+  margin: 0;
+  padding: 0;
 }
-#trash.dragenter {
+#dock .thumbnail {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-height: 52px !important;
+  max-width: 52px !important;
+}
+#dock .thumbnail img {
+  max-height: 32px !important;
+  max-width: 32px !important;
+}
+.thumbnail.dragenter {
   font-weight: bold;
 }
 
@@ -70,38 +100,30 @@ header > .right {
 section {
   background-color: white;
   overflow: auto;
+  padding-top: 40px;
+/*
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
+*/
 }
+
+/*
+code {
+  white-space: pre;
+};
+*/
 
 /*
  * viewer
  */
 #viewer {
-  width: 100%;
-  height: 100%;
 	background-color: black;
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-pack: center;
-  -webkit-box-pack: center;
-  -moz-box-align: center;
-  -webkit-box-align: center;
-  -moz-box-orient: vertical;
-  -webkit-box-orient: vertical;
   border: none;
 }
 #preview {
   width: 80%;
   height: 80%;
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-pack: center;
-  -webkit-box-pack: center;
-  -moz-box-align: center;
-  -webkit-box-align: center;
-  -moz-box-orient: vertical;
-  -webkit-box-orient: vertical;
+  margin: auto;
 }
 #viewer #download {
   color: white;
@@ -149,8 +171,8 @@ section {
 .thumbnail.upload .area{
   border: dashed 2px #069045;
   border-radius: 6px;
-  width: 125px;
-  height: 125px;
+  width: 80px;
+  height: 80px;
   margin: auto;
 }
 .thumbnail.upload .text {
@@ -160,6 +182,11 @@ section {
   margin-right: auto;
   margin-top: 22.5px;
   text-align: center;
+}
+
+.panel {
+  padding: 0;
+  margin: 0;
 }
 
 /*
@@ -175,7 +202,9 @@ section {
  * Folders
  */
 .thumbnail.folder .miniature img {
+/*
   width: 85px;
+*/
 }
 
 /*
@@ -194,4 +223,12 @@ section {
 a {
 	color: inherit;
 	text-decoration: none;
+}
+
+/*
+ * XMPP Console
+ */
+#xmpp-console {
+  height: 50%;
+  overflow: auto;
 }
