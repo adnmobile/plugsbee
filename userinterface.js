@@ -36,19 +36,6 @@ var gUserInterface = {
 		});
     
 
-        //~ <!-- Add folder thumbnail -->
-        //~ <li id="folder-adder" class="thumbnail upload">
-          //~ <a>
-            //~ <figure>
-              //~ <div class="miniature">
-                //~ <div class="area">
-                //~ </div>
-              //~ </div>
-              //~ <figcaption class="label">New folder</figcaption> 
-            //~ </figure>
-          //~ </a>
-        //~ </li>
-
     //
     //Folder adder
     //
@@ -56,30 +43,24 @@ var gUserInterface = {
       var folderAdder = new Widget.Thumbnail();
       folderAdder.elm.id = "folder-adder";
       folderAdder.label = "New folder";
-      // No folder adder on iOS (no file upload support so pretty useless)
-      if(platform.os.match('iOS'))
-        folderAdder.elm.hidden = true;
-      else {
-        var input =  folderAdder.form.querySelector('input');
-        folderAdder.elm.onclick = function(aEvent) {
-          folderAdder.edit = true;
-          //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
-          folderAdder.form.querySelector('input').focus();
-        };
-        folderAdder.form.onsubmit = function(aEvent) {
-          Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
-            folder.thumbnail.elm = document.getElementById('folders').insertBefore
-            //~ gUserInterface.handleFolder(folder);
-          });
-          folderAdder.edit = false;
-          input.value = '';
-          return false;
-        }
-        input.onblur = function(aEvent) {
-          folderAdder.edit = false;
-          input.value = '';
-          return false;
-        }
+      var input =  folderAdder.form.querySelector('input');
+      folderAdder.elm.onclick = function(aEvent) {
+        folderAdder.edit = true;
+        //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
+        folderAdder.form.querySelector('input').focus();
+      };
+      folderAdder.form.onsubmit = function(aEvent) {
+        Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
+          gUserInterface.handleFolder(folder);
+        });
+        folderAdder.edit = false;
+        input.value = '';
+        return false;
+      }
+      input.onblur = function(aEvent) {
+        folderAdder.edit = false;
+        input.value = '';
+        return false;
       }
       folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
       gUserInterface.folderAdder = folderAdder;
@@ -107,7 +88,6 @@ var gUserInterface = {
       trash.elm.addEventListener('drop', function(evt) {
         this.classList.remove('dragenter');
         var jid = evt.dataTransfer.getData('Text');
-        
         var folder = Plugsbee.folders[jid];
         var file = Plugsbee.files[jid];
         if(folder) {
@@ -126,25 +106,14 @@ var gUserInterface = {
     //Uploader
     //
     var filePicker = document.getElementById('file-picker');
-    var uploadButton = document.getElementById('upload-button');
-    //Disable it on Safari mobile since uploading file isn't possible
-    if (platform.os.match('iOS')) {
-      filePicker.parentNode.removeChild(filePicker);
-      uploadButton.parentNode.removeChild(uploadButton);
-    }
-    else {
-      filePicker.addEventListener('change', function upload(evt) {
-        var file = evt.target.files[0];
+    filePicker.addEventListener('change', function upload(evt) {
+      var file = evt.target.files[0];
 
-        var folder = gUserInterface.currentFolder;
+      var folder = gUserInterface.currentFolder;
 
-        Plugsbee.upload(file, folder);
-      });
-      
-      uploadButton.addEventListener('click', function() {
-        gUserInterface.openFilePicker();
-      });
-    }
+      Plugsbee.upload(file, folder);
+    });
+
     
     //Settings
 		//~ var settingsForm = document.getElementById("settings-form");
@@ -227,14 +196,12 @@ var gUserInterface = {
     //Move the folders thumbnails to their original location
     var folders = document.getElementById('deck').appendChild(document.getElementById('folders'));
     document.body.style.backgroundColor = 'white';
+    gUserInterface.folderAdder.elm.hidden = false;
     //Unhide the current folder
     if (gUserInterface.currentFolder.thumbnail)
       gUserInterface.currentFolder.thumbnail.elm.hidden = false;
     folders.hidden = true;
     folders.classList.add('panel');
-    //Unhide the folder adder
-    if(!platform.os.match('iOS'))
-      gUserInterface.folderAdder.elm.hidden = false;
 
     for (var i in Plugsbee.folders) {
       var folder = Plugsbee.folders[i];
@@ -249,9 +216,6 @@ var gUserInterface = {
     var navButton = document.getElementById('nav-button')
     if(navButton)
       navButton.style.visibility = 'hidden';
-    var uploadButton = document.getElementById('upload-button')
-    if(uploadButton)
-      uploadButton.style.visibility = 'hidden';
     
     this.title.value = gConfiguration.name;
     this.title.elm.onclick = null;
@@ -292,11 +256,6 @@ var gUserInterface = {
       e.preventDefault();
     };
     
-    if (!aFolder.trash) {
-      var uploadButton = document.getElementById('upload-button')
-      if(uploadButton)
-        uploadButton.style.visibility = 'visible';
-    }
     gUserInterface.showPanel(aFolder.panel);
     
     this.title.value = aFolder.name;
@@ -385,13 +344,6 @@ var gUserInterface = {
         e.preventDefault();
       };
     }
-    
-    
-    if(!platform.os.match('iOS')) {
-      var uploadButton = document.getElementById('upload-button');
-      if(uploadButton)
-        uploadButton.style.visibility = 'hidden';
-    }
 
     var elm = this.previewBuilder(aFile);
     preview.innerHTML = elm;
@@ -447,7 +399,140 @@ var gUserInterface = {
     aFolder.thumbnail.elm = list.insertBefore(aFolder.thumbnail.elm, document.getElementById('folder-adder'));
     aFolder.panel.elm = deck.appendChild(aFolder.panel.elm);
   },
+  handleFile: function(aFile) {
+    var panel = aFile.folder.panel.elm;
+    aFile.thumbnail.elm = panel.insertBefore(aFile.thumbnail.elm, panel.firstChild);
+  },
 };
+
+var Router = {
+  route: function(aNode) {
+    //~ console.log('routing: '+aNode[0]);
+    //~ if(aNode[1])
+      //~ console.log('routing: '+aNode[1]);
+    switch (aNode[0]) {
+			//~ case 'settings':
+				//~ this.showPanel("settings");
+				//~ this.setActive('li#settings-tab');
+				//~ break;
+			//~ case 'help':
+				//~ this.showPanel("help");
+				//~ this.setActive('li#help-tab');
+				//~ break;
+			//~ case 'addcontact':
+				//~ this.showPanel("addcontact");
+				//~ this.setActive('a#addcontact-tab');
+				//~ break;
+			//~ case 'upgrade':
+				//~ this.showSection('upgrade');
+				//~ break;
+			//~ case 'Trash':
+				//~ gUserInterface.showTrash();
+
+        //~ var file = gUserInterface.getFileFromName(Plugsbee.trash, unescape(aNode[1]));
+        //~ if (file)
+          //~ gUserInterface.showFile(file);
+        //~ else
+          //~ gUserInterface.showFolder(Plugsbee.trash);
+        
+        //~ break;
+			default:
+        var folder = gUserInterface.getFolderFromName(unescape(aNode[0]));
+
+        if (!folder) {
+          gUserInterface.showFolders();
+          return;
+        }
+        
+        var file = gUserInterface.getFileFromName(folder, unescape(aNode[1]));
+        if (file)
+          gUserInterface.showFile(file);
+        else
+          gUserInterface.showFolder(folder);
+    }
+  }
+}
+
+window.addEventListener("popstate",
+	function(e) {
+    if(!Plugsbee.connection.socket)
+      return;
+    var node = [];
+    if (location.protocol === 'file:') {
+      var hash = location.hash.split('#')[1];
+      if(hash) {
+        var split = hash.split('/');
+        if(split)
+          node = split;
+        else
+          node.push(hash);
+      }
+    }
+    else {
+      var split = location.pathname.split('/');
+      node.push(split[1]);
+      if (split[2])
+        node.push(split[2]);
+    } 
+    Router.route(node);
+	}, false
+);
+
+(function() {
+  // Document title
+  document.title = gConfiguration.name;
+
+  // Theme
+  gConfiguration.themeFolder = 'themes/'+gConfiguration.theme+'/';
+  yepnope(gConfiguration.themeFolder+'style.css');
+  
+  // Favicon
+  document.head.insertAdjacentHTML('beforeend',
+    '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>' 
+  );
+
+  // iOS stuff
+  if (platform.os.match('iOS')) {
+    //
+    // Icons //FIXME: This should works for Android
+    //
+    document.head.insertAdjacentHTML('beforeend',
+      '<link rel="apple-touch-icon" href="'+gConfiguration.themeFolder+'icons/57x57.png"/>' +
+      '<link rel="apple-touch-icon" sizes="72x72" href="'+gConfiguration.themeFolder+'icons/72x72.png"/>' +
+      '<link rel="apple-touch-icon" sizes="114x114" href="'+gConfiguration.themeFolder+'icons/114x114.png"/>'
+    );
+    
+    //
+    // Add to homescreen //FIXME: This should works for Android
+    //
+    yepnope('lib/add-to-homescreen/src/add2home.js');
+    yepnope('lib/add-to-homescreen/style/add2home.css');
+
+    //
+    // Specific rules for iOS
+    //
+    yepnope(gConfiguration.themeFolder+'iOS.css');
+    
+    
+    //
+    // iOS web-app
+    //
+    document.head.insertAdjacentHTML('beforeend',
+      '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
+      '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
+    );
+    
+    // FIXME add startup image -- 1004*768 for ipad and 320 x 460 for ipod portrait for both
+    /*document.head.insertAdjacentHTML('beforeend',
+      '<link rel="apple-touch-startup-image" href="/startup.png">'
+    );*/
+  }
+  
+  //~ window.addEventListener('error', function(aMessage, aURL, aLineNumber) {
+    //~ console.log(aMessage + ':' + aURL + ':' + aLineNumber);
+  //~ });
+})();
+
 
 window.addEventListener("load", function() {
   gUserInterface.init();

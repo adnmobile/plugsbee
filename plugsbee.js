@@ -64,20 +64,18 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	var id = Math.random().toString().split('.')[1];
 	var jid = aFolder.jid+'/'+id;
 
-	var file = Object.call(Plugsbee.File);
+	var file =new Plugsbee.File();
 	file.jid = jid;
 	file.id = id;
 	file.name = aDOMFile.name;
 	file.type = aDOMFile.type;
 	file.folder = aFolder;
 	aFolder.files[jid] = file;
+	Plugsbee.files[jid] = file;
 
+  gUserInterface.handleFile(file);
+  var thumbnail = file.thumbnail;
 
-  var thumbnail = new Widget.Thumbnail();
-  thumbnail.elm = file.folder.panel.elm.insertBefore(thumbnail.elm, file.folder.panel.elm.firstChild);
-  thumbnail.id = file.jid;
-  thumbnail.label = file.name;
-  thumbnail.elm.classList.add('file');
   var progress = document.createElement('progress');
   progress.setAttribute('max', '100');
   progress.setAttribute('value', '0');
@@ -87,8 +85,6 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
   img.hidden = true;
   thumbnail.elm.querySelector('div.miniature').appendChild(span);
   thumbnail.elm.querySelector('div.miniature').appendChild(progress);
-  
-  file.thumbnail = thumbnail;
   
 	var fd = new FormData;
 	fd.append(jid, aDOMFile);
@@ -116,17 +112,12 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
       else
         file.miniature = gConfiguration.themeFolder+'/file.png';
   
-      file.thumbnail.miniature = file.miniature;
-      file.thumbnail.elm.querySelector('span').hidden = true;
-      file.thumbnail.elm.querySelector('progress').hidden = true;
+      file.draggable = true;
+      file.thumbnail.elm.getElementsByTagName('progress')[0].hidden = true;
+      file.thumbnail.elm.getElementsByTagName('span')[0].hidden = true;
       file.thumbnail.elm.querySelector('img').hidden = false;
-			file.thumbnail.elm.href = file.folder.name+'/'+file.name;
-      file.thumbnail.elm.addEventListener('click', function(evt) {
-        if(window.location.protocol !== 'file:')
-          history.pushState(null, null, this.href);
-        gUserInterface.showFile(file);
-        evt.preventDefault();
-      });
+      file.miniature = file.miniature;
+			file.thumbnail.href = file.folder.name+'/'+file.name;
 			that.addFile(file, onSuccess);
 		}, false
 	);
@@ -186,6 +177,9 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess, aId) {
     var folder = new Plugsbee.Folder();
     folder.jid = gConfiguration.PubSubService+'/'+id;
     Plugsbee.folders[folder.jid] = folder;
+    folder.host = gConfiguration.PubSubService;
+    folder.id = id;
+    folder.miniature = gUserInterface.themeFolder+'folder.png';
     folder.name = aName;
 		folder.creator = Plugsbee.connection.jid;
 		folder.accessmodel = aAccessmodel;
@@ -257,7 +251,7 @@ Plugsbee.moveFile = function(file, newFolder) {
   var id = Math.random().toString().split('.')[1];
   file.id = id;
 
-  file.thumbnail.elm = newFolder.panel.elm.appendChild(file.thumbnail.elm);
+  gUserInterface.handleFile(file);
   
   Plugsbee.addFile(file);
   Plugsbee.files[file.jid] = file;
@@ -289,7 +283,7 @@ Plugsbee.getFiles = function(folder) {
       else
         file.miniature = item.miniature;
 
-      file.thumbnail.elm = folder.panel.append(file.thumbnail.elm);
+      gUserInterface.handleFile(file);
       //~ thumbnail.draggable = true;
 
       Plugsbee.files[file.jid] = file;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- <title>Sorry, you need JavaScript</title> -->
+    <title>Loading...</title> 
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
@@ -24,17 +24,17 @@
     </script>
     -->
     
+<!--
+    <script type="application/javascript" src="lib/modernizr.js"/>
+-->
+    <script type="application/javascript" src="lib/burger/burger.js"/>
+    <script type="application/javascript" src="lib/platform.js/platform.js"/>
+    
     <!-- configuration -->
     <script type="application/javascript" src="configuration.js"/>
-    
-    <!-- browser detection -->
-    <script type="application/javascript" src="lib/platform.js/platform.js"/>
 
     <!-- resource loader -->
     <script type="application/javascript" src="lib/yepnope/yepnope.js"/>
-
-    <!-- init -->
-    <script type="application/javascript" src="init.js"/>
 
     <!-- XML prettify -->
     <script type="application/javascript" src="lib/vkbeautify.0.93.beta.js"/>
@@ -76,7 +76,6 @@
     <script type="application/javascript" src="plugsbee.js"/>
     <script type="application/javascript" src="datas.js"/>
     <script type="application/javascript" src="userinterface.js"/>
-    <script type="application/javascript" src="router.js"/>
 
   </head>
   <body>
@@ -88,7 +87,7 @@
         <span id="title">Plugsbee</span>
       </div>
       <div class="right">
-        <button id="upload-button">Upload</button>
+        <button id="upload-button" class="upload">Upload</button>
         <button id="account-menu">Log out</button>
       </div>
     </header>
@@ -99,7 +98,10 @@
       <form id="login-form">
         <p>
           <label for="login">Login: </label>
+<!--
           <input name="login" autofocus="" required=""/>
+-->
+          <input name="login" required=""/>
         </p>
         <p>
           <label for="password">Password: </label>
@@ -134,7 +136,7 @@
       <button id="get-link">Get link</button>
     </section>
     <input id="file-picker" type="file"/>
-    <div id="dock" hidden="hidden"/>
     <div id="xmpp-console" hidden="hidden"/>
+    <div id="dock" hidden="hidden"/>
   </body>
 </html>

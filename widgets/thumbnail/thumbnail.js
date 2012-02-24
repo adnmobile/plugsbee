@@ -7,7 +7,7 @@ Widget.Thumbnail = function() {
       "<a>"+
         "<figure>"+
           "<div class='miniature'>"+
-            "<img crossorigin='Anonymous'/>"+
+            "<img/>"+
           "</div>"+
           "<figcaption class='label'/>"+
         "</figure>"+
@@ -22,16 +22,33 @@ Widget.Thumbnail = function() {
     "</form>";
   this.form = elm.firstChild;
 
+  //~ if (Modernizr.touch){
+    //~ this.elm.addEventListener('touchend', function(e) {
+      //~ if(location.protocol === 'file:')
+        //~ return;
+      //~ 
+      //~ history.pushState(null, null, this.firstChild.href);
+      //~ var event = document.createEvent('Event');
+      //~ event.initEvent('popstate', true, true);
+      //~ window.dispatchEvent(event);
+      //~ 
+      //~ e.preventDefault();
+    //~ }, true);
+    //~ this.elm.addEventListener('touchend', function(e) {
+     //~ 
+    //~ });
+//~ 
+  //~ } 
   this.elm.addEventListener('click', function(e) {
-    if(location.protocol !== 'file:') {
-      history.pushState(null, null, this.firstChild.href);
-      var event = document.createEvent('Event');
-      event.initEvent('popstate', true, true);
-      window.dispatchEvent(event);
-      e.preventDefault();
-    }
+    if(location.protocol === 'file:')
+      return;
+    
+    e.preventDefault();
+    history.pushState(null, null, this.firstChild.href);
+    var event = document.createEvent('Event');
+    event.initEvent('popstate', true, true);
+    window.dispatchEvent(event);
   }, true);
-  
   
   this.dragStart = function(evt) {
     //Set the drag image

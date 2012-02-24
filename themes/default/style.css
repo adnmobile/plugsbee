@@ -99,12 +99,7 @@ header .left {
  */
 section {
   background-color: white;
-  overflow: auto;
   padding-top: 40px;
-/*
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-*/
 }
 
 /*
@@ -230,5 +225,10 @@ a {
  */
 #xmpp-console {
   height: 50%;
+  width: 100%;
   overflow: auto;
+  position: fixed;
+  bottom: 0;
+  background-color: black;
+  color: white;
 }

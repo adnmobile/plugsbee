@@ -9,6 +9,9 @@ Widget.Panel = function() {
     "<div class='area'>"+
     "</div>";
   thumbnail.querySelector('.label').textContent = "Upload";
+  thumbnail.addEventListener('click', function() {
+    gUserInterface.openFilePicker();
+  });
   var div = document.createElement('div');
   div.classList.add('panel');
   div.hidden = true;
@@ -16,10 +19,6 @@ Widget.Panel = function() {
   div.appendChild(thumbnail);
   
   this.elm = div;
-
-  // No file upload on Safari mobile.
-  if (platform.os.match('iOS'))
-    this.elm.querySelector('.upload').hidden = true;
 };
 
 //Properties
@@ -37,8 +36,3 @@ Widget.Panel.prototype.__defineSetter__('hidden', function(aBool) {
 Widget.Panel.prototype.__defineGetter__('hidden', function() {
 	return this._hidden;
 });
-
-//Methods
-Widget.Panel.prototype.append = function (aElm) {
-  return this.elm.insertBefore(aElm,this.elm.firstChild);
-}
