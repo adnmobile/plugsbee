@@ -48,7 +48,7 @@ Plugsbee.connection.on('input', function(stanza) {
   var elm = document.createElement('pre');
   elm.classList.add('in');
   elm.appendChild(document.createElement('code'));
-  elm.firstChild.textContent = vkbeautify(stanza.XML, 'xml');
+  elm.firstChild.textContent = vkbeautify.xml(stanza.XML);
   //~ elm.innerHTML = prettyPrintOne(elm.firstChild.outerHTML);
   document.getElementById('xmpp-console').appendChild(elm);
 });
@@ -56,7 +56,7 @@ Plugsbee.connection.on('output', function(stanza) {
   var elm = document.createElement('pre');
   elm.classList.add('out');
   elm.appendChild(document.createElement('code'));
-  elm.firstChild.textContent = vkbeautify(stanza.XML, 'xml');
+  elm.firstChild.textContent = vkbeautify.xml(stanza.XML);
   //~ elm.innerHTML = prettyPrintOne(elm.firstChild.outerHTML);
   document.getElementById('xmpp-console').appendChild(elm);
 });
