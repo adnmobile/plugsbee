@@ -68,6 +68,7 @@ Plugsbee.File.prototype.__defineGetter__('folder', function() {
 Plugsbee.File.prototype.__defineSetter__('miniature', function(aMiniature) {
   this._miniature = aMiniature;
   this.thumbnail.miniature = aMiniature
+  //~ base64.encode(
 });
 Plugsbee.File.prototype.__defineGetter__('miniature', function() {
   return this._miniature;
