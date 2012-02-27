@@ -48,22 +48,7 @@ Plugsbee.connection.on('disconnected', function() {
   //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
   //~ location.reload();
 });
-Plugsbee.connection.on('input', function(stanza) {
-  var elm = document.createElement('pre');
-  elm.classList.add('in');
-  elm.appendChild(document.createElement('code'));
-  elm.firstChild.textContent = vkbeautify.xml(stanza.XML);
-  //~ elm.innerHTML = prettyPrintOne(elm.firstChild.outerHTML);
-  document.getElementById('xmpp-console').appendChild(elm);
-});
-Plugsbee.connection.on('output', function(stanza) {
-  var elm = document.createElement('pre');
-  elm.classList.add('out');
-  elm.appendChild(document.createElement('code'));
-  elm.firstChild.textContent = vkbeautify.xml(stanza.XML);
-  //~ elm.innerHTML = prettyPrintOne(elm.firstChild.outerHTML);
-  document.getElementById('xmpp-console').appendChild(elm);
-});
+
 Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	var id = Math.random().toString().split('.')[1];
 	var jid = aFolder.jid+'/'+id;
