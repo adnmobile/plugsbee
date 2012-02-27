@@ -1,7 +1,7 @@
 var gConfiguration = {
   name: 'Plugsbee',
 	theme: 'default',
-	PubSubService : 'pubsub.plugsbee.com',
+	PubSubService : 'PEP',
 	uploadService : 'http://upload.plugsbee.com',
   WebsocketService: 'ws://ws.plugsbee.com',
   registration: false,

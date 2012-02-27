@@ -73,6 +73,8 @@ header .left {
   overflow-y: hidden;
   position: fixed;
   bottom: 0;
+  background-color: grey;
+  width: 100%;
 }
 #dock ul {
   list-style: none;

@@ -70,6 +70,7 @@ var gUserInterface = {
     //Trash
     //
     (function() {
+      //Thumbnail
       var trash = new Widget.Thumbnail();
       trash.draggable = false;
       trash.miniature = gUserInterface.themeFolder + 'trash.png';
@@ -86,20 +87,28 @@ var gUserInterface = {
         this.classList.remove('dragenter');
       });
       trash.elm.addEventListener('drop', function(evt) {
+        evt.preventDefault();
         this.classList.remove('dragenter');
-        var jid = evt.dataTransfer.getData('Text');
-        var folder = Plugsbee.folders[jid];
-        var file = Plugsbee.files[jid];
-        if(folder) {
+        var id = evt.dataTransfer.getData('text/plain');
+
+        var file = Plugsbee.files[id];
+        var folder = Plugsbee.folders[id];
+        
+        
+        if (folder)
           Plugsbee.deleteFolder(folder);
-        }
-        else if(file) {
+        else if (file) {
           Plugsbee.moveFile(file, Plugsbee.trash);
           document.getElementById('dock').hidden = true;
         }
-        evt.preventDefault();
       });
       trash.elm = document.getElementById('folders').appendChild(trash.elm);
+      //Panel
+      var panel = new Widget.Panel();
+      panel.elm.classList.add('trash');
+      panel.hidden = true;
+      panel.elm.firstChild.hidden = true;
+      panel.elm = document.getElementById('deck').appendChild(panel.elm);
     })();
 
     //
@@ -147,6 +156,7 @@ var gUserInterface = {
         localStorage.removeItem('password', password);
       }
       Plugsbee.connection.connect(login, password);
+      Plugsbee.jid = login;
       aEvent.preventDefault();
 		}
     

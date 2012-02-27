@@ -3,19 +3,19 @@
 //Folder
 Plugsbee.Folder = function() {
   this.thumbnail = new Widget.Thumbnail();
+  this.thumbnail.elm.setAttribute('data-type', 'folder');
   this.thumbnail.draggable = true;
   this.thumbnail.elm.classList.add('folder');
   this.panel = new Widget.Panel();
   this.files = {};
 };
 //Properties
-Plugsbee.Folder.prototype.__defineSetter__('jid', function(aJID) {
-  this._jid = aJID;
-  this.thumbnail.jid = this._jid;
-  this.panel.jid = this._jid;
+Plugsbee.Folder.prototype.__defineSetter__('id', function(aID) {
+  this._id = aID;
+  this.thumbnail.elm.setAttribute('data-id', aID);
 });
-Plugsbee.Folder.prototype.__defineGetter__('jid', function() {
-  return this._jid;
+Plugsbee.Folder.prototype.__defineGetter__('id', function() {
+  return this._id;
 });
 Plugsbee.Folder.prototype.__defineSetter__('name', function(aName) {
   this._name = aName;
@@ -36,17 +36,18 @@ Plugsbee.Folder.prototype.__defineGetter__('miniature', function() {
 //File
 Plugsbee.File = function() {
   this.thumbnail = new Widget.Thumbnail();
+  this.thumbnail.elm.setAttribute('data-type', 'file');
   this.thumbnail.draggable = true;
   this.thumbnail.elm.classList.add('file');
   this.type = '';
   this.src = '';
 };
-Plugsbee.File.prototype.__defineSetter__('jid', function(aJID) {
-  this._jid = aJID;
-  this.thumbnail.jid = this._jid;
+Plugsbee.File.prototype.__defineSetter__('id', function(aID) {
+  this._id = aID;
+  this.thumbnail.elm.setAttribute('data-id', aID);
 });
-Plugsbee.File.prototype.__defineGetter__('jid', function() {
-  return this._jid;
+Plugsbee.File.prototype.__defineGetter__('id', function() {
+  return this._id;
 });
 Plugsbee.File.prototype.__defineSetter__('name', function(aName) {
   this._name = aName;
@@ -67,8 +68,33 @@ Plugsbee.File.prototype.__defineGetter__('folder', function() {
 });
 Plugsbee.File.prototype.__defineSetter__('miniature', function(aMiniature) {
   this._miniature = aMiniature;
-  this.thumbnail.miniature = aMiniature
-  //~ base64.encode(
+  this.thumbnail.miniature = aMiniature;
+  
+  //~ var dataURL = localStorage.getItem(this.jid);
+  //~ if (dataURL) {
+    //~ this.thumbnail.miniature = dataURL;
+    //~ return;
+  //~ }
+  //~ 
+  //~ var file = this;
+
+  //~ var options = {
+    //~ 'method': 'GET',
+    //~ 'url': this.miniature
+  //~ };
+  //~ http.request(options, function(data) {
+    //~ var uInt8Array = new Uint8Array(data);
+    //~ var i = uInt8Array.length;
+    //~ var binaryString = new Array(i);
+    //~ while (i--)
+      //~ binaryString[i] = String.fromCharCode(uInt8Array[i]);
+    //~ var data = binaryString.join('');
+//~ console.log(data);
+    //~ store.set(file.jid, data);
+    //~ var dataURL = "data:" + file.type + ";base64," + base64.encode(data);
+    //~ file.thumbnail.miniature = dataURL;
+    //~ store.set(file.jid, dataURL);
+  //~ });
 });
 Plugsbee.File.prototype.__defineGetter__('miniature', function() {
   return this._miniature;

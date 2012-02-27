@@ -11,7 +11,7 @@ Widget.Panel = function() {
   thumbnail.addEventListener('click', function() {
     gUserInterface.openFilePicker();
   });
-  var div = document.createElement('div');
+  var div = document.createElement('ul');
   div.classList.add('panel');
   div.hidden = true;
   
@@ -19,15 +19,6 @@ Widget.Panel = function() {
   
   this.elm = div;
 };
-
-//Properties
-Widget.Panel.prototype.__defineSetter__('jid', function(aId) {
-	this._jid = aId;
-	this.elm.setAttribute('data-jd', aId);
-});
-Widget.Panel.prototype.__defineGetter__('jid', function() {
-	return this._jid;
-});
 Widget.Panel.prototype.__defineSetter__('hidden', function(aBool) {
 	this._hidden = aBool;
   this.elm.hidden = aBool;

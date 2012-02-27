@@ -55,7 +55,7 @@ Widget.Thumbnail = function() {
     var img = this;
     evt.dataTransfer.setDragImage(img, -10, -10);
     evt.dataTransfer.effectAllowed = 'move';
-    evt.dataTransfer.setData('Text', this.getAttribute('data-jid'));
+    evt.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
     //Show the dock
     document.getElementById('dock').hidden = false;
   };
@@ -88,16 +88,6 @@ Widget.Thumbnail = function() {
     evt.preventDefault();
   };
 };
-//
-//jid property
-//
-Widget.Thumbnail.prototype.__defineSetter__('jid', function(aId) {
-	this._jid = aId;
-	this.elm.setAttribute('data-jid', aId);
-});
-Widget.Thumbnail.prototype.__defineGetter__('jid', function() {
-	return this._jid;
-});
 //
 //draggable property
 //

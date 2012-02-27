@@ -7,7 +7,7 @@ var Plugsbee = {
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService)
 };
 
-Plugsbee.connection.load('DIGEST-MD5');
+Plugsbee.connection.load('PLAIN');
 Plugsbee.connection.load('events');
 Plugsbee.connection.load('presence');
 Plugsbee.connection.load('dataforms');
@@ -16,14 +16,18 @@ Plugsbee.connection.load('pubsub');
 
 var password = localStorage.getItem('password');
 var login = localStorage.getItem('login');
-if(password && login)
+if(password && login) {
+  Plugsbee.jid = login;
   Plugsbee.connection.connect(login, password);
+}
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
   Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.connection.user = Plugsbee.connection.jid.node;
 	Plugsbee.getFolders();
+  if (gConfiguration.PubSubService === 'PEP')
+    gConfiguration.PubSubService = Plugsbee.jid;
 });
 Plugsbee.connection.on('connecting', function() {
   console.log('connecting');
@@ -165,24 +169,27 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess, aId) {
   if(aId)
     var id = aId;
   else
-    var id = Math.random().toString().split('.')[1];
+    var id = 'urn:plugsbee:folder:'+Math.random().toString().split('.')[1];
+    
 	var fields = [];
 	
 	fields.push("<field var='pubsub#title'><value>"+aName+"</value></field>");
 	fields.push("<field var='pubsub#access_model'><value>"+aAccessmodel+"</value></field>");
-	
+	fields.push("<field var='pubsub#persist_items'><value>1</value></field>");
+
+  
 	var that = this;
+  
   Plugsbee.connection.pubsub.create(gConfiguration.PubSubService, id, fields, function() {
     
     var folder = new Plugsbee.Folder();
-    folder.jid = gConfiguration.PubSubService+'/'+id;
-    Plugsbee.folders[folder.jid] = folder;
-    folder.host = gConfiguration.PubSubService;
     folder.id = id;
+    Plugsbee.folders[folder.id] = folder;
     folder.miniature = gUserInterface.themeFolder+'folder.png';
     folder.name = aName;
-		folder.creator = Plugsbee.connection.jid;
-		folder.accessmodel = aAccessmodel;
+    folder.host = gConfiguration.PubSubService;
+		//~ folder.creator = Plugsbee.jid;
+		//~ folder.accessmodel = aAccessmodel;
 
     if(onSuccess)
       onSuccess(folder);
@@ -190,30 +197,29 @@ Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess, aId) {
 }
 Plugsbee.getFolders = function() {
 	var that = this;
-  Plugsbee.connection.disco.items(gConfiguration.PubSubService, function(stanza) {
+  Plugsbee.connection.disco.items(this.connection.jid.bare, function(stanza) {
     var items = stanza.items;
 		items.forEach(function(item) {
+      if (!item.node.match('urn:plugsbee:folder:'))
+        return;
+
       var folder = new Plugsbee.Folder();
+      folder.id = item.node;
+      folder.host = item.jid;
       //Trash folder
-      if(item.node === btoa(Plugsbee.connection.jid.bare+'-trash')) {
+      if(folder.id === 'urn:plugsbee:folder:'+btoa('trash')) {
         folder.trash = true;
         Plugsbee.trash = folder;
         //Thumbnail
         folder.thumbnail.elm = document.querySelector('.thumbnail.trash');
         //Panel
         folder.panel.elm = document.querySelector('.panel.trash');
-        folder.jid = item.jid + '/' + item.node;
-        folder.host = item.jid;
-        folder.id = item.node;
       }
       //Normal folder
       else {
-        folder.jid = item.jid + '/' + item.node;
-        folder.host = item.jid;
-        folder.id = item.node;
         folder.miniature = gUserInterface.themeFolder+'folder.png';
-        
         gUserInterface.handleFolder(folder);
+
         //Thumbnail
         var folders = document.getElementById('folders');
         folder.thumbnail.elm = folders.insertBefore(folder.thumbnail.elm, document.getElementById('folder-adder'));
@@ -222,30 +228,33 @@ Plugsbee.getFolders = function() {
         folder.panel.elm = deck.appendChild(folder.panel.elm);
       }
       folder.name = item.name;
-      Plugsbee.folders[folder.jid] = folder;
+      Plugsbee.folders[folder.id] = folder;
       Plugsbee.getFiles(folder);
 		});
     if(!Plugsbee.trash) {
       Plugsbee.createFolder('Trash', 'whitelist', function(item) {
-        var folder = Object.create(Plugsbee.Folder);
-        folder.jid = item.server + '/' + item.node;
-        folder.host = item.server;
+        var folder = new Plugsbee.Folder();
         folder.id = item.node;
-
-        Plugsbee.folders[folder.jid] = folder;
-        folder.name = item.name;
+        folder.host = item.jid;
+        Plugsbee.folders[folder.id] = folder;
         folder.trash = true;
         Plugsbee.trash = folder;
-        gUserInterface.handleFolder(folder);
-        Plugsbee.getFiles(folder);
-      }, btoa(Plugsbee.connection.jid.bare+'-trash'));
+
+        //Thumbnail
+        folder.thumbnail.elm = document.querySelector('.thumbnail.trash');
+        //Panel
+        folder.panel.elm = document.querySelector('.panel.trash');
+
+        folder.name = item.name;
+
+      }, 'urn:plugsbee:folder:'+btoa('trash'));
     }
 	});
 };
 Plugsbee.moveFile = function(file, newFolder) {
   Plugsbee.deleteFile(file);
-  delete Plugsbee.folders[file.folder.jid].files[file.jid];
-  delete Plugsbee.files[file.jid];
+  delete Plugsbee.folders[file.folder.id].files[file.id];
+  delete Plugsbee.files[file.id];
 
   file.folder = newFolder;
   var id = Math.random().toString().split('.')[1];
@@ -254,8 +263,8 @@ Plugsbee.moveFile = function(file, newFolder) {
   gUserInterface.handleFile(file);
   
   Plugsbee.addFile(file);
-  Plugsbee.files[file.jid] = file;
-  Plugsbee.folders[file.folder.jid].files[file.jid] = file;
+  Plugsbee.files[file.id] = file;
+  Plugsbee.folders[file.folder.id].files[file.id] = file;
 };
 Plugsbee.deleteFile = function(file) {
   file.thumbnail.elm.parentNode.removeChild(file.thumbnail.elm);
@@ -273,7 +282,6 @@ Plugsbee.getFiles = function(folder) {
 			var file = new Plugsbee.File();
       file.folder = folder;
       file.id = item.id;
-      file.jid = folder.jid + '/' + item.id;
 
 			file.name = item.name;
 			file.type = item.type;
@@ -286,8 +294,8 @@ Plugsbee.getFiles = function(folder) {
       gUserInterface.handleFile(file);
       //~ thumbnail.draggable = true;
 
-      Plugsbee.files[file.jid] = file;
-			folder.files[file.jid] = file;
+      Plugsbee.files[file.id] = file;
+			folder.files[file.id] = file;
 		});
 	});
 };
