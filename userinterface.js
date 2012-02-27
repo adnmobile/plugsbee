@@ -33,9 +33,9 @@ var gUserInterface = {
     navButton.elm.hidden = true;
     navButton.elm.textContent = 'Account';
     navButton.elm.onclick = function(e) {
-      e.preventDefault();
       if(location.protocol === 'file:')
         return;
+      e.preventDefault();
       history.pushState(null, null, this.href);
       var event = document.createEvent('Event');
       event.initEvent('popstate', true, true);
@@ -396,28 +396,29 @@ var gUserInterface = {
 
     var navButton = this.navButton;
     navButton.elm.hidden = false;
-    navButton.textContent = aFile.folder.name;
+    navButton.setHref(aFile.folder.name);
+    navButton.elm.textContent = aFile.folder.name;
     
-    if(location.protocol !== 'file:') {
-      navButton.setHref('/'+aFile.folder.name);
-      navButton.onclick = function(e) {
-        history.pushState(null, null, this.href);
-        var event = document.createEvent('Event');
-        event.initEvent('popstate', true, true);
-        window.dispatchEvent(event);
-        e.preventDefault();
-      };
-    }
-    else {
-      navButton.href = '#'+aFile.folder.name;
-      navButton.onclick = function(e) {
-        history.pushState(null, null, this.href);
-        var event = document.createEvent('Event');
-        event.initEvent('popstate', true, true);
-        window.dispatchEvent(event);
-        e.preventDefault();
-      };
-    }
+    //~ if(location.protocol !== 'file:') {
+      //~ 
+      //~ navButton.onclick = function(e) {
+        //~ history.pushState(null, null, this.href);
+        //~ var event = document.createEvent('Event');
+        //~ event.initEvent('popstate', true, true);
+        //~ window.dispatchEvent(event);
+        //~ e.preventDefault();
+      //~ };
+    //~ }
+    //~ else {
+      //~ navButton.href = '#'+aFile.folder.name;
+      //~ navButton.onclick = function(e) {
+        //~ history.pushState(null, null, this.href);
+        //~ var event = document.createEvent('Event');
+        //~ event.initEvent('popstate', true, true);
+        //~ window.dispatchEvent(event);
+        //~ e.preventDefault();
+      //~ };
+    //~ }
 
     var elm = this.previewBuilder(aFile);
     preview.innerHTML = elm;
