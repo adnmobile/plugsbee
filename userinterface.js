@@ -78,7 +78,7 @@ var gUserInterface = {
     //
     var uploadButton = document.createElement('button');
     uploadButton.id = "upload-button";
-    uploadButton.textContent = "Upload";
+    uploadButton.textContent = "Add file";
     uploadButton.hidden = true;
     uploadButton.addEventListener('click', gUserInterface.openFilePicker);  
     this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
@@ -200,9 +200,6 @@ var gUserInterface = {
     var registerForm = document.getElementById("register-form");
     if (gConfiguration.registration) {
       registerForm.onsubmit = function(aEvent) {
-        Plugsbee.connection.on('failure', function() {
-          alert('Wrong login and/or password.');
-        });
         var login = this.elements["login"].value;
         var password = this.elements["password"].value;
 
@@ -488,7 +485,7 @@ var gUserInterface = {
   },
   handleFile: function(aFile) {
     var panel = aFile.folder.panel.elm;
-    aFile.thumbnail.elm = panel.insertBefore(aFile.thumbnail.elm, panel.firstChild);
+    aFile.thumbnail.elm = panel.insertBefore(aFile.thumbnail.elm, panel.lastChild);
   },
 };
 

@@ -76,9 +76,9 @@ Widget.Thumbnail = function() {
   };
   this.drop = function(evt) {
     this.classList.remove('dragenter');
-    var jid = evt.dataTransfer.getData('Text');
-    var folder = Plugsbee.folders[this.getAttribute('data-jid', jid)];
-    var file = Plugsbee.files[jid];
+    var id = evt.dataTransfer.getData('Text');
+    var folder = Plugsbee.folders[this.getAttribute('data-id')];
+    var file = Plugsbee.files[id];
     
     //Hide the dock
     document.getElementById('dock').hidden = true;

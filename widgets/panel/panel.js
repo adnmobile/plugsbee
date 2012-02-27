@@ -7,7 +7,7 @@ Widget.Panel = function() {
   thumbnail.querySelector('.miniature').innerHTML =  
     "<div class='area'>"+
     "</div>";
-  thumbnail.querySelector('.label').textContent = "Upload";
+  thumbnail.querySelector('.label').textContent = "Add file";
   thumbnail.addEventListener('click', function() {
     gUserInterface.openFilePicker();
   });

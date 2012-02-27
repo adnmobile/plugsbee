@@ -60,8 +60,9 @@ Plugsbee.File.prototype.__defineGetter__('name', function() {
 });
 Plugsbee.File.prototype.__defineSetter__('folder', function(aFolder) {
   this._folder = aFolder;
-  if (this.name)
-    this.thumbnail.href = aFolder.name+'/'+this.name;
+  var name = this.name;
+  if (name)
+    this.thumbnail.href = aFolder.name + '/' + name;
 });
 Plugsbee.File.prototype.__defineGetter__('folder', function() {
   return this._folder;

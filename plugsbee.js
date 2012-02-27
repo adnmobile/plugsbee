@@ -35,6 +35,7 @@ Plugsbee.connection.on('connecting', function() {
 });
 Plugsbee.connection.on('failure', function() {
   console.log('failure');
+  alert('Wrong login and/or password.');
 });
 Plugsbee.connection.on('disconnecting', function() {
   console.log('disconnecting');
@@ -59,8 +60,8 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	file.name = aDOMFile.name;
 	file.type = aDOMFile.type;
 	file.folder = aFolder;
-	aFolder.files[jid] = file;
-	Plugsbee.files[jid] = file;
+	aFolder.files[id] = file;
+	Plugsbee.files[id] = file;
 
   gUserInterface.handleFile(file);
   var thumbnail = file.thumbnail;
@@ -192,7 +193,7 @@ Plugsbee.getFolders = function() {
       folder.id = item.node;
       folder.host = item.jid;
       //Trash folder
-      if(folder.id === 'urn:plugsbee:folder:'+btoa('trash')) {
+      if(folder.id === 'urn:plugsbee:folder:trash') {
         folder.trash = true;
         Plugsbee.trash = folder;
         //Thumbnail
@@ -232,7 +233,7 @@ Plugsbee.getFolders = function() {
 
         folder.name = item.name;
 
-      }, 'urn:plugsbee:folder:'+btoa('trash'));
+      }, 'urn:plugsbee:folder:trash');
     }
 	});
 };
