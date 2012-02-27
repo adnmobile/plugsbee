@@ -1,11 +1,5 @@
 'use strict';
 
-Plugsbee.connection.on('connected', function() {
-  gUserInterface.showSection('deck');
-  //~ gUserInterface.accountMenu.textContent = Plugsbee.connection.jid.node;f
-  gUserInterface.accountMenu.style.visibility = 'visible';
-});
-
 var gUserInterface = {
   toggleXMPPConsole: function() {
     var elm = document.getElementById('xmpp-console');
@@ -24,47 +18,70 @@ var gUserInterface = {
     this.title = new Widget.Editabletext(title);
 
     //
-    //Account menu
+    //Navigation button
     //
-    this.accountMenu = document.getElementById('account-menu');
-
-    this.accountMenu.addEventListener('click', function() {
-			localStorage.removeItem("login");
-			localStorage.removeItem("password");
-			Plugsbee.connection.disconnect();
-      window.location.reload();
-		});
-    
+    var navButton = {
+      setHref: function(aHref) {
+        if(location.protocol === 'file:')
+          aHref = '#'+aHref
+          
+        this.elm.href = aHref;
+      }
+    };
+    navButton.elm = document.createElement('a');
+    navButton.elm.id = 'nav-button';
+    navButton.elm.hidden = true;
+    navButton.elm.textContent = 'Account';
+    navButton.elm.onclick = function(e) {
+      e.preventDefault();
+      if(location.protocol === 'file:')
+        return;
+      history.pushState(null, null, this.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
+    };
+    navButton.elm = document.querySelector('div.left').appendChild(navButton.elm);
+    this.navButton = navButton;
 
     //
     //Folder adder
     //
-    (function() {
-      var folderAdder = new Widget.Thumbnail();
-      folderAdder.elm.id = "folder-adder";
-      folderAdder.label = "New folder";
-      var input =  folderAdder.form.querySelector('input');
-      folderAdder.elm.onclick = function(aEvent) {
-        folderAdder.edit = true;
-        //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
-        folderAdder.form.querySelector('input').focus();
-      };
-      folderAdder.form.onsubmit = function(aEvent) {
-        Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
-          gUserInterface.handleFolder(folder);
-        });
-        folderAdder.edit = false;
-        input.value = '';
-        return false;
-      }
-      input.onblur = function(aEvent) {
-        folderAdder.edit = false;
-        input.value = '';
-        return false;
-      }
-      folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
-      gUserInterface.folderAdder = folderAdder;
-    })();
+    var folderAdder = document.createElement('button');
+    folderAdder.id = "folder-adder";
+    folderAdder.textContent = "New folder";
+    folderAdder.hidden = true;
+    //~ var input =  folderAdder.form.querySelector('input');
+    //~ folderAdder.elm.onclick = function(aEvent) {
+      //~ folderAdder.edit = true;
+      //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
+      //~ folderAdder.form.querySelector('input').focus();
+    //~ };
+    //~ folderAdder.form.onsubmit = function(aEvent) {
+      //~ Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
+        //~ gUserInterface.handleFolder(folder);
+      //~ });
+      //~ folderAdder.edit = false;
+      //~ input.value = '';
+      //~ return false;
+    //~ }
+    //~ input.onblur = function(aEvent) {
+      //~ folderAdder.edit = false;
+      //~ input.value = '';
+      //~ return false;
+    //~ }
+    //~ folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
+    this.folderAdder = document.querySelector('div.right').appendChild(folderAdder);
+
+    //
+    //Upload button
+    //
+    var uploadButton = document.createElement('button');
+    uploadButton.id = "upload-button";
+    uploadButton.textContent = "Upload";
+    uploadButton.hidden = true;
+    uploadButton.addEventListener('click', gUserInterface.openFilePicker);  
+    this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
 
     //
     //Trash
@@ -183,6 +200,9 @@ var gUserInterface = {
     var registerForm = document.getElementById("register-form");
     if (gConfiguration.registration) {
       registerForm.onsubmit = function(aEvent) {
+        Plugsbee.connection.on('failure', function() {
+          alert('Wrong login and/or password.');
+        });
         var login = this.elements["login"].value;
         var password = this.elements["password"].value;
 
@@ -221,11 +241,36 @@ var gUserInterface = {
     var folder = Plugsbee.folders[jid];
     Plugsbee.deleteFolder(folder);
   },
+  showWelcome: function() {
+    document.body.style.backgroundColor = 'white';
+
+    //Header
+    this.navButton.elm.hidden = true;
+    this.folderAdder.hidden = true;
+    this.uploadButton.hidden = true;
+    //Title
+    this.title.value = gConfiguration.name;
+
+    this.showSection('account');
+  },
+  showAccount: function() {
+    document.body.style.backgroundColor = 'white';
+
+    //Header
+    this.navButton.elm.hidden = false;
+    this.navButton.setHref('');
+    this.navButton.elm.textContent = 'Folders';
+    this.folderAdder.hidden = true;
+    this.uploadButton.hidden = true;
+    //Title
+    this.title.value = gConfiguration.name;
+
+    this.showSection('account');
+  },
   showFolders: function() {
+    document.body.style.backgroundColor = 'white';
     //Move the folders thumbnails to their original location
     var folders = document.getElementById('deck').appendChild(document.getElementById('folders'));
-    document.body.style.backgroundColor = 'white';
-    gUserInterface.folderAdder.elm.hidden = false;
     //Unhide the current folder
     if (gUserInterface.currentFolder.thumbnail)
       gUserInterface.currentFolder.thumbnail.elm.hidden = false;
@@ -240,12 +285,14 @@ var gUserInterface = {
       }
     }
     
-    document.getElementById('account-menu').hidden = false;
+    //Header
+    this.navButton.elm.hidden = false;
+    this.navButton.elm.textContent = "Account";
+    this.navButton.setHref("account");
     
-    var navButton = document.getElementById('nav-button')
-    if(navButton)
-      navButton.style.visibility = 'hidden';
-    
+    document.getElementById('folder-adder').hidden = false;
+    document.getElementById('upload-button').hidden = true;
+    //Title
     this.title.value = gConfiguration.name;
     this.title.elm.onclick = null;
 
@@ -255,7 +302,6 @@ var gUserInterface = {
   showFolder: function(aFolder) {
     this.showSection('folders');
     document.body.style.backgroundColor = 'white';
-    document.getElementById('account-menu').hidden = true;
     //Makes the folders thumbnail as dropbox
     for (var i in Plugsbee.folders) {
       var folder = Plugsbee.folders[i];
@@ -271,36 +317,33 @@ var gUserInterface = {
     //Hide the current folder
     aFolder.thumbnail.elm.hidden = true;
     //Hide the folder adder for the moment
-    gUserInterface.folderAdder.elm.hidden = true;
+    gUserInterface.hidden = true;
 
-    var navButton = document.getElementById('nav-button')
-    navButton.style.visibility = 'visible';
-    navButton.textContent = 'Folders';
-    navButton.href = '';
-    navButton.onclick = function(e) {
-      history.pushState(null, null, this.href);
-      var event = document.createEvent('Event');
-      event.initEvent('popstate', true, true);
-      window.dispatchEvent(event);
-      e.preventDefault();
-    };
+    //Header
+    var navButton = this.navButton;
+    navButton.elm.hidden = false;
+    navButton.elm.textContent = 'Folders';
+    navButton.setHref('');
+    document.getElementById('folder-adder').hidden = true;
+    document.getElementById('upload-button').hidden = false;
+    //Title
+    this.title.value = aFolder.name;
     
     gUserInterface.showPanel(aFolder.panel);
     
-    this.title.value = aFolder.name;
     
-    this.title.elm.onclick = function(evt) {
-      if(this.title.edit !== true)
-        this.title.edit = true;
-    };
-    this.title.form.onsubmit = function(evt) {
-      var value = this.title.value;
-      this.title.edit = false;
-      this.title.value = value;
+    //~ this.title.elm.onclick = function(evt) {
+      //~ if(this.title.edit !== true)
+        //~ this.title.edit = true;
+    //~ };
+    //~ this.title.form.onsubmit = function(evt) {
+      //~ var value = this.title.value;
+      //~ this.title.edit = false;
+      //~ this.title.value = value;
       //~ aFolder.name = value;
-      Plugsbee.renameFolder(aFolder, value);
-      evt.preventDefault();
-    };
+      //~ Plugsbee.renameFolder(aFolder, value);
+      //~ evt.preventDefault();
+    //~ };
 
     this.currentFolder = aFolder;
   },
@@ -323,7 +366,6 @@ var gUserInterface = {
   showFile: function(aFile) {
     document.body.style.backgroundColor = 'black';
     this.showSection('viewer');
-    document.getElementById('account-menu').hidden = true;
     var preview = document.getElementById('preview');
     var download = document.getElementById('download');
     //~ download.href = aFile.src.replace('http://media.plugsbee.com', 'http://download.plugsbee.com');
@@ -349,12 +391,15 @@ var gUserInterface = {
       window.prompt('Here is the link, you can simply copy it.', aFile.src);
     }
 
-    var navButton = document.getElementById('nav-button');
-    navButton.style.visibility = 'visible';
+    document.getElementById('folder-adder').hidden = true;
+    document.getElementById('upload-button').hidden = true;
+
+    var navButton = this.navButton;
+    navButton.elm.hidden = false;
     navButton.textContent = aFile.folder.name;
     
     if(location.protocol !== 'file:') {
-      navButton.href = '/'+aFile.folder.name;
+      navButton.setHref('/'+aFile.folder.name);
       navButton.onclick = function(e) {
         history.pushState(null, null, this.href);
         var event = document.createEvent('Event');
@@ -377,6 +422,18 @@ var gUserInterface = {
     var elm = this.previewBuilder(aFile);
     preview.innerHTML = elm;
   },
+  logOut: function() {
+    localStorage.removeItem("login");
+    localStorage.removeItem("password");
+    Plugsbee.connection.disconnect();
+    if (location.protocol === 'file:') {
+      window.location.assign('#');
+      window.location.reload();
+    }
+    else
+      window.location.assign('/');
+
+  },   
 	showPanel: function(aPanel) {
     var deck = document.getElementById('deck');
     deck.hidden = false;
@@ -425,7 +482,7 @@ var gUserInterface = {
   handleFolder: function(aFolder) {
     var list = document.getElementById('folders');
     var deck = document.getElementById('deck');
-    aFolder.thumbnail.elm = list.insertBefore(aFolder.thumbnail.elm, document.getElementById('folder-adder'));
+    aFolder.thumbnail.elm = list.insertBefore(aFolder.thumbnail.elm, list.firstChild);
     aFolder.panel.elm = deck.appendChild(aFolder.panel.elm);
   },
   handleFile: function(aFile) {
@@ -452,6 +509,9 @@ var Router = {
 				//~ this.showPanel("addcontact");
 				//~ this.setActive('a#addcontact-tab');
 				//~ break;
+			case 'account':
+				gUserInterface.showAccount();
+				break;
 			//~ case 'upgrade':
 				//~ this.showSection('upgrade');
 				//~ break;
@@ -481,9 +541,15 @@ var Router = {
     }
   }
 }
-
+var popped = ('state' in window.history);
+var initialURL = location.href;
 window.addEventListener("popstate",
 	function(e) {
+    //Workaround because chrome does fire a popstate event onload
+    var initialPop = !popped && location.href == initialURL
+    popped = true
+    if ( initialPop ) return
+    
     if(!Plugsbee.connection.socket)
       return;
     var node = [];

@@ -28,13 +28,13 @@ Plugsbee.connection.on('connected', function() {
 	Plugsbee.getFolders();
   if (gConfiguration.PubSubService === 'PEP')
     gConfiguration.PubSubService = Plugsbee.jid;
+  gUserInterface.showFolders();
 });
 Plugsbee.connection.on('connecting', function() {
   console.log('connecting');
 });
 Plugsbee.connection.on('failure', function() {
   console.log('failure');
-  alert('Wrong login and/or password.');
 });
 Plugsbee.connection.on('disconnecting', function() {
   console.log('disconnecting');
@@ -207,7 +207,7 @@ Plugsbee.getFolders = function() {
 
         //Thumbnail
         var folders = document.getElementById('folders');
-        folder.thumbnail.elm = folders.insertBefore(folder.thumbnail.elm, document.getElementById('folder-adder'));
+        folder.thumbnail.elm = folders.insertBefore(folder.thumbnail.elm, folders.firstChild);
         //Panel
         var deck = document.getElementById('deck');
         folder.panel.elm = deck.appendChild(folder.panel.elm);

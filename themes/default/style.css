@@ -30,9 +30,11 @@ header {
     cursor: pointer;
 }
 */
-#upload-button, #account-menu, #nav-button {
-  visibility: hidden;
+/*
+#upload-button, #folder-adder, #account-menu, #nav-button {
+  display: none;
 }
+*/
 /*
 header > * {
   display: inline;
@@ -103,6 +105,9 @@ section {
   background-color: white;
   padding-top: 40px;
 }
+section#account {
+  text-align: center;
+}
 
 /*
 code {
@@ -147,7 +152,7 @@ code {
   height: 0;
   width: 0;
 }
-#upload-button {
+#upload-button, #folder-adder {
   vertical-align: middle;
   background: -moz-linear-gradient(top, #65b98b, #24794b);
   background: -o-linear-gradient(top, #65b98b, #24794b);

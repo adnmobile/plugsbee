@@ -70,27 +70,16 @@
   </head>
   <body>
     <header>
-      <div class="left">
-        <a id="nav-button" href="/">Folders</a>
-      </div>
+      <div class="left"/>
       <div class="center">
         <span id="title">Plugsbee</span>
       </div>
-      <div class="right">
-        <button id="upload-button" class="upload">Upload</button>
-        <button id="account-menu">Log out</button>
-      </div>
+      <div class="right"/>
     </header>
     <section id="welcome">
-      <noscript>  
-        <span>Sorry you must allow JavaScript.</span>  
-      </noscript>  
       <form id="login-form">
         <p>
-          <label for="login">Login: </label>
-<!--
-          <input name="login" autofocus="" required=""/>
--->
+          <label for="login" autofocus="autofocus">Login: </label>
           <input name="login" required=""/>
         </p>
         <p>
@@ -114,6 +103,10 @@
         </p>
         <input type="submit" value="Register"/>
       </form>
+    </section>
+    <section id="account" hidden="hidden">
+      <button onclick="gUserInterface.logOut();">Log out</button>
+      <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
     </section>
     <section id="deck" hidden="hidden">
       <ul id="folders" class="panel"/>
