@@ -87,14 +87,14 @@ var gUserInterface = {
     //
     //Empty trash
     //
-    var emptyTrash = document.createElement('button');
-    emptyTrash.id = "empty-trash";
-    emptyTrash.textContent = "Empty trash";
-    emptyTrash.hidden = true;
-    emptyTrash.addEventListener('click', function(){
-      alert('empty');
+    var emptyTrashButton = document.createElement('button');
+    emptyTrashButton.id = "empty-trash";
+    emptyTrashButton.textContent = "Empty trash";
+    emptyTrashButton.hidden = true;
+    emptyTrashButton.addEventListener('click', function(){
+      gUserInterface.emptyTrash();
     });  
-    this.emptyTrash = document.querySelector('div.right').appendChild(emptyTrash);
+    this.emptyTrashButton = document.querySelector('div.right').appendChild(emptyTrashButton);
 
     //
     //Trash
@@ -294,7 +294,7 @@ var gUserInterface = {
     this.navButton.elm.hidden = true;
     this.folderAdder.hidden = true;
     this.uploadButton.hidden = true;
-    this.emptyTrash.hidden = true;
+    this.emptyTrashButton.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
 
@@ -309,7 +309,7 @@ var gUserInterface = {
     this.navButton.elm.textContent = 'Folders';
     this.folderAdder.hidden = true;
     this.uploadButton.hidden = true;
-    this.emptyTrash.hidden = true;
+    this.emptyTrashButton.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
 
@@ -340,7 +340,7 @@ var gUserInterface = {
     
     document.getElementById('folder-adder').hidden = false;
     document.getElementById('upload-button').hidden = true;
-    this.emptyTrash.hidden = true;
+    this.emptyTrashButton.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
     this.title.elm.onclick = null;
@@ -375,7 +375,7 @@ var gUserInterface = {
     navButton.setHref('');
     document.getElementById('folder-adder').hidden = true;
     document.getElementById('upload-button').hidden = false;
-    this.emptyTrash.hidden = true;
+    this.emptyTrashButton.hidden = true;
     //Title
     this.title.value = aFolder.name;
     
@@ -397,6 +397,14 @@ var gUserInterface = {
 
     this.currentFolder = aFolder;
   },
+  emptyTrash: function() {
+    Plugsbee.purgeFolder(Plugsbee.trash);
+    var panel = Plugsbee.trash.panel.elm;
+    for (var i in Plugsbee.trash.files) {
+      panel.removeChild(Plugsbee.trash.files[i].thumbnail.elm);
+      delete Plugsbee.trash.files[i];
+    }
+  },    
   showTrash: function() {
     var aFolder = Plugsbee.trash;
     this.showSection('folders');
@@ -425,7 +433,7 @@ var gUserInterface = {
     navButton.setHref('');
     document.getElementById('folder-adder').hidden = true;
     document.getElementById('upload-button').hidden = true;
-    this.emptyTrash.hidden = false;
+    this.emptyTrashButton.hidden = false;
     //Title
     this.title.value = aFolder.name;
     
@@ -493,7 +501,7 @@ var gUserInterface = {
 
     document.getElementById('folder-adder').hidden = true;
     document.getElementById('upload-button').hidden = true;
-    this.emptyTrash.hidden = true;
+    this.emptyTrashButton.hidden = true;
 
     var navButton = this.navButton;
     navButton.elm.hidden = false;

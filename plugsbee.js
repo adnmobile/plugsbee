@@ -265,6 +265,9 @@ Plugsbee.deleteFolder = function(folder) {
   folder.panel.elm.parentNode.removeChild(folder.panel.elm);
 	Plugsbee.connection.pubsub['delete'](folder.host, folder.id);
 };
+Plugsbee.purgeFolder = function(aFolder) {
+	Plugsbee.connection.pubsub.purge(aFolder.host, aFolder.id);
+};
 Plugsbee.getFiles = function(folder) {
 	Plugsbee.connection.pubsub.items(folder.host, folder.id, function(stanza) {
     var items = stanza.items;
