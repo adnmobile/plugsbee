@@ -51,6 +51,7 @@ var gUserInterface = {
     folderAdder.id = "folder-adder";
     folderAdder.textContent = "New folder";
     folderAdder.hidden = true;
+    folderAdder.addEventListener('click', gUserInterface.addFolder); 
     //~ var input =  folderAdder.form.querySelector('input');
     //~ folderAdder.elm.onclick = function(aEvent) {
       //~ folderAdder.edit = true;
@@ -84,6 +85,18 @@ var gUserInterface = {
     this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
 
     //
+    //Empty trash
+    //
+    var emptyTrash = document.createElement('button');
+    emptyTrash.id = "empty-trash";
+    emptyTrash.textContent = "Empty trash";
+    emptyTrash.hidden = true;
+    emptyTrash.addEventListener('click', function(){
+      alert('empty');
+    });  
+    this.emptyTrash = document.querySelector('div.right').appendChild(emptyTrash);
+
+    //
     //Trash
     //
     (function() {
@@ -91,7 +104,6 @@ var gUserInterface = {
       var trash = new Widget.Thumbnail();
       trash.draggable = false;
       trash.miniature = gUserInterface.themeFolder + 'trash.png';
-      trash.label = 'Trash';
       trash.elm.classList.add('trash');
       trash.elm.addEventListener('dragenter', function(evt) {
         this.classList.add('dragenter');
@@ -238,6 +250,43 @@ var gUserInterface = {
     var folder = Plugsbee.folders[jid];
     Plugsbee.deleteFolder(folder);
   },
+  addFolder: function() {
+    var thumbnail = new Widget.Thumbnail();
+    thumbnail.miniature = gUserInterface.themeFolder+'folder.png';
+    thumbnail.edit = true;
+    var folders = document.getElementById('folders');
+    
+    function dispatchEvent() {
+      var cancelEvent = document.createEvent('CustomEvent');
+      cancelEvent.initCustomEvent('cancel', false, false);
+      thumbnail.form.dispatchEvent(cancelEvent);
+    };  
+    
+    thumbnail.form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.elements.name.removeEventListener('blur', dispatchEvent);
+      var name = this.elements.name.value;
+      if (name) {
+        Plugsbee.createFolder(name, 'whitelist', function(folder) {
+          //Thumbnail
+          folders.removeChild(thumbnail.elm);
+          folder.thumbnail.elm = folders.insertBefore(folder.thumbnail.elm, folders.firstChild);
+          //Panel
+          folder.panel.elm = document.getElementById('deck').appendChild(folder.panel.elm);
+        });
+      }
+      else {
+        dispatchEvent();
+      }
+    });
+    thumbnail.form.elements.name.addEventListener('blur', dispatchEvent);
+    thumbnail.form.addEventListener('cancel', function(e) {
+      folders.removeChild(thumbnail.elm);
+    });
+
+    var folders = document.getElementById('folders');
+    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
+  }, 
   showWelcome: function() {
     document.body.style.backgroundColor = 'white';
 
@@ -245,6 +294,7 @@ var gUserInterface = {
     this.navButton.elm.hidden = true;
     this.folderAdder.hidden = true;
     this.uploadButton.hidden = true;
+    this.emptyTrash.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
 
@@ -259,6 +309,7 @@ var gUserInterface = {
     this.navButton.elm.textContent = 'Folders';
     this.folderAdder.hidden = true;
     this.uploadButton.hidden = true;
+    this.emptyTrash.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
 
@@ -289,6 +340,7 @@ var gUserInterface = {
     
     document.getElementById('folder-adder').hidden = false;
     document.getElementById('upload-button').hidden = true;
+    this.emptyTrash.hidden = true;
     //Title
     this.title.value = gConfiguration.name;
     this.title.elm.onclick = null;
@@ -323,6 +375,57 @@ var gUserInterface = {
     navButton.setHref('');
     document.getElementById('folder-adder').hidden = true;
     document.getElementById('upload-button').hidden = false;
+    this.emptyTrash.hidden = true;
+    //Title
+    this.title.value = aFolder.name;
+    
+    gUserInterface.showPanel(aFolder.panel);
+    
+    
+    //~ this.title.elm.onclick = function(evt) {
+      //~ if(this.title.edit !== true)
+        //~ this.title.edit = true;
+    //~ };
+    //~ this.title.form.onsubmit = function(evt) {
+      //~ var value = this.title.value;
+      //~ this.title.edit = false;
+      //~ this.title.value = value;
+      //~ aFolder.name = value;
+      //~ Plugsbee.renameFolder(aFolder, value);
+      //~ evt.preventDefault();
+    //~ };
+
+    this.currentFolder = aFolder;
+  },
+  showTrash: function() {
+    var aFolder = Plugsbee.trash;
+    this.showSection('folders');
+    document.body.style.backgroundColor = 'white';
+    //Makes the folders thumbnail as dropbox
+    for (var i in Plugsbee.folders) {
+      var folder = Plugsbee.folders[i];
+      if(!folder.trash) {
+        folder.thumbnail.draggable = false;
+        folder.thumbnail.dropbox = true;
+      }
+    }
+    //Move the folders thumbnails to the dock
+    var folders = document.getElementById('dock').appendChild(document.getElementById('folders'));
+    folders.classList.remove('panel');
+    folders.hidden = false;
+    //Hide the current folder
+    aFolder.thumbnail.elm.hidden = true;
+    //Hide the folder adder for the moment
+    gUserInterface.hidden = true;
+
+    //Header
+    var navButton = this.navButton;
+    navButton.elm.hidden = false;
+    navButton.elm.textContent = 'Folders';
+    navButton.setHref('');
+    document.getElementById('folder-adder').hidden = true;
+    document.getElementById('upload-button').hidden = true;
+    this.emptyTrash.hidden = false;
     //Title
     this.title.value = aFolder.name;
     
@@ -390,6 +493,7 @@ var gUserInterface = {
 
     document.getElementById('folder-adder').hidden = true;
     document.getElementById('upload-button').hidden = true;
+    this.emptyTrash.hidden = true;
 
     var navButton = this.navButton;
     navButton.elm.hidden = false;
@@ -509,6 +613,9 @@ var Router = {
 				//~ break;
 			case 'account':
 				gUserInterface.showAccount();
+				break;
+			case 'trash':
+				gUserInterface.showTrash();
 				break;
 			//~ case 'upgrade':
 				//~ this.showSection('upgrade');

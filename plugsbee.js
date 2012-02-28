@@ -200,6 +200,9 @@ Plugsbee.getFolders = function() {
         folder.thumbnail.elm = document.querySelector('.thumbnail.trash');
         //Panel
         folder.panel.elm = document.querySelector('.panel.trash');
+        
+        folder.name = item.name;
+        folder.thumbnail.href = 'trash';
       }
       //Normal folder
       else {
@@ -212,8 +215,9 @@ Plugsbee.getFolders = function() {
         //Panel
         var deck = document.getElementById('deck');
         folder.panel.elm = deck.appendChild(folder.panel.elm);
+        
+        folder.name = item.name;
       }
-      folder.name = item.name;
       Plugsbee.folders[folder.id] = folder;
       Plugsbee.getFiles(folder);
 		});
@@ -230,8 +234,8 @@ Plugsbee.getFolders = function() {
         folder.thumbnail.elm = document.querySelector('.thumbnail.trash');
         //Panel
         folder.panel.elm = document.querySelector('.panel.trash');
-
-        folder.name = item.name;
+        folder.name = 'Trash';
+        folder.thumbnail.href = 'trash';
 
       }, 'urn:plugsbee:folder:trash');
     }

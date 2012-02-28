@@ -18,7 +18,7 @@ Widget.Thumbnail = function() {
   elm = document.createElement('div');
   elm.innerHTML = 
     "<form>"+
-      "<input type='text' autofocus='autofocus'/>"+
+      "<input type='text' name='name' autofocus='autofocus'/>"+
     "</form>";
   this.form = elm.firstChild;
 
