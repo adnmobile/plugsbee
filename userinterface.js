@@ -141,7 +141,7 @@ var gUserInterface = {
     })();
 
     //
-    //Uploader
+    //File picker
     //
     var filePicker = document.getElementById('file-picker');
     filePicker.addEventListener('change', function upload(evt) {
@@ -359,14 +359,16 @@ var gUserInterface = {
         folder.thumbnail.dropbox = true;
       }
     }
+    var dock = document.getElementById('dock');
+    dock.hidden = true;
     //Move the folders thumbnails to the dock
-    var folders = document.getElementById('dock').appendChild(document.getElementById('folders'));
+    var folders = dock.appendChild(document.getElementById('folders'));
     folders.classList.remove('panel');
     folders.hidden = false;
     //Hide the current folder
     aFolder.thumbnail.elm.hidden = true;
     //Hide the folder adder for the moment
-    gUserInterface.hidden = true;
+    //~ gUserInterface.hidden = true;
 
     //Header
     var navButton = this.navButton;
@@ -379,7 +381,7 @@ var gUserInterface = {
     //Title
     this.title.value = aFolder.name;
     
-    gUserInterface.showPanel(aFolder.panel);
+    gUserInterface.showPanel(aFolder.panel.elm);
     
     
     //~ this.title.elm.onclick = function(evt) {
@@ -552,7 +554,6 @@ var gUserInterface = {
 		for (var i in panels) {
 			panels[i].hidden = true;
 		}
-
     if(typeof aPanel === "string")
       document.getElementById(aPanel).hidden = false;
     else

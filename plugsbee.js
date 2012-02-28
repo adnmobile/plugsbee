@@ -54,7 +54,7 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	var id = Math.random().toString().split('.')[1];
 	var jid = aFolder.jid+'/'+id;
 
-	var file =new Plugsbee.File();
+	var file = new Plugsbee.File();
 	file.jid = jid;
 	file.id = id;
 	file.name = aDOMFile.name;
@@ -63,18 +63,19 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	aFolder.files[id] = file;
 	Plugsbee.files[id] = file;
 
-  gUserInterface.handleFile(file);
-  var thumbnail = file.thumbnail;
-
-  var progress = document.createElement('progress');
-  progress.setAttribute('max', '100');
-  progress.setAttribute('value', '0');
+  var div = document.createElement('div');
+  div.classList.add('miniature');
   var span = document.createElement('span');
+  span.textContent = '0%';
+  var progress = document.createElement('progress');
+  progress.value = '0';
+  progress.max = '100';
+  span = div.appendChild(span);
+  progress = div.appendChild(progress);
+  file.thumbnail.miniature = div;
   
-  var img = thumbnail.elm.querySelector('img');
-  img.hidden = true;
-  thumbnail.elm.querySelector('div.miniature').appendChild(span);
-  thumbnail.elm.querySelector('div.miniature').appendChild(progress);
+  var panel = aFolder.panel.elm;
+  file.thumbnail.elm = panel.insertBefore(file.thumbnail.elm, panel.firstChild);
   
 	var fd = new FormData;
 	fd.append(jid, aDOMFile);
@@ -84,15 +85,11 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	xhr.upload.addEventListener("progress",
 		function(evt) {
 			var progression = (evt.loaded/evt.total)*100;
-      thumbnail.elm.querySelector('progress').setAttribute('value', progression);
-      thumbnail.elm.querySelector('span').textContent = Math.round(progression)+'%';
-      //~ console.log(progression);
-			//~ if(onProgress)
-				//~ onProgress(file, progression);
+      progress.value = progression;
+      span.textContent = Math.round(progression)+'%';
 		}, false
 	);
 	
-	var that = this;
 	xhr.addEventListener("load",
 		function(evt) {
 			var answer = JSON.parse(xhr.responseText);
@@ -103,30 +100,11 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
         file.miniature = gConfiguration.themeFolder+'/file.png';
   
       file.draggable = true;
-      file.thumbnail.elm.getElementsByTagName('progress')[0].hidden = true;
-      file.thumbnail.elm.getElementsByTagName('span')[0].hidden = true;
-      file.thumbnail.elm.querySelector('img').hidden = false;
-      file.miniature = file.miniature;
 			file.thumbnail.href = file.folder.name+'/'+file.name;
-			that.addFile(file, onSuccess);
+			Plugsbee.addFile(file, onSuccess);
 		}, false
 	);
-	//~ xhr.addEventListener("loadstart",
-		//~ function(evt) {
-			//~ console.log('start');
-			//~ if(onStart)
-				//~ onStart(file);
-		//~ }, false
-	//~ ); 
-	//~ xhr.upload.addEventListener("loadend", test, false);
-	//~ xhr.upload.addEventListener("error", test, false);  
-	//~ xhr.upload.addEventListener("abort", test, false);
-	//~ xhr.addEventListener("progress", test2, false); 
-	//~ xhr.addEventListener("loadend", test2, false);
-	//~ xhr.addEventListener("load", test2, false);  
-	//~ xhr.addEventListener("error", test2, false);  
-	//~ xhr.addEventListener("abort", test2, false);
-	
+
 	xhr.open('POST', gConfiguration.uploadService);
 	xhr.send(fd);
 }
@@ -250,7 +228,8 @@ Plugsbee.moveFile = function(file, newFolder) {
   var id = Math.random().toString().split('.')[1];
   file.id = id;
 
-  gUserInterface.handleFile(file);
+  var panel = file.folder.panel.elm;
+  file.thumbnail.elm = panel.insertBefore(file.thumbnail.elm, panel.firstChild);
   
   Plugsbee.addFile(file);
   Plugsbee.files[file.id] = file;

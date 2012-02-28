@@ -170,7 +170,7 @@ code {
   font-size: 18px;
   cursor: pointer !important;
 }
-.thumbnail.upload .area{
+.thumbnail.upload .miniature {
   border: dashed 2px #069045;
   border-radius: 6px;
   width: 80px;
@@ -203,7 +203,7 @@ code {
 /*
  * Folders
  */
-.thumbnail.folder .miniature img {
+.thumbnail.folder .miniature {
 /*
   width: 85px;
 */
@@ -212,8 +212,11 @@ code {
 /*
  * Files
  */
-.thumbnail.file .miniature img {
+.thumbnail.file img.miniature {
   box-shadow: 0 0 0.5em black;
+}
+.thumbnail.file progress {
+  max-width: inherit;
 }
 
 /*

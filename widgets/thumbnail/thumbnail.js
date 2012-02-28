@@ -6,9 +6,6 @@ Widget.Thumbnail = function() {
     "<li class='thumbnail'>"+
       "<a>"+
         "<figure>"+
-          "<div class='miniature'>"+
-            "<img/>"+
-          "</div>"+
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
@@ -129,11 +126,22 @@ Widget.Thumbnail.prototype.__defineGetter__('dropbox', function() {
 //
 //miniature property
 //
-Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aSrc) {
-	this.elm.getElementsByTagName('img')[0].src = aSrc;
+Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
+  var figure = this.elm.querySelector('figure');
+  if (typeof aMiniature === 'string') {
+    var img = document.createElement('img');
+    img.classList.add('miniature');
+    img.src = aMiniature;
+    aMiniature = img;
+  }
+  var miniature = figure.querySelector('.miniature');
+  if(!miniature)
+    figure.insertBefore(aMiniature, figure.firstChild);
+  else
+    figure.replaceChild(aMiniature, miniature);
 });
 Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
-	return this.elm.getElementsByTagName('img')[0].src;
+	return this.elm.getElementsByClassName('miniature')[0];
 });
 //
 //href property

@@ -1,21 +1,24 @@
 'use strict';
 
 Widget.Panel = function() {
-  var thumbnail = (new Widget.Thumbnail()).elm;
-  thumbnail.classList.add('upload');
-  thumbnail.removeAttribute('draggable');
-  thumbnail.querySelector('.miniature').innerHTML =  
-    "<div class='area'>"+
-    "</div>";
-  thumbnail.querySelector('.label').textContent = "Add file";
-  thumbnail.addEventListener('click', function() {
+  var thumbnail = new Widget.Thumbnail();
+  thumbnail.elm.classList.add('upload');
+  thumbnail.elm.removeAttribute('draggable');
+
+  var div = document.createElement('div');
+  div.classList.add('area');
+  div.classList.add('miniature');
+  thumbnail.miniature = div;
+
+  thumbnail.label = "Add file";
+  thumbnail.elm.addEventListener('click', function() {
     gUserInterface.openFilePicker();
   });
   var div = document.createElement('ul');
   div.classList.add('panel');
   div.hidden = true;
   
-  div.appendChild(thumbnail);
+  div.appendChild(thumbnail.elm);
   
   this.elm = div;
 };
