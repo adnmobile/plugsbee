@@ -124,8 +124,11 @@ var gUserInterface = {
         var folder = Plugsbee.folders[id];
         
         
-        if (folder)
+        if (folder) {
+          for (var i in folder.files)
+            Plugsbee.moveFile(folder.files[i], Plugsbee.trash);
           Plugsbee.deleteFolder(folder);
+        }
         else if (file) {
           Plugsbee.moveFile(file, Plugsbee.trash);
           document.getElementById('dock').hidden = true;
@@ -419,6 +422,8 @@ var gUserInterface = {
         folder.thumbnail.dropbox = true;
       }
     }
+    var dock = document.getElementById('dock');
+    dock.hidden = true;
     //Move the folders thumbnails to the dock
     var folders = document.getElementById('dock').appendChild(document.getElementById('folders'));
     folders.classList.remove('panel');
