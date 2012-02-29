@@ -123,11 +123,13 @@ Plugsbee.renameFolder = function(aFolder, aNewName) {
 	aFolder.thumbnail.label = aFolder.name;
 	fields.push("<field var='pubsub#title'><value>"+aNewName+"</value></field>");
 	
-  this.connection.send(Lightstring.stanza.pubsub.config(gConfiguration.PubSubService, aFolder.nodeId, fields));
+  Plugsbee.connection.pubsub.configure(gConfiguration.PubSubService, aFolder.id, fields);
+  //Updates href
+  for (var i in aFolder.files)
+    aFolder.files[i].name = aFolder.files[i].name;
 }; 
 Plugsbee.renameFile = function(aFile) {
   this.addFile(aFile);
-  aFile.thumbnail.label = aFile.name;
 }; 
 Plugsbee.createFolder = function(aName, aAccessmodel, onSuccess, aId) {
   if(aId)

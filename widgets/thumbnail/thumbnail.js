@@ -19,23 +19,6 @@ Widget.Thumbnail = function() {
     "</form>";
   this.form = elm.firstChild;
 
-  //~ if (Modernizr.touch){
-    //~ this.elm.addEventListener('touchend', function(e) {
-      //~ if(location.protocol === 'file:')
-        //~ return;
-      //~ 
-      //~ history.pushState(null, null, this.firstChild.href);
-      //~ var event = document.createEvent('Event');
-      //~ event.initEvent('popstate', true, true);
-      //~ window.dispatchEvent(event);
-      //~ 
-      //~ e.preventDefault();
-    //~ }, true);
-    //~ this.elm.addEventListener('touchend', function(e) {
-     //~ 
-    //~ });
-//~ 
-  //~ } 
   this.elm.addEventListener('click', function(e) {
     if(location.protocol === 'file:')
       return;

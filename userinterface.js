@@ -13,9 +13,16 @@ var gUserInterface = {
     //
     //Title
     //
-    var title = document.getElementById('title');
-    title.textContent = gConfiguration.name;
-    this.title = new Widget.Editabletext(title);
+    (function() {
+      
+      var contextTitle = new Widget.Editabletext();
+      contextTitle.value = gConfiguration.name;
+
+      contextTitle.elm = document.querySelector('.center').appendChild(contextTitle.elm);
+
+
+      gUserInterface.contextTitle = contextTitle;
+    })();
 
     //
     //Navigation button
@@ -299,7 +306,8 @@ var gUserInterface = {
     this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
     //Title
-    this.title.value = gConfiguration.name;
+    this.contextTitle.value = gConfiguration.name;
+    this.contextTitle.editable = false;
 
     this.showSection('account');
   },
@@ -314,7 +322,8 @@ var gUserInterface = {
     this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
     //Title
-    this.title.value = gConfiguration.name;
+    this.contextTitle.value = gConfiguration.name;
+    this.contextTitle.editable = false;
 
     this.showSection('account');
   },
@@ -345,8 +354,8 @@ var gUserInterface = {
     document.getElementById('upload-button').hidden = true;
     this.emptyTrashButton.hidden = true;
     //Title
-    this.title.value = gConfiguration.name;
-    this.title.elm.onclick = null;
+    this.contextTitle.value = gConfiguration.name;
+    this.contextTitle.editable = false;
 
     this.showSection('deck');
 		this.showPanel('folders');
@@ -382,7 +391,11 @@ var gUserInterface = {
     document.getElementById('upload-button').hidden = false;
     this.emptyTrashButton.hidden = true;
     //Title
-    this.title.value = aFolder.name;
+    this.contextTitle.value = aFolder.name;
+    this.contextTitle.editable = true;
+    this.contextTitle.onsubmit = function(value) {
+      Plugsbee.renameFolder(aFolder, value);
+    };
     
     gUserInterface.showPanel(aFolder.panel.elm);
     
@@ -442,7 +455,8 @@ var gUserInterface = {
     document.getElementById('upload-button').hidden = true;
     this.emptyTrashButton.hidden = false;
     //Title
-    this.title.value = aFolder.name;
+    this.contextTitle.value = aFolder.name;
+    this.contextTitle.editable = false;
     
     gUserInterface.showPanel(aFolder.panel);
     
@@ -486,19 +500,12 @@ var gUserInterface = {
     //~ download.href = aFile.src.replace('http://media.plugsbee.com', 'http://download.plugsbee.com');
     download.href = aFile.src;
     
-    this.title.value = aFile.name;
-
-    this.title.elm.onclick = function(evt) {
-      if(this.title.edit !== true)
-        this.title.edit = true;
-    };
-    this.title.form.onsubmit = function(evt) {
-      var value = title.value;
-      this.title.edit = false;
-      this.title.value = value;
+    //Title
+    this.contextTitle.value = aFile.name;
+    this.contextTitle.editable = true;
+    this.contextTitle.onsubmit = function(value) {
       aFile.name = value;
-      Plugsbee.renameFile(aFile);
-      evt.preventDefault();
+      Plugsbee.renameFile(aFile, value);
     };
 
     var getLink = document.getElementById('get-link');
