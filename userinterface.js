@@ -268,7 +268,7 @@ var gUserInterface = {
     
     function dispatchEvent() {
       var cancelEvent = document.createEvent('CustomEvent');
-      cancelEvent.initCustomEvent('cancel', false, false);
+      cancelEvent.initCustomEvent('cancel', false, false, false);
       thumbnail.form.dispatchEvent(cancelEvent);
     };  
     
