@@ -1,0 +1,46 @@
+CACHE MANIFEST
+#test
+index.xhtml
+lib/burger.js
+lib/platform.js/platform.js
+configuration.js
+lib/yepnope/yepnope.js
+
+lib/vkbeautify.0.95.01.beta.js
+lib/lightstring/lightstring.js
+lib/lightstring/polyfill.js
+lib/lightstring/jid.js
+lib/lightstring/stanza.js
+lib/lightstring/md5.js
+lib/lightstring/plugins/disco.js
+lib/lightstring/plugins/presence.js
+lib/lightstring/plugins/pubsub.js
+lib/lightstring/plugins/dataforms.js
+lib/lightstring/plugins/PLAIN.js
+widgets/thumbnail/thumbnail.js
+widgets/thumbnail/thumbnail.css
+widgets/panel/panel.js
+widgets/panel/panel.css
+widgets/editabletext/editabletext.js
+widgets/editabletext/editabletext.css
+plugsbee.js
+datas.js
+userinterface.js
+lib/add-to-homescreen/src/add2home.js
+lib/add-to-homescreen/style/add2home.css
+themes/default/style.css
+themes/default/iOS.css
+themes/default/file.png
+themes/default/folder.png
+themes/default/trash.png
+themes/default/icons/114x114.png
+themes/default/icons/72x72.png
+themes/default/icons/57x57.png
+themes/default/icons/16x16.png
+
+# Use from network if available
+NETWORK:
+*
+
+# Fallback content
+FALLBACK:
