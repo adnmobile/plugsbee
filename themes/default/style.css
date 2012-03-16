@@ -99,9 +99,9 @@ header .left {
 }
 
 /*
- *section
+ *deck
  */
-section {
+#deck {
   background-color: white;
   padding-top: 40px;
 }
