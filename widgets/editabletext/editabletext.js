@@ -75,9 +75,11 @@ Widget.Editabletext.prototype.__defineSetter__('editable', function(aBool) {
 	this._editable = aBool;
   var that = this;
   if(aBool === true) {
+    this.elm.classList.add('editable');
     this.elm.addEventListener('click', this.onclick);
   }
   if(aBool === false) {
+    this.elm.classList.remove('editable');
     this.elm.removeEventListener('click', this.onclick);
   }
 });

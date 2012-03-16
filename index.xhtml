@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!--
+<html xmlns="http://www.w3.org/1999/xhtml" manifest="manifest.appcache">
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Loading...</title> 
@@ -18,22 +21,24 @@
     </script>
     
     <!-- Firebug -->
-    <!--
+<!--
     <script type="application/javascript" src="https://getfirebug.com/firebug-lite.js">
       { startOpened: true }
     </script>
-    -->
+-->
     
    
     <!-- Framework -->
-    <script type="application/javascript" src="lib/burger.js"/>
+    <script type="application/javascript" src="SW.js"/>
+    <script type="application/javascript" src="thumbnail.js"/>
     <script type="application/javascript" src="lib/platform.js/platform.js"/>
+    <script type="application/javascript" src="lib/burger.js"/>
+    <script type="application/javascript" src="lib/yepnope/yepnope.js"/>
     
     <!-- configuration -->
     <script type="application/javascript" src="configuration.js"/>
 
-    <!-- resource loader -->
-    <script type="application/javascript" src="lib/yepnope/yepnope.js"/>
+
 
     <!-- XML prettify -->
     <script type="application/javascript" src="lib/vkbeautify.0.95.01.beta.js"/>
@@ -53,6 +58,15 @@
     <script type="application/javascript" src="lib/lightstring/plugins/pubsub.js"/>
     <script type="application/javascript" src="lib/lightstring/plugins/dataforms.js"/>
     <script type="application/javascript" src="lib/lightstring/plugins/PLAIN.js"/>
+    
+    <!-- Plugsbee -->
+    <script type="application/javascript" src="gStorage.js"/>
+    <script type="application/javascript" src="gRemote.js"/>
+    <script type="application/javascript" src="gInterface.js"/>
+    <script type="application/javascript" src="userinterface.js"/>
+    <script type="application/javascript" src="plugsbee.js"/>
+    <script type="application/javascript" src="plugsbee.folder.js"/>
+    <script type="application/javascript" src="plugsbee.file.js"/>
 
     <!-- widgets -->
     <script type="application/javascript" src="widgets/thumbnail/thumbnail.js"/>
@@ -61,12 +75,6 @@
     <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css"/>
     <script type="application/javascript" src="widgets/editabletext/editabletext.js"/>
     <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css"/>
-
-    <!-- application -->
-    <script type="application/javascript" src="plugsbee.js"/>
-    <script type="application/javascript" src="datas.js"/>
-    <script type="application/javascript" src="userinterface.js"/>
-
   </head>
   <body>
     <header>
@@ -74,46 +82,46 @@
       <div class="center"/>
       <div class="right"/>
     </header>
-    <section id="welcome">
-      <form id="login-form">
-        <p>
-          <label for="login" autofocus="autofocus">Login: </label>
-          <input name="login" required=""/>
-        </p>
-        <p>
-          <label for="password">Password: </label>
-          <input name="password" type="password" required=""/>
-        </p>
-        <p id="remember-input">
-          <input type="checkbox" name="remember" checked="checked"/>
-          <label for="checkbox">Remember me</label>
-        </p>
-        <input type="submit" value="Login"/>
-      </form>
-      <form id="register-form">
-        <p>
-          <label for="login">Login: </label>
-          <input name="login" required=""/>
-        </p>
-        <p>
-          <label for="password">Password: </label>
-          <input name="password" type="password" required=""/>
-        </p>
-        <input type="submit" value="Register"/>
-      </form>
-    </section>
-    <section id="account" hidden="hidden">
-      <button onclick="gUserInterface.logOut();">Log out</button>
-      <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
-    </section>
-    <section id="deck" hidden="hidden">
-      <ul id="folders" class="panel"/>
-    </section>
-    <section id="viewer" hidden="true">
-      <div id="preview"></div>
-      <a id="download">Download</a>
-      <button id="get-link">Get link</button>
-    </section>
+    <div id="deck">
+      <section id="login" data-name="login" class="panel" hidden="hidden">
+        <form id="login-form">
+          <p>
+            <label for="login" autofocus="autofocus">Login: </label>
+            <input name="login" required=""/>
+          </p>
+          <p>
+            <label for="password">Password: </label>
+            <input name="password" type="password" required=""/>
+          </p>
+          <p id="remember-input">
+            <input type="checkbox" name="remember" checked="checked"/>
+            <label for="checkbox">Remember me</label>
+          </p>
+          <input type="submit" value="Login"/>
+        </form>
+        <form id="register-form">
+          <p>
+            <label for="login">Login: </label>
+            <input name="login" required=""/>
+          </p>
+          <p>
+            <label for="password">Password: </label>
+            <input name="password" type="password" required=""/>
+          </p>
+          <input type="submit" value="Register"/>
+        </form>
+      </section>
+      <section id="account" data-name="account" class="panel" hidden="hidden">
+        <button data-require="network" onclick="gUserInterface.logOut();">Log out</button>
+        <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
+      </section>
+      <ul id="folders" data-name="folders" class="panel"></ul>
+      <section id="viewer" data-name="viewer" class="panel" hidden="hidden">
+        <div id="preview"></div>
+        <a id="download" data-require="network">Download</a>
+        <button id="get-link">Get link</button>
+      </section>
+    </div>
     <input id="file-picker" type="file"/>
     <div id="xmpp-console" hidden="hidden"/>
     <div id="dock" hidden="hidden"/>

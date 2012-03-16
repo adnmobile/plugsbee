@@ -46,6 +46,7 @@ Object.defineProperty(Plugsbee.Folder, 'id', {
   set: function(aId) {
     this._id = aId;
     this.thumbnail.elm.setAttribute('data-id', aId);
+    this.panel.elm.setAttribute('data-name', aId);
   },
   get: function() {
     return this._id;

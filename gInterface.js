@@ -40,10 +40,10 @@ var gInterface = {
   },
   setFolderName: function(aFolder) {
     aFolder.thumbnail.label = aFolder.name;
-    aFolder.thumbnail.href = aFolder.name;
+    aFolder.thumbnail.href = encodeURIComponent(aFolder.name);
     //Updates href
     for (var i in aFolder.files)
-      aFolder.files[i].thumbnail.href = aFolder.files[i].folder.name + '/' + aFolder.files[i].name;
+      aFolder.files[i].thumbnail.href = encodeURIComponent(aFolder.files[i].folder.name) + '/' + encodeURIComponent(aFolder.files[i].name);
   },
   setFolderMiniature: function(aPbFolder) {
     //Miniature
@@ -75,9 +75,9 @@ var gInterface = {
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
     if (aPbFile.folder.id === "trash")
-      aPbFile.thumbnail.href = 'trash' + '/' + aPbFile.name;
+      aPbFile.thumbnail.href = 'trash' + '/' + encodeURIComponent(aPbFile.name);
     else
-      aPbFile.thumbnail.href = aPbFile.folder.name + '/' + aPbFile.name;
+      aPbFile.thumbnail.href = aPbFile.folder.name + '/' + encodeURIComponent(aPbFile.name);
   },
   setFileMiniature: function(aPbFile) {
     var blobURL = window.URL.createObjectURL(aPbFile.miniature);

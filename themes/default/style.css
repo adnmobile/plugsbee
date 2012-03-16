@@ -199,7 +199,9 @@ code {
   background: none;
   font-size: inherit;
 }
-
+.thumbnail, #folder-adder, #upload-button, #empty-trash {
+  cursor: pointer !important;
+} 
 /*
  * Folders
  */

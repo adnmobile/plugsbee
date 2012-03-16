@@ -4,6 +4,9 @@ index.xhtml
 lib/burger.js
 lib/platform.js/platform.js
 configuration.js
+gStorage.js
+gInterface.js
+gRemote.js
 lib/yepnope/yepnope.js
 
 lib/vkbeautify.0.95.01.beta.js
@@ -24,12 +27,14 @@ widgets/panel/panel.css
 widgets/editabletext/editabletext.js
 widgets/editabletext/editabletext.css
 plugsbee.js
-datas.js
+plugsbee.folder.js
+plugsbee.file.js
 userinterface.js
 lib/add-to-homescreen/src/add2home.js
 lib/add-to-homescreen/style/add2home.css
 themes/default/style.css
 themes/default/iOS.css
+themes/default/offline.css
 themes/default/file.png
 themes/default/folder.png
 themes/default/trash.png

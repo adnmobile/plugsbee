@@ -1,5 +1,7 @@
 'use strict';
 
+
+
 var gUserInterface = {
   toggleXMPPConsole: function() {
     var elm = document.getElementById('xmpp-console');
@@ -10,6 +12,45 @@ var gUserInterface = {
   currentFile: {},
   themeFolder : 'themes/'+gConfiguration.theme+'/',
 	init: function(e) {
+    
+    //Avoid the loading of the page to fire a popstate event (webkit)
+    window.setTimeout(function() {
+      window.addEventListener("popstate",
+        function() {
+          var node = [];
+          if (location.protocol === 'file:') {
+            var hash = location.hash.split('#')[1];
+            if(hash) {
+              var split = hash.split('/');
+              if(split)
+                node = split;
+              else
+                node.push(hash);
+            }
+          }
+          else {
+            var split = location.pathname.split('/');
+            node.push(split[1]);
+            if (split[2])
+              node.push(split[2]);
+          }
+          Router.route(node);
+        }, false
+      );
+    }, 0);
+    
+    //
+    //Deck
+    //
+    (function() {
+      
+      var deck = Object.create(SWDeck);
+      deck.rootElement = document.getElementById('deck');
+      gUserInterface.deck = deck;
+      
+    })();
+    
+    
     //
     //Title
     //
@@ -57,6 +98,7 @@ var gUserInterface = {
     var folderAdder = document.createElement('button');
     folderAdder.id = "folder-adder";
     folderAdder.textContent = "New folder";
+    folderAdder.setAttribute('data-require', "network");
     folderAdder.hidden = true;
     folderAdder.addEventListener('click', gUserInterface.addFolder); 
     //~ var input =  folderAdder.form.querySelector('input');
@@ -88,6 +130,7 @@ var gUserInterface = {
     uploadButton.id = "upload-button";
     uploadButton.textContent = "Add file";
     uploadButton.hidden = true;
+    uploadButton.setAttribute('data-require', "network");
     uploadButton.addEventListener('click', gUserInterface.openFilePicker);  
     this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
 
@@ -98,6 +141,7 @@ var gUserInterface = {
     emptyTrashButton.id = "empty-trash";
     emptyTrashButton.textContent = "Empty trash";
     emptyTrashButton.hidden = true;
+    emptyTrashButton.setAttribute('data-require', "network");
     emptyTrashButton.addEventListener('click', function(){
       gUserInterface.emptyTrash();
     });  
@@ -110,6 +154,10 @@ var gUserInterface = {
       //Thumbnail
       var trash = new Widget.Thumbnail();
       trash.draggable = false;
+      trash.elm.hidden = true;
+      trash.label = 'Trash';
+      trash.elm.setAttribute('data-id', 'trash');
+      trash.href = 'trash';
       trash.miniature = gUserInterface.themeFolder + 'trash.png';
       trash.elm.classList.add('trash');
       trash.elm.addEventListener('dragenter', function(evt) {
@@ -126,6 +174,8 @@ var gUserInterface = {
         evt.preventDefault();
         this.classList.remove('dragenter');
         var id = evt.dataTransfer.getData('text/plain');
+        if (!id)
+          return;
 
         var file = Plugsbee.files[id];
         var folder = Plugsbee.folders[id];
@@ -133,11 +183,14 @@ var gUserInterface = {
         
         if (folder) {
           for (var i in folder.files)
-            Plugsbee.moveFile(folder.files[i], Plugsbee.trash);
-          Plugsbee.deleteFolder(folder);
+            folder.files[i].move(Plugsbee.folders['trash']);
+          gStorage.deleteFolder(folder);
+          gRemote.deleteFolder(folder);
+          gInterface.eraseFolder(folder);
+          delete Plugsbee.folders[folder.id];
         }
         else if (file) {
-          Plugsbee.moveFile(file, Plugsbee.trash);
+          file.move(Plugsbee.folders['trash']);
           document.getElementById('dock').hidden = true;
         }
       });
@@ -145,6 +198,7 @@ var gUserInterface = {
       //Panel
       var panel = new Widget.Panel();
       panel.elm.classList.add('trash');
+      panel.elm.setAttribute('data-name', 'trash');
       panel.hidden = true;
       panel.elm.firstChild.hidden = true;
       panel.elm = document.getElementById('deck').appendChild(panel.elm);
@@ -248,18 +302,6 @@ var gUserInterface = {
   openFilePicker: function() {
     document.getElementById('file-picker').click();
   },
-  deleteFile: function() {
-    var elm = document.activeElement;
-    var jid = elm.getAttribute('data-jid');
-    var file = Plugsbee.files[jid];
-    Plugsbee.deleteFile(file);
-  },
-  deleteFolder: function() {
-    var elm = document.activeElement;
-    var jid = elm.getAttribute('data-jid');
-    var folder = Plugsbee.folders[jid];
-    Plugsbee.deleteFolder(folder);
-  },
   addFolder: function() {
     var thumbnail = new Widget.Thumbnail();
     thumbnail.miniature = gUserInterface.themeFolder+'folder.png';
@@ -277,13 +319,22 @@ var gUserInterface = {
       this.elements.name.removeEventListener('blur', dispatchEvent);
       var name = this.elements.name.value;
       if (name) {
-        Plugsbee.createFolder(name, 'whitelist', function(folder) {
-          //Thumbnail
-          folders.removeChild(thumbnail.elm);
-          folder.thumbnail.elm = folders.insertBefore(folder.thumbnail.elm, folders.firstChild);
-          //Panel
-          folder.panel.elm = document.getElementById('deck').appendChild(folder.panel.elm);
-        });
+        var pbFolder = Object.create(Plugsbee.Folder);
+        pbFolder.draw();
+        
+        folders.removeChild(thumbnail.elm);
+        gInterface.handleFolder(pbFolder);
+  
+        pbFolder.name = name;
+        pbFolder.id = Math.random().toString().split('.')[1];
+        pbFolder.host = gConfiguration.PubSubService;
+        
+        
+        gRemote.newFolder(pbFolder);
+        gStorage.addFolder(pbFolder);
+        
+
+        Plugsbee.folders[pbFolder.id] = pbFolder;
       }
       else {
         dispatchEvent();
@@ -309,7 +360,21 @@ var gUserInterface = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-    this.showSection('account');
+    this.deck.selectedPanel = 'account';
+  },
+  showLogin: function() {
+    document.body.style.backgroundColor = 'white';
+
+    //Header
+    this.navButton.elm.hidden = true;
+    this.folderAdder.hidden = true;
+    this.uploadButton.hidden = true;
+    this.emptyTrashButton.hidden = true;
+    //Title
+    this.contextTitle.value = gConfiguration.name;
+    this.contextTitle.editable = false;
+
+    this.deck.selectedPanel = 'login';
   },
   showAccount: function() {
     document.body.style.backgroundColor = 'white';
@@ -325,7 +390,7 @@ var gUserInterface = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-    this.showSection('account');
+    this.deck.selectedPanel = 'account';
   },
   showFolders: function() {
     document.body.style.backgroundColor = 'white';
@@ -357,11 +422,10 @@ var gUserInterface = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-    this.showSection('deck');
-		this.showPanel('folders');
+		this.deck.selectedPanel = 'folders';
   },
   showFolder: function(aFolder) {
-    this.showSection('folders');
+    gUserInterface.deck.selectedPanel = 'folders';
     document.body.style.backgroundColor = 'white';
     //Makes the folders thumbnail as dropbox
     for (var i in Plugsbee.folders) {
@@ -394,10 +458,10 @@ var gUserInterface = {
     this.contextTitle.value = aFolder.name;
     this.contextTitle.editable = true;
     this.contextTitle.onsubmit = function(value) {
-      Plugsbee.renameFolder(aFolder, value);
+      aFolder.rename(value);
     };
     
-    gUserInterface.showPanel(aFolder.panel.elm);
+    gUserInterface.deck.selectedPanel = aFolder.id;
     
     
     //~ this.title.elm.onclick = function(evt) {
@@ -416,16 +480,11 @@ var gUserInterface = {
     this.currentFolder = aFolder;
   },
   emptyTrash: function() {
-    Plugsbee.purgeFolder(Plugsbee.trash);
-    var panel = Plugsbee.trash.panel.elm;
-    for (var i in Plugsbee.trash.files) {
-      panel.removeChild(Plugsbee.trash.files[i].thumbnail.elm);
-      delete Plugsbee.trash.files[i];
-    }
+    Plugsbee.folders['trash'].purge();
   },    
   showTrash: function() {
-    var aFolder = Plugsbee.trash;
-    this.showSection('folders');
+    var aFolder = Plugsbee.folders['trash'];
+    gUserInterface.deck.selectedPanel = 'folders';
     document.body.style.backgroundColor = 'white';
     //Makes the folders thumbnail as dropbox
     for (var i in Plugsbee.folders) {
@@ -458,7 +517,7 @@ var gUserInterface = {
     this.contextTitle.value = aFolder.name;
     this.contextTitle.editable = false;
     
-    gUserInterface.showPanel(aFolder.panel);
+    gUserInterface.deck.selectedPanel = 'trash';
     
     
     //~ this.title.elm.onclick = function(evt) {
@@ -484,9 +543,9 @@ var gUserInterface = {
       }
     }
   },
-  getFileFromName: function(aFolder, aName) {
-    for (var i in aFolder.files) {
-      var file = aFolder.files[i];
+  getFileFromName: function(aPbFolder, aName) {
+    for (var i in aPbFolder.files) {
+      var file = aPbFolder.files[i];
       if(file.name === aName) {
         return file;
       }
@@ -494,23 +553,21 @@ var gUserInterface = {
   },
   showFile: function(aFile) {
     document.body.style.backgroundColor = 'black';
-    this.showSection('viewer');
+    gUserInterface.deck.selectedPanel = 'viewer';
     var preview = document.getElementById('preview');
     var download = document.getElementById('download');
-    //~ download.href = aFile.src.replace('http://media.plugsbee.com', 'http://download.plugsbee.com');
-    download.href = aFile.src;
+    download.href = aFile.fileURL;
     
     //Title
     this.contextTitle.value = aFile.name;
     this.contextTitle.editable = true;
     this.contextTitle.onsubmit = function(value) {
-      aFile.name = value;
-      Plugsbee.renameFile(aFile, value);
+      aFile.rename(value);
     };
 
     var getLink = document.getElementById('get-link');
     getLink.onclick = function() {
-      window.prompt('Here is the link, you can simply copy it.', aFile.src);
+      window.prompt('Here is the link, you can simply copy it.', aFile.fileURL);
     }
 
     document.getElementById('folder-adder').hidden = true;
@@ -519,7 +576,10 @@ var gUserInterface = {
 
     var navButton = this.navButton;
     navButton.elm.hidden = false;
-    navButton.setHref(aFile.folder.name);
+    if (aFile.folder.id === 'trash')
+      navButton.setHref('trash');
+    else
+      navButton.setHref(aFile.folder.name);
     navButton.elm.textContent = aFile.folder.name;
     
     //~ if(location.protocol !== 'file:') {
@@ -558,60 +618,32 @@ var gUserInterface = {
       window.location.assign('/');
 
   },   
-	showPanel: function(aPanel) {
-    var deck = document.getElementById('deck');
-    deck.hidden = false;
-		
-    var panels = document.querySelectorAll('.panel');
-		for (var i in panels) {
-			panels[i].hidden = true;
-		}
-    if(typeof aPanel === "string")
-      document.getElementById(aPanel).hidden = false;
-    else
-      aPanel.hidden = false;
-	},
-	showSection: function(name) {
-		var sections = document.querySelectorAll('section');
-		for (var i in sections) {
-      sections[i].hidden = true;
-		}
-		document.getElementById(name).hidden = false;
-	},
   previewBuilder: function(aFile) {
+    var src = window.URL.createObjectURL(aFile.file);
     switch (aFile.type) {
       case 'image/png':
       case 'image/jpeg':
       case 'image/gif':
       case 'image/svg+xml':
-        var previewElm = '<img src="'+aFile.src+'"/>';
+        var previewElm = '<img src="'+src+'"/>';
         break;
       case 'video/webm':
       case 'video/ogg':
       case 'video/mp4':
-        var previewElm = '<video src="'+aFile.src+'" autoplay="autoplay" controls="controls"/>';
+        var previewElm = '<video src="'+src+'" autoplay="autoplay" controls="controls"/>';
         break;
       case 'audio/webm':
       case 'audio/ogg':
       case 'audio/wave':
       case 'audio/mpeg':
-        var previewElm = '<audio src="'+aFile.src+'" autoplay="autoplay" controls="controls"/>';
+        var previewElm = '<audio src="'+src+'" autoplay="autoplay" controls="controls"/>';
         break;
       default:
         var previewElm = '<span>'+'No preview available yet.'+'</span>';
     }
+    //~ window.URL.revokeObjectURL(src);
     return previewElm;
-  },
-  handleFolder: function(aFolder) {
-    var list = document.getElementById('folders');
-    var deck = document.getElementById('deck');
-    aFolder.thumbnail.elm = list.insertBefore(aFolder.thumbnail.elm, list.firstChild);
-    aFolder.panel.elm = deck.appendChild(aFolder.panel.elm);
-  },
-  handleFile: function(aFile) {
-    var panel = aFile.folder.panel.elm;
-    aFile.thumbnail.elm = panel.insertBefore(aFile.thumbnail.elm, panel.lastChild);
-  },
+  }
 };
 
 var Router = {
@@ -637,6 +669,12 @@ var Router = {
 				break;
 			case 'trash':
 				gUserInterface.showTrash();
+        if (!aNode[1])
+          return;
+
+        var file = gUserInterface.getFileFromName(Plugsbee.folders['trash'], unescape(aNode[1]));
+        if (file)
+          gUserInterface.showFile(file);
 				break;
 			//~ case 'upgrade':
 				//~ this.showSection('upgrade');
@@ -652,14 +690,12 @@ var Router = {
         
         //~ break;
 			default:
-        var folder = gUserInterface.getFolderFromName(unescape(aNode[0]));
-
+        var folder = gUserInterface.getFolderFromName(decodeURIComponent(aNode[0]));
         if (!folder) {
           gUserInterface.showFolders();
           return;
         }
-        
-        var file = gUserInterface.getFileFromName(folder, unescape(aNode[1]));
+        var file = gUserInterface.getFileFromName(folder, decodeURIComponent(aNode[1]));
         if (file)
           gUserInterface.showFile(file);
         else
@@ -667,37 +703,10 @@ var Router = {
     }
   }
 }
-var popped = ('state' in window.history);
-var initialURL = location.href;
-window.addEventListener("popstate",
-	function(e) {
-    //Workaround because chrome does fire a popstate event onload
-    var initialPop = !popped && location.href == initialURL
-    popped = true
-    if ( initialPop ) return
-    
-    if(!Plugsbee.connection.socket)
-      return;
-    var node = [];
-    if (location.protocol === 'file:') {
-      var hash = location.hash.split('#')[1];
-      if(hash) {
-        var split = hash.split('/');
-        if(split)
-          node = split;
-        else
-          node.push(hash);
-      }
-    }
-    else {
-      var split = location.pathname.split('/');
-      node.push(split[1]);
-      if (split[2])
-        node.push(split[2]);
-    } 
-    Router.route(node);
-	}, false
-);
+
+window.addEventListener("load", function() {
+  gUserInterface.init();
+});
 
 (function() {
   // Document title
@@ -749,12 +758,27 @@ window.addEventListener("popstate",
     );*/
   }
   
+  function switchOffline() {
+    //~ var nodes = document.querySelectorAll('[data-require~=network]');
+    //~ for (var i = 0; nodes.length; i++) {
+      //~ nodes[i].style.display = 'none';
+    //~ };
+    yepnope(gConfiguration.themeFolder+'offline.css');
+  }
+  //The network stuff
+  window.addEventListener("load", function() {
+    if (!context.network.onLine)
+      switchOffline();
+  });
+
+  //~ app.ononline = function() {
+    //~ switchOnline();
+  //~ };
+  //~ app.onoffline = function() {
+    //~ switchOffline();
+  //~ };
+  
   //~ window.addEventListener('error', function(aMessage, aURL, aLineNumber) {
     //~ console.log(aMessage + ':' + aURL + ':' + aLineNumber);
   //~ });
 })();
-
-
-window.addEventListener("load", function() {
-  gUserInterface.init();
-});

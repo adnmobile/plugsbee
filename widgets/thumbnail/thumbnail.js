@@ -33,6 +33,7 @@ Widget.Thumbnail = function() {
   this.dragStart = function(evt) {
     //Set the drag image
     var img = this;
+
     evt.dataTransfer.setDragImage(img, -10, -10);
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
@@ -57,13 +58,13 @@ Widget.Thumbnail = function() {
   this.drop = function(evt) {
     this.classList.remove('dragenter');
     var id = evt.dataTransfer.getData('Text');
-    var folder = Plugsbee.folders[this.getAttribute('data-id')];
+    var newFolder = Plugsbee.folders[this.getAttribute('data-id')];
     var file = Plugsbee.files[id];
     
+    file.move(newFolder);
+
     //Hide the dock
     document.getElementById('dock').hidden = true;
-    
-    Plugsbee.moveFile(file, folder);
 
     evt.preventDefault();
   };
@@ -111,17 +112,20 @@ Widget.Thumbnail.prototype.__defineGetter__('dropbox', function() {
 //
 Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
   var figure = this.elm.querySelector('figure');
-  if (typeof aMiniature === 'string') {
+  if (typeof aMiniature == 'string') {
     var img = document.createElement('img');
     img.classList.add('miniature');
     img.src = aMiniature;
     aMiniature = img;
   }
   var miniature = figure.querySelector('.miniature');
-  if(!miniature)
+  if(!miniature) {
     figure.insertBefore(aMiniature, figure.firstChild);
-  else
+  }
+  else {
     figure.replaceChild(aMiniature, miniature);
+    //~ figure.replaceChild(miniature, aMiniature);
+  }
 });
 Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
 	return this.elm.getElementsByClassName('miniature')[0];
