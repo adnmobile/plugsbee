@@ -720,7 +720,10 @@ window.addEventListener("load", function() {
   document.head.insertAdjacentHTML('beforeend',
     '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>' 
   );
-
+  
+  if ((platform.name === 'Chrome') && (location.protocol !== 'file:'))
+  yepnope('gStorageWithFS.js');
+  
   // iOS stuff
   if (platform.os.match('iOS')) {
     //

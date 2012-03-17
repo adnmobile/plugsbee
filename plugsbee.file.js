@@ -67,24 +67,15 @@ Object.defineProperty(Plugsbee.File, 'fileURL', {
     this._fileURL = aFileURL;
     
     var that = this;
-    gStorage.getBinaryFile(this,
-      //Success
-      function(blob) {
-        that.file = blob;
-      },
-      //Error
-      function(error) {
-        http.get(that._fileURL,
-          //Success
-          function(blob) {
-            that.file = blob;
-          },
-          //Error
-          function(error) {
-            console.log(error);
-          }
-        );
-      }
+    http.get(that._fileURL,
+    //Success
+    function(blob) {
+    that.file = blob;
+    },
+    //Error
+    function(error) {
+    console.log(error);
+    }
     );
   },
   get: function() {
@@ -97,28 +88,15 @@ Object.defineProperty(Plugsbee.File, 'file', {
   configurable: true,
   enumerable:   true,
   set: function(aFile) {
-    this._file = aFile;
-    gStorage.addBinaryFile(this);
+  this._file = aFile;
 
-    if ((this.type !== 'image/jpeg') && (this.type !== 'image/png'))
-      return;
+  if ((this.type !== 'image/jpeg') && (this.type !== 'image/png'))
+  return;
 
-    var that = this;
-    gStorage.getBinaryMiniature(this,
-      //Success
-      function(blob) {
-        that._miniature = blob;
-        gInterface.setFileMiniature(that);
-      },
-      //Error
-      function(error) {
-        resizeImage(aFile, 84, 84, function(blob) {
-          that.miniature = blob;
-          gStorage.addBinaryMiniature(that);
-        });
-      }
-    );
-    //~ gInterface.setFileFile(this);
+  var that = this;
+  resizeImage(aFile, 84, 84, function(blob) {
+  that.miniature = blob;
+  });
   },
   get: function() {
     return this._file;
@@ -146,7 +124,6 @@ Object.defineProperty(Plugsbee.File, 'miniature', {
   enumerable:   true,
   set: function(aMiniature) {
     this._miniature = aMiniature;
-    gStorage.addBinaryMiniature(this);
     gInterface.setFileMiniature(this);
   },
   get: function() {
