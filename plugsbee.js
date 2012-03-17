@@ -5,39 +5,6 @@ var Plugsbee = {
 	files: {},
 	contacts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService),
-  handleFolder: function(aFolder) {
-    var pbFolder = Object.create(Plugsbee.Folder);
-    pbFolder.draw();
-    for (var i in aFolder)
-      pbFolder[i] = aFolder[i];
-    
-    this.folders[pbFolder.id] = pbFolder;
-
-    gInterface.handleFolder(pbFolder);
-
-    return pbFolder;
-  },
-  handleFile: function(aFile) {
-    var pbFile = Object.create(Plugsbee.File);
-    pbFile.draw();
-
-    var folder = Plugsbee.folders[aFile.folderId];
-
-    pbFile.folder = folder;
-    pbFile.id = aFile.id;
-    pbFile.name = aFile.name;
-    pbFile.type = aFile.type;
-    pbFile.fileURL = aFile.src;
-    if (aFile.miniature) {
-      pbFile.miniatureURL = aFile.miniature;
-    }
-
-    folder.files[pbFile.id] = pbFile;
-    this.files[pbFile.id] = pbFile;
-    gInterface.handleFile(pbFile);
-
-    return pbFile;
-  }
 };
 
 Plugsbee.connection.load('PLAIN');
@@ -75,6 +42,16 @@ window.addEventListener("load", function() {
   }
 });
 
+Plugsbee.createFolder = function() {
+  var pbFolder = Object.create(Plugsbee.Folder);
+  pbFolder.draw();
+  return pbFolder;
+};
+Plugsbee.createFile = function() {
+  var pbFile = Object.create(Plugsbee.File);
+  pbFile.draw();
+  return pbFile;
+};
 
 
 Plugsbee.connection.on('connected', function() {
@@ -84,20 +61,27 @@ Plugsbee.connection.on('connected', function() {
   Plugsbee.connection.user = Plugsbee.connection.jid.node;
   if (gConfiguration.PubSubService === 'PEP')
     gConfiguration.PubSubService = Plugsbee.jid;
-  
+
   //Retrieves and handles folders from remote storage
-  gRemote.getFolders(function(folders) {
-    for (var i in folders) {
+  gRemote.getFolders(function(pbFolders) {
+    for (var i in pbFolders) {
 
-      var pbFolder = Plugsbee.handleFolder(folders[i]);
-      gStorage.addFolder(pbFolder);
+      gInterface.handleFolder(pbFolders[i]);
+      gStorage.addFolder(pbFolders[i]);
 
-      //Retrieves and handles files from remote storage
-      gRemote.getFiles(pbFolder, function(files) {
-        for (var y in files) {
+      Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
+      
 
-          var pbFile = Plugsbee.handleFile(files[y]);
-          gStorage.addFile(pbFile);
+      //~ //Retrieves and handles files from remote storage
+      gRemote.getFiles(pbFolders[i], function(pbFiles) {
+        for (var y in pbFiles) {
+          var folder = Plugsbee.folders[pbFiles[y].folderId];
+          pbFiles[y].folder = folder;
+          gInterface.handleFile(pbFiles[y]);
+          gStorage.addFile(pbFiles[y]);
+
+          folder.files[pbFiles[y].id] = pbFiles[y];
+          Plugsbee.files[pbFiles[y].id] = pbFiles[y];
 
         }
       });

@@ -38,12 +38,12 @@ var gInterface = {
     aFolder.thumbnail.elm.parentNode.removeChild(aFolder.thumbnail.elm);
     aFolder.panel.elm.parentNode.removeChild(aFolder.panel.elm);
   },
-  setFolderName: function(aFolder) {
-    aFolder.thumbnail.label = aFolder.name;
-    aFolder.thumbnail.href = encodeURIComponent(aFolder.name);
+  setFolderName: function(aPbFolder) {
+    aPbFolder.thumbnail.label = aPbFolder.name;
+    aPbFolder.thumbnail.href = encodeURIComponent(aPbFolder.name);
     //Updates href
-    for (var i in aFolder.files)
-      aFolder.files[i].thumbnail.href = encodeURIComponent(aFolder.files[i].folder.name) + '/' + encodeURIComponent(aFolder.files[i].name);
+    for (var i in aPbFolder.files)
+      aPbFolder.files[i].thumbnail.href = encodeURIComponent(aPbFolder.files[i].folder.name) + '/' + encodeURIComponent(aPbFolder.files[i].name);
   },
   setFolderMiniature: function(aPbFolder) {
     //Miniature
@@ -74,6 +74,8 @@ var gInterface = {
   },
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
+  },
+  setFileFolder: function(aPbFile) {
     if (aPbFile.folder.id === "trash")
       aPbFile.thumbnail.href = 'trash' + '/' + encodeURIComponent(aPbFile.name);
     else

@@ -1,45 +1,45 @@
 'use strict';
-
+  
 var gRemote = {
-  getFolders: function(aSuccess) {
+  getFolders: function(aOnSuccess) {
     Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
-      var folders = {}; 
+      var pbFolders = {};
       stanza.items.forEach(function(item) {
         if (!item.node.match('urn:plugsbee:folder:'))
           return;
+          
         
-        var folder = {
-          id: item.node.split('urn:plugsbee:folder:')[1],
-          host: item.jid,
-          name: item.name,
-          files: {}
-        };
-        folders[folder.id] = folder;
+        var pbFolder = Plugsbee.createFolder();
+        pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
+        pbFolder.host = item.jid;
+        pbFolder.name = item.name;
+        pbFolder.files = {};
+
+        pbFolders[pbFolder.id] = pbFolder;
       });
-      if (aSuccess)
-        aSuccess(folders);
+      if (aOnSuccess)
+        aOnSuccess(pbFolders);
     });
   },
-  getFiles: function(aFolder, aSuccess) {
-    Plugsbee.connection.pubsub.items(aFolder.host, 'urn:plugsbee:folder:' + aFolder.id, function(stanza) {
-      var files = {};
+  getFiles: function(aPbFolder, aOnSuccess) {
+    Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, function(stanza) {
+      var pbFiles = {};
       stanza.items.forEach(function(item) {
 
-        var file = {
-          id: item.id,
-          type: item.type,
-          src: item.src,
-          name: item.name,
-          folderId: aFolder.id
-        };
-        
-        if(item.miniature)
-          file.miniature = item.miniature;
+        var pbFile = Plugsbee.createFile();
+        pbFile.id = item.id;
+        pbFile.type = item.type;
+        pbFile.fileURL = item.src;
+        pbFile.name = item.name;
+        pbFile.folderId = aPbFolder.id;
+
+        //~ if(item.miniature)
+          //~ file.miniature = item.miniature;
           
-        files[file.id] = file;
+        pbFiles[pbFile.id] = pbFile;
       });
-      if (aSuccess)
-        aSuccess(files);
+      if (aOnSuccess)
+        aOnSuccess(pbFiles);
     });
   },
   newFolder: function(aFolder, onSuccess) {

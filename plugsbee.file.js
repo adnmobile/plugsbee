@@ -45,6 +45,18 @@ Object.defineProperty(Plugsbee.File, 'name', {
     return this._name;
   },
 });
+//folder property
+Object.defineProperty(Plugsbee.File, 'folder', {
+  configurable: true,
+  enumerable:   true,
+  set: function(aPbFolder) {
+    this._folder = aPbFolder;
+    gInterface.setFileFolder(this);
+  },
+  get: function() {
+    return this._folder;
+  },
+});
 
 //id property
 Object.defineProperty(Plugsbee.File, 'id', {
