@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 var gUserInterface = {
   toggleXMPPConsole: function() {
     var elm = document.getElementById('xmpp-console');
@@ -705,38 +703,36 @@ var Router = {
     }
   }
 }
-
 window.addEventListener("load", function() {
   gUserInterface.init();
 });
-
-function handleCacheEvent(e) {
-  console.log('application cache: ' + e.type);
-}
-function handleCacheError(e) {
-  console.log('application cache: ' + e.type);
-};
-// Fired after the first cache of the manifest.
-window.applicationCache.addEventListener('cached', handleCacheEvent, false);
-// Checking for an update. Always the first event fired in the sequence.
-window.applicationCache.addEventListener('checking', handleCacheEvent, false);
-// An update was found. The browser is fetching resources.
-window.applicationCache.addEventListener('downloading', handleCacheEvent, false);
-// The manifest returns 404 or 410, the download failed,
-// or the manifest changed while the download was in progress.
-window.applicationCache.addEventListener('error', handleCacheError, false);
-// Fired after the first download of the manifest.
-window.applicationCache.addEventListener('noupdate', handleCacheEvent, false);
-// Fired if the manifest file returns a 404 or 410.
-// This results in the application cache being deleted.
-window.applicationCache.addEventListener('obsolete', handleCacheEvent, false);
-// Fired for each resource listed in the manifest as it is being fetched.
-window.applicationCache.addEventListener('progress', handleCacheEvent, false);
-// Fired when the manifest resources have been newly redownloaded.
-window.applicationCache.addEventListener('updateready', handleCacheEvent, false);
-
-
 (function() {
+  //Application cache stuff
+  function handleCacheEvent(e) {
+    console.log('application cache: ' + e.type);
+  }
+  function handleCacheError(e) {
+    console.log('application cache: ' + e.type);
+  };
+  // Fired after the first cache of the manifest.
+  window.applicationCache.addEventListener('cached', handleCacheEvent, false);
+  // Checking for an update. Always the first event fired in the sequence.
+  window.applicationCache.addEventListener('checking', handleCacheEvent, false);
+  // An update was found. The browser is fetching resources.
+  window.applicationCache.addEventListener('downloading', handleCacheEvent, false);
+  // The manifest returns 404 or 410, the download failed,
+  // or the manifest changed while the download was in progress.
+  window.applicationCache.addEventListener('error', handleCacheError, false);
+  // Fired after the first download of the manifest.
+  window.applicationCache.addEventListener('noupdate', handleCacheEvent, false);
+  // Fired if the manifest file returns a 404 or 410.
+  // This results in the application cache being deleted.
+  window.applicationCache.addEventListener('obsolete', handleCacheEvent, false);
+  // Fired for each resource listed in the manifest as it is being fetched.
+  window.applicationCache.addEventListener('progress', handleCacheEvent, false);
+  // Fired when the manifest resources have been newly redownloaded.
+  window.applicationCache.addEventListener('updateready', handleCacheEvent, false);
+
   // Document title
   document.title = gConfiguration.name;
 

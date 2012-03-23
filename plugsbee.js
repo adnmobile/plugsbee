@@ -22,7 +22,7 @@ Plugsbee.connection.load('dataforms');
 Plugsbee.connection.load('disco');
 Plugsbee.connection.load('pubsub');
 
-context.network.onLine = false;
+//~ context.network.onLine = false;
 
 
 window.addEventListener("load", function() {
