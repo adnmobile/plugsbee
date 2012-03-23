@@ -20,7 +20,7 @@ Widget.Thumbnail = function() {
   this.form = elm.firstChild;
 
   this.elm.addEventListener('click', function(e) {
-    if(location.protocol === 'file:')
+    if(location.protocol === 'file:' || e.target.tagName === 'input')
       return;
     
     e.preventDefault();
