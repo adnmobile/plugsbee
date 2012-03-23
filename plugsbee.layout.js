@@ -1,20 +1,27 @@
 'use strict';
 
-var gInterface = {
+Plugsbee.layout = {
   //
   //Folder
   //
-  drawFolder: function(aPbFolder) {
+  buildFolder: function(aPbFolder) {
     var thumbnail = new Widget.Thumbnail();
     thumbnail.elm.setAttribute('data-type', 'folder');
     thumbnail.elm.classList.add('folder');
     thumbnail.draggable = true;
     thumbnail.miniature = gUserInterface.themeFolder+'folder.png';
+    thumbnail.label = aPbFolder.name;
+    thumbnail.href = aPbFolder.name;
     aPbFolder.thumbnail = thumbnail;
     
     var panel = new Widget.Panel();
     panel.elm.firstChild.setAttribute('data-require', 'network');
+    panel.elm.setAttribute('data-name', aPbFolder.id);
     aPbFolder.panel = panel;
+  },
+  drawFolder: function(aPbFolder) {
+    this.buildFolder(aPbFolder);
+    this.handleFolder(aPbFolder);
   },
   handleFolder: function(aPbFolder) {
     //Trash folder
@@ -53,16 +60,23 @@ var gInterface = {
   //
   //File
   //
-  drawFile: function(aPbFile) {
+  buildFile: function(aPbFile) {
     var thumbnail = new Widget.Thumbnail();
     thumbnail.elm.setAttribute('data-type', 'file');
     thumbnail.draggable = true;
+    
     thumbnail.elm.classList.add('file');
     aPbFile.thumbnail = thumbnail;
     if (aPbFile.miniature)
       this.setFileMiniature(aPbFile);
+    else
+      this.setFileMiniature(aPbFile, gUserInterface.themeFolder+'file.png');
     if (aPbFile.name)
       this.setFileName(aPbFile);
+  },
+  drawFile: function(aPbFile) {
+    this.buildFile(aPbFile);
+    this.handleFile(aPbFile);
   },
   eraseFile: function(aPbFile) {
     aPbFile.thumbnail.elm.parentNode.removeChild(aPbFile.thumbnail.elm);
@@ -74,19 +88,13 @@ var gInterface = {
   },
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
-  },
-  setFileFolder: function(aPbFile) {
     if (aPbFile.folder.id === "trash")
       aPbFile.thumbnail.href = 'trash' + '/' + encodeURIComponent(aPbFile.name);
     else
       aPbFile.thumbnail.href = aPbFile.folder.name + '/' + encodeURIComponent(aPbFile.name);
   },
-  setFileMiniature: function(aPbFile) {
-    var blobURL = window.URL.createObjectURL(aPbFile.miniature);
-    aPbFile.thumbnail.miniature = blobURL;
-    window.URL.revokeObjectURL(blobURL);
-  },
-  //~ setFileFile: function(aPbFile) {
-    //~ aPbFile.thumbnail.miniature = window.URL.createObjectURL(aPbFile.miniature);
-  //~ },
-}; 
+  setFileMiniature: function(aPbFile, aMiniature) {
+    var miniature = aMiniature || aPbFile.miniature; 
+    aPbFile.thumbnail.miniature = miniature;
+  }
+};

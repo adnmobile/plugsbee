@@ -5,6 +5,14 @@ var Plugsbee = {
 	files: {},
 	contacts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService),
+  createFolder: function() {
+    var pbFolder = Object.create(Plugsbee.Folder);
+    return pbFolder;
+  },
+  createFile: function() {
+    var pbFile = Object.create(Plugsbee.File);
+    return pbFile;
+  },
 };
 
 Plugsbee.connection.load('PLAIN');
@@ -14,7 +22,7 @@ Plugsbee.connection.load('dataforms');
 Plugsbee.connection.load('disco');
 Plugsbee.connection.load('pubsub');
 
-//~ context.network.onLine = false;
+context.network.onLine = false;
 
 
 window.addEventListener("load", function() {
@@ -30,29 +38,30 @@ window.addEventListener("load", function() {
   }
   else {
     //Retrieves and handles folders from offline storage
-    var folders = gStorage.getFolders();
-    for (var i in folders) {
-      var pbFolder = Plugsbee.handleFolder(folders[i]);
-      
-      //Retrieves and handles files from offline storage
-      var files = gStorage.getFiles(pbFolder);
-      for (var y in files)
-        Plugsbee.handleFile(files[y]);
+    var pbFolders = Plugsbee.storage.getFolders();
+    for (var i in pbFolders) {
+
+      Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
+      Plugsbee.layout.drawFolder(pbFolders[i]);
+
+      //Retrieves and handles files from storage
+      var pbFiles = Plugsbee.storage.getFiles(pbFolders[i]);
+      for (var y in pbFiles) {
+
+        var folder = Plugsbee.folders[pbFiles[y].folderId];
+        folder.files[pbFiles[y].id] = pbFiles[y];
+        pbFiles[y].folder = folder;
+        
+        Plugsbee.layout.drawFile(pbFiles[y]);
+        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
+        
+        if (pbFiles[y].miniatureDataURI)
+          Plugsbee.layout.setFileMiniature(pbFiles[y], pbFiles[y].miniatureDataURI);
+
+      }
     };
   }
 });
-
-Plugsbee.createFolder = function() {
-  var pbFolder = Object.create(Plugsbee.Folder);
-  pbFolder.draw();
-  return pbFolder;
-};
-Plugsbee.createFile = function() {
-  var pbFile = Object.create(Plugsbee.File);
-  pbFile.draw();
-  return pbFile;
-};
-
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
@@ -63,25 +72,27 @@ Plugsbee.connection.on('connected', function() {
     gConfiguration.PubSubService = Plugsbee.jid;
 
   //Retrieves and handles folders from remote storage
-  gRemote.getFolders(function(pbFolders) {
+  Plugsbee.remote.getFolders(function(pbFolders) {
     for (var i in pbFolders) {
 
-      gInterface.handleFolder(pbFolders[i]);
-      gStorage.addFolder(pbFolders[i]);
-
       Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
-      
+      Plugsbee.layout.drawFolder(pbFolders[i]);
+      Plugsbee.storage.addFolder(pbFolders[i]);
 
-      //~ //Retrieves and handles files from remote storage
-      gRemote.getFiles(pbFolders[i], function(pbFiles) {
+
+      //Retrieves and handles files from remote storage
+      Plugsbee.remote.getFiles(pbFolders[i], function(pbFiles) {
         for (var y in pbFiles) {
-          var folder = Plugsbee.folders[pbFiles[y].folderId];
-          pbFiles[y].folder = folder;
-          gInterface.handleFile(pbFiles[y]);
-          gStorage.addFile(pbFiles[y]);
 
+          var folder = Plugsbee.folders[pbFiles[y].folderId];
           folder.files[pbFiles[y].id] = pbFiles[y];
+          pbFiles[y].folder = folder;
+
+          Plugsbee.layout.drawFile(pbFiles[y]);
+          Plugsbee.storage.addFile(pbFiles[y]);
           Plugsbee.files[pbFiles[y].id] = pbFiles[y];
+
+          pbFiles[y].handleMedia();
 
         }
       });
@@ -91,7 +102,7 @@ Plugsbee.connection.on('connected', function() {
       //~ pbFolder.draw();
       //~ pbFolder.id = 'trash';
       //~ pbFolder.name = 'Trash';
-      //~ 
+      //~
       //~ gRemote.newFolder(pbFolder, function(pbFolder) {
         //~ console.log(pbFolder);
         //~ //Thumbnail
@@ -99,7 +110,7 @@ Plugsbee.connection.on('connected', function() {
         //~ pbFolder.thumbnail.elm.hidden = false;
         //~ //Panel
         //~ pbFolder.panel.elm = document.querySelector('.panel.trash');
-        //~ 
+        //~
         //~ gStorage.addFolder(pbFolder);
       //~ });
     //~ }
@@ -120,7 +131,7 @@ Plugsbee.connection.on('disconnected', function() {
   console.log('disconnected');
   //~ delete Plugsbee.folders;
   //~ delete Plugsbee.files;
-  //~ delete Plugsbee.contacts;  
+  //~ delete Plugsbee.contacts;
   //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
   //~ location.reload();
 });
@@ -129,20 +140,23 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
 	var id = Math.random().toString().split('.')[1];
   var pbFile = Object.create(Plugsbee.File);
 
-  
-  pbFile.folder = aFolder;
-  pbFile.draw();
-  pbFile.id = id;
+
   pbFile.name = aDOMFile.name;
+  pbFile.folder = aFolder;
+  pbFile.id = id;
   pbFile.type = aDOMFile.type;
+  
+  Plugsbee.media.getMiniature(aDOMFile, function(canvas) {
+    Plugsbee.layout.setFileMiniature(pbFile, canvas);
+    pbFile.miniatureDataURI = canvas.toDataURL();
+    Plugsbee.storage.addFile(pbFile);
+  });
 
-  pbFile.file = aDOMFile;
-
-  gInterface.handleFile(pbFile);
+  Plugsbee.layout.drawFile(pbFile);
 
 	var fd = new FormData;
 	fd.append(aFolder.id + '/' + id, aDOMFile);
-	
+
 	var xhr = new XMLHttpRequest();
 
 	xhr.upload.addEventListener("progress",
@@ -151,20 +165,20 @@ Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
       pbFile.thumbnail.label = Math.round(progression)+'%'
 		}, false
 	);
-	
-  
+
+
 	xhr.addEventListener("load",
 		function(evt) {
 			var answer = JSON.parse(xhr.responseText);
-			pbFile._fileURL = answer.src;
-  
+			pbFile.fileURL = answer.src;
+
       pbFile.thumbnail.draggable = true;
       pbFile.thumbnail.label = pbFile.name;
-      
+
       Plugsbee.files[pbFile.id] = pbFile;
       aFolder.files[pbFile.id] = pbFile;
-      gRemote.newFile(pbFile);
-      gStorage.addFile(pbFile);
+      Plugsbee.remote.newFile(pbFile);
+      Plugsbee.storage.addFile(pbFile);
 		}, false
 	);
 

@@ -171,7 +171,9 @@ var gUserInterface = {
         this.classList.remove('dragenter');
       });
       trash.elm.addEventListener('drop', function(evt) {
+        console.log('toto');
         evt.preventDefault();
+        console.log('titi');
         this.classList.remove('dragenter');
         var id = evt.dataTransfer.getData('text/plain');
         if (!id)
@@ -319,19 +321,19 @@ var gUserInterface = {
       this.elements.name.removeEventListener('blur', dispatchEvent);
       var name = this.elements.name.value;
       if (name) {
-        var pbFolder = Object.create(Plugsbee.Folder);
-        pbFolder.draw();
+        var pbFolder = Plugsbee.createFolder();
         
         folders.removeChild(thumbnail.elm);
-        gInterface.handleFolder(pbFolder);
+
   
         pbFolder.name = name;
         pbFolder.id = Math.random().toString().split('.')[1];
         pbFolder.host = gConfiguration.PubSubService;
+        Plugsbee.layout.drawFolder(pbFolder);
         
         
-        gRemote.newFolder(pbFolder);
-        gStorage.addFolder(pbFolder);
+        Plugsbee.remote.newFolder(pbFolder);
+        Plugsbee.storage.addFolder(pbFolder);
         
 
         Plugsbee.folders[pbFolder.id] = pbFolder;
@@ -460,7 +462,6 @@ var gUserInterface = {
     this.contextTitle.onsubmit = function(value) {
       aFolder.rename(value);
     };
-    
     gUserInterface.deck.selectedPanel = aFolder.id;
     
     
@@ -619,7 +620,8 @@ var gUserInterface = {
 
   },   
   previewBuilder: function(aFile) {
-    var src = window.URL.createObjectURL(aFile.file);
+    //~ var src = window.URL.createObjectURL(aFile.file);
+    var src = aFile.fileDataURI;
     switch (aFile.type) {
       case 'image/png':
       case 'image/jpeg':

@@ -1,6 +1,6 @@
 'use strict';
-  
-var gRemote = {
+
+Plugsbee.remote = {
   getFolders: function(aOnSuccess) {
     Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
       var pbFolders = {};
@@ -32,10 +32,7 @@ var gRemote = {
         pbFile.fileURL = item.src;
         pbFile.name = item.name;
         pbFile.folderId = aPbFolder.id;
-
-        //~ if(item.miniature)
-          //~ file.miniature = item.miniature;
-          
+    
         pbFiles[pbFile.id] = pbFile;
       });
       if (aOnSuccess)
@@ -92,3 +89,46 @@ var gRemote = {
     Plugsbee.connection.pubsub.purge(aPbFolder.host, 'urn:plugsbee:folder:'+aPbFolder.id);
   }
 }; 
+
+
+//~ Plugsbee.remote = {
+  //~ getFolders: function(aOnSuccess) {
+    //~ Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
+      //~ var pbFolders = {};
+      //~ stanza.items.forEach(function(item) {
+        //~ if (!item.node.match('urn:plugsbee:folder:'))
+          //~ return;
+          //~ 
+        //~ 
+        //~ var pbFolder = Plugsbee.createFolder();
+        //~ pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
+        //~ pbFolder.host = item.jid;
+        //~ pbFolder.name = item.name;
+        //~ pbFolder.files = {};
+//~ 
+        //~ pbFolders[pbFolder.id] = pbFolder;
+      //~ });
+      //~ if (aOnSuccess)
+        //~ aOnSuccess(pbFolders);
+    //~ });
+  //~ },
+  //~ getFiles: function(aPbFolder, aOnSuccess) {
+    //~ Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, function(stanza) {
+      //~ var pbFiles = {};
+      //~ stanza.items.forEach(function(item) {
+//~ 
+        //~ var pbFile = Object.create(Plugsbee.File);
+        //~ pbFile.id = item.id;
+        //~ pbFile.type = item.type;
+        //~ pbFile.fileURL = item.src;
+        //~ pbFile.name = item.name;
+        //~ pbFile.folderId = aPbFolder.id;
+        //~ 
+        //~ pbFiles[pbFile.id] = pbFile;
+      //~ });
+      //~ if (aOnSuccess)
+        //~ aOnSuccess(pbFiles);
+    //~ });
+  //~ },
+//~ };
+//~ 

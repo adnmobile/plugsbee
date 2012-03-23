@@ -2,9 +2,6 @@
 
 Plugsbee.Folder = {
   files: {},
-  draw: function() {
-    gInterface.drawFolder(this);
-  },
   purge: function() {
     gRemote.purgeFolder(this);
     for (var i in this.files) {
@@ -27,42 +24,42 @@ Plugsbee.Folder = {
 };
 
 //Name property
-Object.defineProperty(Plugsbee.Folder, 'name', {
-  configurable: true,
-  enumerable:   true,
-  set: function(aName) {
-    this._name = aName;
-    gInterface.setFolderName(this);
-  },
-  get: function() {
-    return this._name;
-  },
-});
+//~ Object.defineProperty(Plugsbee.Folder, 'name', {
+  //~ configurable: true,
+  //~ enumerable:   true,
+  //~ set: function(aName) {
+    //~ this._name = aName;
+    //~ gInterface.setFolderName(this);
+  //~ },
+  //~ get: function() {
+    //~ return this._name;
+  //~ },
+//~ });
 
 //Id property
-Object.defineProperty(Plugsbee.Folder, 'id', {
-  configurable: true,
-  enumerable:   true,
-  set: function(aId) {
-    this._id = aId;
-    this.thumbnail.elm.setAttribute('data-id', aId);
-    this.panel.elm.setAttribute('data-name', aId);
-  },
-  get: function() {
-    return this._id;
-  },
-});
+//~ Object.defineProperty(Plugsbee.Folder, 'id', {
+  //~ configurable: true,
+  //~ enumerable:   true,
+  //~ set: function(aId) {
+    //~ this._id = aId;
+    //~ this.thumbnail.elm.setAttribute('data-id', aId);
+    //~ this.panel.elm.setAttribute('data-name', aId);
+  //~ },
+  //~ get: function() {
+    //~ return this._id;
+  //~ },
+//~ });
 
 //Miniature property
-Object.defineProperty(Plugsbee.Folder, 'miniature', {
-  configurable: true,
-  enumerable:   true,
-  set: function(aMiniature) {
-    this._miniature = aMiniature;
-    gInterface.setFolderMiniature(this);
-  },
-  get: function() {
-    return this._miniature;
-  },
-});
+//~ Object.defineProperty(Plugsbee.Folder, 'miniature', {
+  //~ configurable: true,
+  //~ enumerable:   true,
+  //~ set: function(aMiniature) {
+    //~ this._miniature = aMiniature;
+    //~ gInterface.setFolderMiniature(this);
+  //~ },
+  //~ get: function() {
+    //~ return this._miniature;
+  //~ },
+//~ });
 

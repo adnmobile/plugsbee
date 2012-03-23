@@ -3,12 +3,7 @@ CACHE MANIFEST
 index.xhtml
 lib/burger.js
 lib/platform.js/platform.js
-configuration.js
-gStorage.js
-gInterface.js
-gRemote.js
 lib/yepnope/yepnope.js
-
 lib/vkbeautify.0.95.01.beta.js
 lib/lightstring/lightstring.js
 lib/lightstring/polyfill.js
@@ -20,6 +15,8 @@ lib/lightstring/plugins/presence.js
 lib/lightstring/plugins/pubsub.js
 lib/lightstring/plugins/dataforms.js
 lib/lightstring/plugins/PLAIN.js
+lib/add-to-homescreen/src/add2home.js
+lib/add-to-homescreen/style/add2home.css
 widgets/thumbnail/thumbnail.js
 widgets/thumbnail/thumbnail.css
 widgets/panel/panel.js
@@ -30,8 +27,10 @@ plugsbee.js
 plugsbee.folder.js
 plugsbee.file.js
 userinterface.js
-lib/add-to-homescreen/src/add2home.js
-lib/add-to-homescreen/style/add2home.css
+configuration.js
+plugsbee.remote.js
+plugsbee.layout.js
+plugsbee.storage.js
 themes/default/style.css
 themes/default/iOS.css
 themes/default/offline.css
