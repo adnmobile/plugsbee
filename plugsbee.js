@@ -15,6 +15,72 @@ var Plugsbee = {
   },
 };
 
+Plugsbee.File = {
+  folder: {},
+  delete: function() {
+    Plugsbee.layout.eraseFile(this);
+    Plugsbee.remote.deleteFile(this);
+    delete Plugsbee.files[this.id];
+    delete Plugsbee.folders[this.folder.id].files[this.id];
+  },
+  move: function(aPbFolder) {
+    Plugsbee.layout.eraseFile(this);
+    Plugsbee.remote.deleteFile(this);
+
+    //Delete the file reference within the previous folder
+    delete Plugsbee.folders[this.folder.id].files[this.id];
+
+    //Update the folder reference
+    this.folder = aPbFolder;
+    //Add the file reference within the folder files object
+    Plugsbee.folders[this.folder.id].files[this.id] = this;
+    
+    //New ID
+    var id = Math.random().toString().split('.')[1];
+    this.id = id;
+    //Build the layout file object
+    Plugsbee.layout.drawFile(this);
+    
+    //Add the remote file
+    Plugsbee.remote.newFile(this);
+
+    Plugsbee.files[this.id] = this;
+    
+  },
+  rename: function(aName) {
+    this.name = aName;
+    Plugsbee.layout.setFileName(this);
+    Plugsbee.remote.renameFile(this);
+  }
+};
+
+Plugsbee.Folder = {
+  files: {},
+  purge: function() {
+    Plugsbee.remote.purgeFolder(this);
+    for (var i in this.files) {
+      Plugsbee.layout.eraseFile(this.files[i]);
+      delete Plugsbee.files[this.files[i]];
+    }
+  },
+  rename: function(aName) {
+    this.name = aName;
+    Plugsbee.layout.setFolderName(this);
+    Plugsbee.remote.renameFolder(this);
+  },
+  moveToTrash: function() {
+    for (var i in this.files)
+      this.files[i].move(Plugsbee.folders['trash']);
+      
+    this.delete();
+  },
+  delete: function() {
+    Plugsbee.layout.eraseFolder(this);
+    Plugsbee.remote.deleteFolder(this);
+    delete Plugsbee.folders[this.id];
+  },
+};
+
 Plugsbee.connection.load('PLAIN');
 Plugsbee.connection.load('events');
 Plugsbee.connection.load('presence');
@@ -26,46 +92,19 @@ Plugsbee.connection.load('pubsub');
 
 
 window.addEventListener("load", function() {
-  if (context.network.onLine) {
-    var password = localStorage.getItem('password');
-    var login = localStorage.getItem('login');
-    if(!password || !login) {
-      gUserInterface.showLogin();
-      return;
-    }
-    Plugsbee.jid = login;
-    Plugsbee.connection.connect(login, password);
+  var password = localStorage.getItem('password');
+  var login = localStorage.getItem('login');
+  if(!password || !login) {
+    Plugsbee.layout.showLogin();
+    return;
   }
-  else {
-    //Retrieves and handles folders from offline storage
-    var pbFolders = Plugsbee.storage.getFolders();
-    for (var i in pbFolders) {
-
-      Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
-      Plugsbee.layout.drawFolder(pbFolders[i]);
-
-      //Retrieves and handles files from storage
-      var pbFiles = Plugsbee.storage.getFiles(pbFolders[i]);
-      for (var y in pbFiles) {
-
-        var folder = Plugsbee.folders[pbFiles[y].folderId];
-        folder.files[pbFiles[y].id] = pbFiles[y];
-        pbFiles[y].folder = folder;
-        
-        Plugsbee.layout.drawFile(pbFiles[y]);
-        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
-        
-        if (pbFiles[y].miniatureDataURI)
-          Plugsbee.layout.setFileMiniature(pbFiles[y], pbFiles[y].miniatureDataURI);
-
-      }
-    };
-  }
+  Plugsbee.jid = login;
+  Plugsbee.connection.connect(login, password);
 });
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
-  gUserInterface.showFolders();
+  Plugsbee.layout.showFolders();
   Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.connection.user = Plugsbee.connection.jid.node;
   if (gConfiguration.PubSubService === 'PEP')
@@ -77,8 +116,6 @@ Plugsbee.connection.on('connected', function() {
 
       Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
       Plugsbee.layout.drawFolder(pbFolders[i]);
-      Plugsbee.storage.addFolder(pbFolders[i]);
-
 
       //Retrieves and handles files from remote storage
       Plugsbee.remote.getFiles(pbFolders[i], function(pbFiles) {
@@ -89,11 +126,7 @@ Plugsbee.connection.on('connected', function() {
           pbFiles[y].folder = folder;
 
           Plugsbee.layout.drawFile(pbFiles[y]);
-          Plugsbee.storage.addFile(pbFiles[y]);
           Plugsbee.files[pbFiles[y].id] = pbFiles[y];
-
-          pbFiles[y].handleMedia();
-
         }
       });
     }
@@ -111,7 +144,6 @@ Plugsbee.connection.on('connected', function() {
         //~ //Panel
         //~ pbFolder.panel.elm = document.querySelector('.panel.trash');
         //~
-        //~ gStorage.addFolder(pbFolder);
       //~ });
     //~ }
   });
@@ -135,53 +167,3 @@ Plugsbee.connection.on('disconnected', function() {
   //~ Plugsbee.connection = new Lightstring.Connection(gConfiguration.WebsocketService);
   //~ location.reload();
 });
-
-Plugsbee.upload = function(aDOMFile, aFolder, onSuccess, onProgress, onError) {
-	var id = Math.random().toString().split('.')[1];
-  var pbFile = Object.create(Plugsbee.File);
-
-
-  pbFile.name = aDOMFile.name;
-  pbFile.folder = aFolder;
-  pbFile.id = id;
-  pbFile.type = aDOMFile.type;
-  
-  Plugsbee.media.getMiniature(aDOMFile, function(canvas) {
-    Plugsbee.layout.setFileMiniature(pbFile, canvas);
-    pbFile.miniatureDataURI = canvas.toDataURL();
-    Plugsbee.storage.addFile(pbFile);
-  });
-
-  Plugsbee.layout.drawFile(pbFile);
-
-	var fd = new FormData;
-	fd.append(aFolder.id + '/' + id, aDOMFile);
-
-	var xhr = new XMLHttpRequest();
-
-	xhr.upload.addEventListener("progress",
-		function(evt) {
-			var progression = (evt.loaded/evt.total)*100;
-      pbFile.thumbnail.label = Math.round(progression)+'%'
-		}, false
-	);
-
-
-	xhr.addEventListener("load",
-		function(evt) {
-			var answer = JSON.parse(xhr.responseText);
-			pbFile.fileURL = answer.src;
-
-      pbFile.thumbnail.draggable = true;
-      pbFile.thumbnail.label = pbFile.name;
-
-      Plugsbee.files[pbFile.id] = pbFile;
-      aFolder.files[pbFile.id] = pbFile;
-      Plugsbee.remote.newFile(pbFile);
-      Plugsbee.storage.addFile(pbFile);
-		}, false
-	);
-
-	xhr.open('POST', gConfiguration.uploadService);
-	xhr.send(fd);
-}

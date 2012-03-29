@@ -12,14 +12,14 @@ Widget.Panel = function() {
 
   thumbnail.label = "Add file";
   thumbnail.elm.addEventListener('click', function() {
-    gUserInterface.openFilePicker();
+    Plugsbee.layout.openFilePicker();
   });
   var div = document.createElement('ul');
   div.classList.add('panel');
   div.hidden = true;
-  
+
   div.appendChild(thumbnail.elm);
-  
+
   this.elm = div;
 };
 Widget.Panel.prototype.__defineSetter__('hidden', function(aBool) {

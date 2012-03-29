@@ -31,7 +31,6 @@
     <!-- Framework -->
     <script type="application/javascript" src="SW.js"/>
     <script type="application/javascript" src="lib/platform.js/platform.js"/>
-    <script type="application/javascript" src="lib/burger.js"/>
     <script type="application/javascript" src="lib/yepnope.js/yepnope.js"/>
     
     <!-- configuration -->
@@ -59,14 +58,9 @@
     <script type="application/javascript" src="lib/lightstring/plugins/PLAIN.js"/>
     
     <!-- Plugsbee -->
-    <script type="application/javascript" src="userinterface.js"/>
     <script type="application/javascript" src="plugsbee.js"/>
-    <script type="application/javascript" src="plugsbee.folder.js"/>
-    <script type="application/javascript" src="plugsbee.file.js"/>
-    <script type="application/javascript" src="plugsbee.storage.js"/>
     <script type="application/javascript" src="plugsbee.remote.js"/>
     <script type="application/javascript" src="plugsbee.layout.js"/>
-    <script type="application/javascript" src="plugsbee.media.js"/>
 
     <!-- widgets -->
     <script type="application/javascript" src="widgets/thumbnail/thumbnail.js"/>
@@ -112,7 +106,7 @@
         </form>
       </section>
       <section id="account" data-name="account" class="panel" hidden="hidden">
-        <button data-require="network" onclick="gUserInterface.logOut();">Log out</button>
+        <button data-require="network" onclick="Plugsbee.layout.logOut();">Log out</button>
         <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
       </section>
       <ul id="folders" data-name="folders" class="panel"></ul>

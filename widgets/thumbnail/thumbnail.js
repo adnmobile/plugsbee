@@ -57,11 +57,14 @@ Widget.Thumbnail = function() {
   };
   this.drop = function(evt) {
     this.classList.remove('dragenter');
-    var id = evt.dataTransfer.getData('Text');
-    var newFolder = Plugsbee.folders[this.getAttribute('data-id')];
-    var file = Plugsbee.files[id];
-    
-    file.move(newFolder);
+
+    var fileId = evt.dataTransfer.getData('Text');
+    var folderId = this.getAttribute('data-id');
+
+    var folder = Plugsbee.folders[folderId];
+    var file = Plugsbee.files[fileId];
+
+    file.move(folder);
 
     //Hide the dock
     document.getElementById('dock').hidden = true;

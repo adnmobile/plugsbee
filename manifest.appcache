@@ -7,7 +7,7 @@ index.xhtml
 configuration.js
 
 #libs
-lib/burger.js
+SW.js
 lib/platform.js/platform.js
 lib/yepnope/yepnope.js
 lib/vkbeautify.0.95.01.beta.js
@@ -32,15 +32,9 @@ widgets/panel/panel.js
 widgets/panel/panel.css
 widgets/editabletext/editabletext.js
 widgets/editabletext/editabletext.css
-SW.js
 plugsbee.js
-plugsbee.folder.js
-plugsbee.file.js
-userinterface.js
 plugsbee.remote.js
 plugsbee.layout.js
-plugsbee.storage.js
-plugsbee.media.js
 
 #themes
 themes/default/style.css
