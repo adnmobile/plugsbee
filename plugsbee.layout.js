@@ -323,7 +323,7 @@ Plugsbee.layout = {
 
       var folder = Plugsbee.layout.currentFolder;
 
-      Plugsbee.upload(file, folder);
+      Plugsbee.layout.upload(file, folder);
     });
 
     //
@@ -455,6 +455,7 @@ Plugsbee.layout = {
 
     var folders = document.getElementById('folders');
     thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
+    thumbnail.elm.querySelector('input').focus();
   }, 
   showWelcome: function() {
     document.body.style.backgroundColor = 'white';
@@ -751,6 +752,48 @@ Plugsbee.layout = {
     }
     //~ window.URL.revokeObjectURL(src);
     return previewElm;
+  },
+  upload: function(aDOMFile, aFolder) {
+    var id = Math.random().toString().split('.')[1];
+    var pbFile = Object.create(Plugsbee.File);
+
+
+    pbFile.name = aDOMFile.name;
+    pbFile.folder = aFolder;
+    pbFile.id = id;
+    pbFile.type = aDOMFile.type;
+
+    Plugsbee.layout.drawFile(pbFile);
+
+    var fd = new FormData;
+    fd.append(aFolder.id + '/' + id, aDOMFile);
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress",
+      function(evt) {
+        var progression = (evt.loaded/evt.total)*100;
+        pbFile.thumbnail.label = Math.round(progression)+'%'
+      }, false
+    );
+
+
+    xhr.addEventListener("load",
+      function(evt) {
+        var answer = JSON.parse(xhr.responseText);
+        pbFile.fileURL = answer.src;
+
+        pbFile.thumbnail.draggable = true;
+        pbFile.thumbnail.label = pbFile.name;
+
+        Plugsbee.files[pbFile.id] = pbFile;
+        aFolder.files[pbFile.id] = pbFile;
+        Plugsbee.remote.newFile(pbFile);
+      }, false
+    );
+
+    xhr.open('POST', gConfiguration.uploadService);
+    xhr.send(fd);
   }
 };
 
@@ -761,13 +804,6 @@ Plugsbee.layout = {
 window.setTimeout(function() {
   window.addEventListener("popstate", Plugsbee.layout.handlePath, false);
 }, 0);
-
-//
-// Listen for the load event
-//
-window.addEventListener("load", function() {
-  Plugsbee.layout.init();
-});
 
 //
 //

@@ -92,6 +92,7 @@ Plugsbee.connection.load('pubsub');
 
 
 window.addEventListener("load", function() {
+  Plugsbee.layout.init();
   var password = localStorage.getItem('password');
   var login = localStorage.getItem('login');
   if(!password || !login) {
