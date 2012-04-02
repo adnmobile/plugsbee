@@ -12,7 +12,7 @@ Plugsbee.remote = {
         var pbFolder = Plugsbee.createFolder();
         pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
         pbFolder.host = item.jid;
-        pbFolder.name = item.name;
+        pbFolder.name = decodeURIComponent(item.name);
         pbFolder.files = {};
 
         pbFolders[pbFolder.id] = pbFolder;
@@ -30,7 +30,7 @@ Plugsbee.remote = {
         pbFile.id = item.id;
         pbFile.type = item.type;
         pbFile.fileURL = item.src;
-        pbFile.name = item.name;
+        pbFile.name = decodeURIComponent(item.name);
         pbFile.folderId = aPbFolder.id;
     
         pbFiles[pbFile.id] = pbFile;
@@ -46,11 +46,13 @@ Plugsbee.remote = {
       aFolder.host = gConfiguration.PubSubService;
       
     var fields = [
-      "<field var='pubsub#title'><value>"+aFolder.name+"</value></field>",
+      "<field var='pubsub#title'>" +
+        "<value>" + encodeURIComponent(aFolder.name) + "</value>" +
+      "</field>",
       "<field var='pubsub#access_model'><value>whitelist</value></field>",
-      "<field var='pubsub#persist_items'><value>1</value></field>"
+      "<field var='pubsub#persist_items'><value>1</value></field>",
+      //~ "<field var='pubsub#max_items'><value>20</value></field>"
     ];
-    
     
     Plugsbee.connection.pubsub.create(aFolder.host, 'urn:plugsbee:folder:'+aFolder.id, fields, function() {
       if(onSuccess)
@@ -72,7 +74,11 @@ Plugsbee.remote = {
       //~ var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>" + aPbFile.name + "</title><content src='"+aFile.src+"' type='"+aFile.type+"'/><link rel='preview' type='image/png' href='" + aPbFile.miniature+"'/></entry>";
       //~ var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>" + aPbFile.name + "</title><content src='"+aPbFile.fileURL+"' type='"+aPbFile.type+"'/></entry>";
     //~ else
-    var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>"+aPbFile.name+"</title><content src='"+aPbFile.fileURL+"' type='"+aPbFile.type+"'/></entry>";
+    var entry = 
+      "<entry xmlns='http://www.w3.org/2005/Atom'>" + 
+        "<title>" + encodeURIComponent(aPbFile.name) + "</title>" +
+        "<content src='" + aPbFile.fileURL + "' type='" + aPbFile.type + "'/>" +
+      "</entry>";
 
     Plugsbee.connection.pubsub.publish(aPbFile.folder.host, 'urn:plugsbee:folder:'+aPbFile.folder.id, entry, aPbFile.id);
   },

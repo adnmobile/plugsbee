@@ -59,7 +59,7 @@ Plugsbee.layout = {
     thumbnail.draggable = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
     thumbnail.label = aPbFolder.name;
-    thumbnail.href = aPbFolder.name;
+    thumbnail.href = encodeURIComponent(aPbFolder.name);
     aPbFolder.thumbnail = thumbnail;
     
     var panel = new Widget.Panel();
@@ -96,7 +96,6 @@ Plugsbee.layout = {
   setFolderName: function(aPbFolder) {
     aPbFolder.thumbnail.label = aPbFolder.name;
     aPbFolder.thumbnail.href = encodeURIComponent(aPbFolder.name);
-    //Updates href
     for (var i in aPbFolder.files)
       aPbFolder.files[i].thumbnail.href = encodeURIComponent(aPbFolder.files[i].folder.name) + '/' + encodeURIComponent(aPbFolder.files[i].name);
   },
@@ -140,7 +139,7 @@ Plugsbee.layout = {
     if (aPbFile.folder.id === "trash")
       aPbFile.thumbnail.href = 'trash' + '/' + encodeURIComponent(aPbFile.name);
     else
-      aPbFile.thumbnail.href = aPbFile.folder.name + '/' + encodeURIComponent(aPbFile.name);
+      aPbFile.thumbnail.href = encodeURIComponent(aPbFile.folder.name) + '/' + encodeURIComponent(aPbFile.name);
   },
   setFileMiniature: function(aPbFile, aMiniature) {
     var miniature = aMiniature || aPbFile.miniature; 
