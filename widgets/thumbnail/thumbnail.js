@@ -115,19 +115,31 @@ Widget.Thumbnail.prototype.__defineGetter__('dropbox', function() {
 //
 Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
   var figure = this.elm.querySelector('figure');
-  if (typeof aMiniature == 'string') {
+
+  function addMiniatureElm(aMiniatureElm) {
+    var miniature = figure.querySelector('.miniature');
+    if(!miniature)
+      figure.insertBefore(aMiniature, figure.firstChild);
+    else
+      figure.replaceChild(aMiniature, miniature);
+  };
+  
+  if (aMiniature instanceof HTMLElement)
+    addMiniatureElm(aMiniature)
+  else {
     var img = document.createElement('img');
     img.classList.add('miniature');
-    img.src = aMiniature;
+    if (aMiniature instanceof File) {
+      img.onload = function() {
+        window.URL.revokeObjectURL(this.src);
+      };
+      img.src = window.URL.createObjectURL(aMiniature);
+    }
+    else if (typeof aMiniature == 'string')
+      img.src = aMiniature;
+
     aMiniature = img;
-  }
-  var miniature = figure.querySelector('.miniature');
-  if(!miniature) {
-    figure.insertBefore(aMiniature, figure.firstChild);
-  }
-  else {
-    figure.replaceChild(aMiniature, miniature);
-    //~ figure.replaceChild(miniature, aMiniature);
+    addMiniatureElm(img);
   }
 });
 Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {

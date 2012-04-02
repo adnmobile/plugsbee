@@ -1,5 +1,8 @@
 'use strict';
 
+//window.URL
+window.URL = window.webkitURL || window.URL;
+
 var Plugsbee = {
 	folders: {},
 	files: {},

@@ -5,4 +5,3 @@ git clone git://github.com/cubiq/add-to-homescreen
 git clone git://github.com/eldonilo/lightstring.git
 git clone git://github.com/SlexAxton/yepnope.js.git
 wget https://vkbeautify.googlecode.com/files/vkbeautify.0.95.01.beta.js
-wget http://requirejs.org/docs/release/1.0.7/minified/require.js

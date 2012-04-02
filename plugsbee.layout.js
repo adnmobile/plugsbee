@@ -319,11 +319,11 @@ Plugsbee.layout = {
     //
     var filePicker = document.getElementById('file-picker');
     filePicker.addEventListener('change', function upload(evt) {
-      var file = evt.target.files[0];
+      var files = evt.target.files;
 
       var folder = Plugsbee.layout.currentFolder;
 
-      Plugsbee.layout.upload(file, folder);
+      Plugsbee.layout.upload(files, folder);
     });
 
     //
@@ -753,47 +753,37 @@ Plugsbee.layout = {
     //~ window.URL.revokeObjectURL(src);
     return previewElm;
   },
-  upload: function(aDOMFile, aFolder) {
-    var id = Math.random().toString().split('.')[1];
-    var pbFile = Object.create(Plugsbee.File);
+  upload: function(aFiles, aFolder) {
+    for (var i = 0; i < aFiles.length; i++) {
+      var id = Math.random().toString().split('.')[1];
+      var pbFile = Object.create(Plugsbee.File);
 
 
-    pbFile.name = aDOMFile.name;
-    pbFile.folder = aFolder;
-    pbFile.id = id;
-    pbFile.type = aDOMFile.type;
+      pbFile.name = aFiles[i].name;
+      pbFile.folder = aFolder;
+      pbFile.id = id;
+      pbFile.type = aFiles[i].type;
+      Plugsbee.layout.drawFile(pbFile);
+      
+      if (pbFile.type === 'image/jpeg' || 'image/png')
+        Plugsbee.layout.setFileMiniature(pbFile, aFiles[i]);
+      
+      Plugsbee.remote.uploadFile(pbFile, aFiles[i],
+        function(aPbFile, progression) {
+          aPbFile.thumbnail.label = Math.round(progression)+'%';
+        },
+        function(pbFile, answer) {
+          pbFile.fileURL = answer.src;
+          pbFile.thumbnail.draggable = true;
+          pbFile.thumbnail.label = pbFile.name;
+          Plugsbee.files[pbFile.id] = pbFile;
+          pbFile.folder.files[pbFile.id] = pbFile;
 
-    Plugsbee.layout.drawFile(pbFile);
-
-    var fd = new FormData;
-    fd.append(aFolder.id + '/' + id, aDOMFile);
-
-    var xhr = new XMLHttpRequest();
-
-    xhr.upload.addEventListener("progress",
-      function(evt) {
-        var progression = (evt.loaded/evt.total)*100;
-        pbFile.thumbnail.label = Math.round(progression)+'%'
-      }, false
-    );
-
-
-    xhr.addEventListener("load",
-      function(evt) {
-        var answer = JSON.parse(xhr.responseText);
-        pbFile.fileURL = answer.src;
-
-        pbFile.thumbnail.draggable = true;
-        pbFile.thumbnail.label = pbFile.name;
-
-        Plugsbee.files[pbFile.id] = pbFile;
-        aFolder.files[pbFile.id] = pbFile;
-        Plugsbee.remote.newFile(pbFile);
-      }, false
-    );
-
-    xhr.open('POST', gConfiguration.uploadService);
-    xhr.send(fd);
+          Plugsbee.remote.newFile(pbFile);
+          
+        }
+      );
+    }
   }
 };
 

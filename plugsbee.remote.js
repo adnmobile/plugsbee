@@ -87,7 +87,31 @@ Plugsbee.remote = {
   },
   purgeFolder: function(aPbFolder) {
     Plugsbee.connection.pubsub.purge(aPbFolder.host, 'urn:plugsbee:folder:'+aPbFolder.id);
-  }
+  },
+  uploadFile: function(aPbFile, aFile, aOnProgress, aOnUploaded) {
+    var fd = new FormData;
+    fd.append(aPbFile.folder.id + '/' + aPbFile.id, aFile);
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress",
+      function(evt) {
+        var progression = (evt.loaded/evt.total)*100;
+        aOnProgress(aPbFile, progression);
+      }, false
+    );
+
+
+    xhr.addEventListener("load",
+      function(evt) {
+        var answer = JSON.parse(evt.target.responseText);
+        aOnUploaded(aPbFile, answer);
+      }, false
+    );
+
+    xhr.open('POST', gConfiguration.uploadService);
+    xhr.send(fd);
+  },
 }; 
 
 
