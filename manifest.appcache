@@ -9,7 +9,6 @@ configuration.js
 #libs
 SW.js
 lib/platform.js/platform.js
-lib/yepnope/yepnope.js
 lib/vkbeautify.0.95.01.beta.js
 lib/lightstring/lightstring.js
 lib/lightstring/polyfill.js

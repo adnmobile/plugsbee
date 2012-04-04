@@ -801,6 +801,14 @@ window.setTimeout(function() {
 //
 //
 (function() {
+  // Theme
+  gConfiguration.themeFolder = 'themes/'+gConfiguration.theme+'/';
+  var link = document.createElement('link');
+  link.type = 'text/css';
+  link.rel = 'stylesheet';
+  link.href = gConfiguration.themeFolder + 'style.css';
+  var sheet = document.head.appendChild(link);
+
   //Application cache stuff
   function handleCacheEvent(e) {
     console.log('application cache: ' + e.type);
@@ -830,10 +838,6 @@ window.setTimeout(function() {
   // Document title
   document.title = gConfiguration.name;
 
-  // Theme
-  gConfiguration.themeFolder = 'themes/'+gConfiguration.theme+'/';
-  yepnope(gConfiguration.themeFolder+'style.css');
-  
   // Favicon
   document.head.insertAdjacentHTML('beforeend',
     '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>' 
@@ -852,19 +856,7 @@ window.setTimeout(function() {
       '<link rel="apple-touch-icon" sizes="72x72" href="'+gConfiguration.themeFolder+'icons/72x72.png"/>' +
       '<link rel="apple-touch-icon" sizes="114x114" href="'+gConfiguration.themeFolder+'icons/114x114.png"/>'
     );
-    
-    //
-    // Add to homescreen //FIXME: This should works for Android
-    //
-    yepnope('lib/add-to-homescreen/src/add2home.js');
-    yepnope('lib/add-to-homescreen/style/add2home.css');
-
-    //
-    // Specific rules for iOS
-    //
-    yepnope(gConfiguration.themeFolder+'iOS.css');
-    
-    
+   
     //
     // iOS web-app
     //
@@ -879,3 +871,20 @@ window.setTimeout(function() {
     );*/
   }
 })();
+
+window.addEventListener('load', function() {
+  //Check support for input type="file"
+  function inputTypeFileSupport() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    return !input.disabled;
+  }
+  //Hide upload stuff
+  if (!inputTypeFileSupport()) {
+    document.styleSheets[0].insertRule(
+      '.upload, #upload-button, #folder-adder {' +
+        'display: none !important;' +
+      '}',
+    0);
+  }
+});
