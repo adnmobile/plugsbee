@@ -118,10 +118,20 @@ Plugsbee.layout = {
     
     thumbnail.elm.classList.add('file');
     aPbFile.thumbnail = thumbnail;
-    if (aPbFile.fileURL)
-      this.setFileMiniature(aPbFile, aPbFile.fileURL);
-    else
-      this.setFileMiniature(aPbFile, Plugsbee.layout.themeFolder+'file.png');
+
+    if (aPbFile.fileURL) {
+      switch (aPbFile.type) {
+        case 'image/png':
+        case 'image/jpeg':
+        case 'image/gif':
+        case 'image/svg+xml':
+          Plugsbee.layout.setFileMiniature(aPbFile, aPbFile.fileURL);
+          break;
+        default:
+          Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'file.png');
+      }
+    }
+
     if (aPbFile.name)
       this.setFileName(aPbFile);
   },
@@ -766,9 +776,17 @@ Plugsbee.layout = {
       pbFile.id = id;
       pbFile.type = aFiles[i].type;
       Plugsbee.layout.drawFile(pbFile);
-      
-      if (pbFile.type === 'image/jpeg' || 'image/png')
-        Plugsbee.layout.setFileMiniature(pbFile, aFiles[i]);
+
+      switch (pbFile.type) {
+        case 'image/png':
+        case 'image/jpeg':
+        case 'image/gif':
+        case 'image/svg+xml':
+          Plugsbee.layout.setFileMiniature(pbFile, aFiles[i]);
+          break;
+        default:
+          Plugsbee.layout.setFileMiniature(pbFile, gConfiguration.themeFolder + 'file.png');
+      }
       
       Plugsbee.remote.uploadFile(pbFile, aFiles[i],
         function(aPbFile, progression) {
