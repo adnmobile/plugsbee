@@ -847,29 +847,27 @@ window.setTimeout(function() {
   //~ yepnope('gStorageWithFS.js');
   
   // iOS stuff
-  if (platform.os.match('iOS')) {
-    //
-    // Icons //FIXME: This should works for Android
-    //
-    document.head.insertAdjacentHTML('beforeend',
-      '<link rel="apple-touch-icon" href="'+gConfiguration.themeFolder+'icons/57x57.png"/>' +
-      '<link rel="apple-touch-icon" sizes="72x72" href="'+gConfiguration.themeFolder+'icons/72x72.png"/>' +
-      '<link rel="apple-touch-icon" sizes="114x114" href="'+gConfiguration.themeFolder+'icons/114x114.png"/>'
-    );
-   
-    //
-    // iOS web-app
-    //
-    document.head.insertAdjacentHTML('beforeend',
-      '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
-      '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
-    );
-    
-    // FIXME add startup image -- 1004*768 for ipad and 320 x 460 for ipod portrait for both
-    /*document.head.insertAdjacentHTML('beforeend',
-      '<link rel="apple-touch-startup-image" href="/startup.png">'
-    );*/
-  }
+  //
+  // Icons //FIXME: This should works for Android
+  //
+  document.head.insertAdjacentHTML('beforeend',
+    '<link rel="apple-touch-icon" href="' + gConfiguration.themeFolder+'icons/57x57.png"/>' +
+    '<link rel="apple-touch-icon" sizes="72x72" href="'+gConfiguration.themeFolder+'icons/72x72.png"/>' +
+    '<link rel="apple-touch-icon" sizes="114x114" href="'+gConfiguration.themeFolder+'icons/114x114.png"/>'
+  );
+ 
+  //
+  // iOS web-app
+  //
+  document.head.insertAdjacentHTML('beforeend',
+    '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
+    '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
+  );
+  
+  // FIXME add startup image -- 1004*768 for ipad and 320 x 460 for ipod portrait for both
+  /*document.head.insertAdjacentHTML('beforeend',
+    '<link rel="apple-touch-startup-image" href="/startup.png">'
+  );*/
 })();
 
 window.addEventListener('load', function() {
