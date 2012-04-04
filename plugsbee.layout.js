@@ -23,6 +23,9 @@ Plugsbee.layout = {
   },
   route: function(aNode) {
     switch (aNode[0]) {
+      case '':
+        Plugsbee.layout.showFolders();
+        break;
 			case 'account':
 				Plugsbee.layout.showAccount();
 				break;
@@ -792,7 +795,7 @@ Plugsbee.layout = {
 //The setTimeout avoid to handle the initial popstate event
 window.setTimeout(function() {
   window.addEventListener("popstate", Plugsbee.layout.handlePath, false);
-}, 0);
+}, 1000);
 
 //
 //
