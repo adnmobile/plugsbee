@@ -51,7 +51,7 @@ Plugsbee.remote = {
       "</field>",
       "<field var='pubsub#access_model'><value>whitelist</value></field>",
       "<field var='pubsub#persist_items'><value>1</value></field>",
-      //~ "<field var='pubsub#max_items'><value>20</value></field>"
+      "<field var='pubsub#max_items'><value>100</value></field>"
     ];
     
     Plugsbee.connection.pubsub.create(aFolder.host, 'urn:plugsbee:folder:'+aFolder.id, fields, function() {

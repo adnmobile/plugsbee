@@ -158,6 +158,7 @@ Plugsbee.connection.on('connecting', function() {
 Plugsbee.connection.on('failure', function() {
   console.log('failure');
   alert('Wrong login and/or password.');
+  Plugsbee.layout.showLogin();
 });
 Plugsbee.connection.on('disconnecting', function() {
   console.log('disconnecting');
