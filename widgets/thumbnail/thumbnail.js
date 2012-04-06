@@ -20,14 +20,8 @@ Widget.Thumbnail = function() {
   this.form = elm.firstChild;
 
   this.elm.addEventListener('click', function(e) {
-    if(location.protocol === 'file:' || e.target.tagName === 'input')
+    if(e.target.tagName === 'input')
       return;
-    
-    e.preventDefault();
-    history.pushState(null, null, this.firstChild.href);
-    var event = document.createEvent('Event');
-    event.initEvent('popstate', true, true);
-    window.dispatchEvent(event);
   }, true);
   
   this.dragStart = function(evt) {
@@ -151,8 +145,6 @@ Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
 Widget.Thumbnail.prototype.__defineSetter__('href', function(aHref) {
 	this._href = aHref;
   var href = aHref;
-  if(location.protocol === 'file:')
-    href = '#'+aHref
 
   this.elm.getElementsByTagName('a')[0].setAttribute('href', href);
 });

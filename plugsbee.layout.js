@@ -2,27 +2,10 @@
 
 Plugsbee.layout = {
   handlePath: function() {
-    var node = [];
-    if (location.protocol === 'file:') {
-      var hash = location.hash.split('#')[1];
-      if(hash) {
-        var split = hash.split('/');
-        if(split)
-          node = split;
-        else
-          node.push(hash);
-      }
-    }
-    else {
-      var split = location.pathname.split('/');
-      node.push(split[1]);
-      if (split[2])
-        node.push(split[2]);
-    }
-    Plugsbee.layout.route(node);
+    Plugsbee.layout.route(location.pathname.split('/')[1]);
   },
-  route: function(aNode) {
-    switch (aNode[0]) {
+  route: function(aPath) {
+    switch (aPath) {
       case '':
         Plugsbee.layout.showFolders();
         break;
@@ -31,22 +14,11 @@ Plugsbee.layout = {
 				break;
 			case 'trash':
 				Plugsbee.layout.showTrash();
-        if (!aNode[1])
-          return;
-
-        var file = Plugsbee.layout.getFileFromName(Plugsbee.folders['trash'], unescape(aNode[1]));
-        if (file)
-          Plugsbee.layout.showFile(file);
 				break;
 			default:
-        var folder = Plugsbee.layout.getFolderFromName(decodeURIComponent(aNode[0]));
-        if (!folder) {
+        var folder = Plugsbee.layout.getFolderFromName(decodeURIComponent(aPath));
+        if (!folder)
           Plugsbee.layout.showFolders();
-          return;
-        }
-        var file = Plugsbee.layout.getFileFromName(folder, decodeURIComponent(aNode[1]));
-        if (file)
-          Plugsbee.layout.showFile(file);
         else
           Plugsbee.layout.showFolder(folder);
     }
@@ -63,6 +35,13 @@ Plugsbee.layout = {
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
     thumbnail.label = aPbFolder.name;
     thumbnail.href = encodeURIComponent(aPbFolder.name);
+    thumbnail.elm.addEventListener('click', function(e) {   
+      e.preventDefault();
+      history.pushState(null, null, this.firstChild.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
+    }, true);
     aPbFolder.thumbnail = thumbnail;
     
     var panel = new Widget.Panel();
@@ -134,6 +113,8 @@ Plugsbee.layout = {
 
     if (aPbFile.name)
       this.setFileName(aPbFile);
+      
+    aPbFile.thumbnail.href = aPbFile.fileURL;
   },
   drawFile: function(aPbFile) {
     this.buildFile(aPbFile);
@@ -198,9 +179,6 @@ Plugsbee.layout = {
     //
     var navButton = {
       setHref: function(aHref) {
-        if(location.protocol === 'file:')
-          aHref = '#'+aHref
-          
         this.elm.href = aHref;
       }
     };
@@ -209,8 +187,6 @@ Plugsbee.layout = {
     navButton.elm.hidden = true;
     navButton.elm.textContent = 'Account';
     navButton.elm.onclick = function(e) {
-      if(location.protocol === 'file:')
-        return;
       e.preventDefault();
       history.pushState(null, null, this.href);
       var event = document.createEvent('Event');
@@ -663,107 +639,11 @@ Plugsbee.layout = {
       }
     }
   },
-  getFileFromName: function(aPbFolder, aName) {
-    for (var i in aPbFolder.files) {
-      var file = aPbFolder.files[i];
-      if(file.name === aName) {
-        return file;
-      }
-    }
-  },
-  showFile: function(aFile) {
-    document.body.style.backgroundColor = 'black';
-    Plugsbee.layout.deck.selectedPanel = 'viewer';
-    var preview = document.getElementById('preview');
-    var download = document.getElementById('download');
-    download.href = aFile.fileURL;
-    
-    //Title
-    this.contextTitle.value = aFile.name;
-    this.contextTitle.editable = true;
-    this.contextTitle.onsubmit = function(value) {
-      aFile.rename(value);
-    };
-
-    var getLink = document.getElementById('get-link');
-    getLink.onclick = function() {
-      window.prompt('Here is the link, you can simply copy it.', aFile.fileURL);
-    }
-
-    document.getElementById('folder-adder').hidden = true;
-    document.getElementById('upload-button').hidden = true;
-    this.emptyTrashButton.hidden = true;
-
-    var navButton = this.navButton;
-    navButton.elm.hidden = false;
-    if (aFile.folder.id === 'trash')
-      navButton.setHref('trash');
-    else
-      navButton.setHref(aFile.folder.name);
-    navButton.elm.textContent = aFile.folder.name;
-    
-    //~ if(location.protocol !== 'file:') {
-      //~ 
-      //~ navButton.onclick = function(e) {
-        //~ history.pushState(null, null, this.href);
-        //~ var event = document.createEvent('Event');
-        //~ event.initEvent('popstate', true, true);
-        //~ window.dispatchEvent(event);
-        //~ e.preventDefault();
-      //~ };
-    //~ }
-    //~ else {
-      //~ navButton.href = '#'+aFile.folder.name;
-      //~ navButton.onclick = function(e) {
-        //~ history.pushState(null, null, this.href);
-        //~ var event = document.createEvent('Event');
-        //~ event.initEvent('popstate', true, true);
-        //~ window.dispatchEvent(event);
-        //~ e.preventDefault();
-      //~ };
-    //~ }
-
-    var elm = this.previewBuilder(aFile);
-    preview.innerHTML = elm;
-  },
   logOut: function() {
     localStorage.removeItem("login");
     localStorage.removeItem("password");
     Plugsbee.connection.disconnect();
-    if (location.protocol === 'file:') {
-      window.location.assign('#');
-      window.location.reload();
-    }
-    else
-      window.location.assign('/');
-
-  },   
-  previewBuilder: function(aFile) {
-    //~ var src = window.URL.createObjectURL(aFile.file);
-    var src = aFile.fileURL;
-    switch (aFile.type) {
-      case 'image/png':
-      case 'image/jpeg':
-      case 'image/gif':
-      case 'image/svg+xml':
-        var previewElm = '<img src="'+src+'"/>';
-        break;
-      case 'video/webm':
-      case 'video/ogg':
-      case 'video/mp4':
-        var previewElm = '<video src="'+src+'" autoplay="autoplay" controls="controls"/>';
-        break;
-      case 'audio/webm':
-      case 'audio/ogg':
-      case 'audio/wave':
-      case 'audio/mpeg':
-        var previewElm = '<audio src="'+src+'" autoplay="autoplay" controls="controls"/>';
-        break;
-      default:
-        var previewElm = '<span>'+'No preview available yet.'+'</span>';
-    }
-    //~ window.URL.revokeObjectURL(src);
-    return previewElm;
+    window.location.assign('/');
   },
   upload: function(aFiles, aFolder) {
     for (var i = 0; i < aFiles.length; i++) {
@@ -861,9 +741,6 @@ window.setTimeout(function() {
     '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>' 
   );
   
-  //~ if ((platform.name === 'Chrome') && (location.protocol !== 'file:'))
-  //~ yepnope('gStorageWithFS.js');
-  
   // iOS stuff
   //
   // Icons //FIXME: This should works for Android
@@ -877,10 +754,10 @@ window.setTimeout(function() {
   //
   // iOS web-app
   //
-  document.head.insertAdjacentHTML('beforeend',
-    '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
-    '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
-  );
+  //~ document.head.insertAdjacentHTML('beforeend',
+    //~ '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
+    //~ '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
+  //~ );
   
   // FIXME add startup image -- 1004*768 for ipad and 320 x 460 for ipod portrait for both
   /*document.head.insertAdjacentHTML('beforeend',
