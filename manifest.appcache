@@ -8,7 +8,6 @@ configuration.js
 
 #libs
 SW.js
-lib/platform.js/platform.js
 lib/vkbeautify.0.95.01.beta.js
 lib/lightstring/lightstring.js
 lib/lightstring/polyfill.js
@@ -20,9 +19,6 @@ lib/lightstring/plugins/presence.js
 lib/lightstring/plugins/pubsub.js
 lib/lightstring/plugins/dataforms.js
 lib/lightstring/plugins/PLAIN.js
-lib/add-to-homescreen/src/add2home.js
-lib/add-to-homescreen/style/add2home.css
-lib/yepnope.js/yepnope.js
 
 #plugsbee
 widgets/thumbnail/thumbnail.js
@@ -37,7 +33,6 @@ plugsbee.layout.js
 
 #themes
 themes/default/style.css
-themes/default/iOS.css
 themes/default/offline.css
 themes/default/file.png
 themes/default/folder.png

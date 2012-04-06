@@ -1,6 +1,4 @@
 Install:
 cd lib/
-git clone git://github.com/bestiejs/platform.js.git
-git clone git://github.com/cubiq/add-to-homescreen
 git clone git://github.com/eldonilo/lightstring.git
 wget https://vkbeautify.googlecode.com/files/vkbeautify.0.95.01.beta.js
