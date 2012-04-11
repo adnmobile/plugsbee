@@ -17,7 +17,18 @@ Plugsbee.remote = {
 
         pbFolders[pbFolder.id] = pbFolder;
       });
-      if (aOnSuccess)
+      if(!pbFolders['trash']) {
+        var pbFolder = Plugsbee.createFolder();
+        pbFolder.id = 'trash';
+        pbFolder.name = 'Trash';
+        pbFolders['trash'] = pbFolder;
+      
+        Plugsbee.remote.newFolder(pbFolder, function() {
+          if (aOnSuccess)
+            aOnSuccess(pbFolders);
+        });
+      }
+      else if (aOnSuccess)
         aOnSuccess(pbFolders);
     });
   },
@@ -118,47 +129,4 @@ Plugsbee.remote = {
     xhr.open('POST', gConfiguration.uploadService);
     xhr.send(fd);
   },
-}; 
-
-
-//~ Plugsbee.remote = {
-  //~ getFolders: function(aOnSuccess) {
-    //~ Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
-      //~ var pbFolders = {};
-      //~ stanza.items.forEach(function(item) {
-        //~ if (!item.node.match('urn:plugsbee:folder:'))
-          //~ return;
-          //~ 
-        //~ 
-        //~ var pbFolder = Plugsbee.createFolder();
-        //~ pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
-        //~ pbFolder.host = item.jid;
-        //~ pbFolder.name = item.name;
-        //~ pbFolder.files = {};
-//~ 
-        //~ pbFolders[pbFolder.id] = pbFolder;
-      //~ });
-      //~ if (aOnSuccess)
-        //~ aOnSuccess(pbFolders);
-    //~ });
-  //~ },
-  //~ getFiles: function(aPbFolder, aOnSuccess) {
-    //~ Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, function(stanza) {
-      //~ var pbFiles = {};
-      //~ stanza.items.forEach(function(item) {
-//~ 
-        //~ var pbFile = Object.create(Plugsbee.File);
-        //~ pbFile.id = item.id;
-        //~ pbFile.type = item.type;
-        //~ pbFile.fileURL = item.src;
-        //~ pbFile.name = item.name;
-        //~ pbFile.folderId = aPbFolder.id;
-        //~ 
-        //~ pbFiles[pbFile.id] = pbFile;
-      //~ });
-      //~ if (aOnSuccess)
-        //~ aOnSuccess(pbFiles);
-    //~ });
-  //~ },
-//~ };
-//~ 
+};

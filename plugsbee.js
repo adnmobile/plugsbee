@@ -134,22 +134,6 @@ Plugsbee.connection.on('connected', function() {
         }
       });
     }
-    //~ if(!Plugsbee.folders['trash']) {
-      //~ var pbolder = Object.create(Plugsbee.Folder);
-      //~ pbFolder.draw();
-      //~ pbFolder.id = 'trash';
-      //~ pbFolder.name = 'Trash';
-      //~
-      //~ gRemote.newFolder(pbFolder, function(pbFolder) {
-        //~ console.log(pbFolder);
-        //~ //Thumbnail
-        //~ pbFolder.thumbnail.elm = document.querySelector('.thumbnail.trash');
-        //~ pbFolder.thumbnail.elm.hidden = false;
-        //~ //Panel
-        //~ pbFolder.panel.elm = document.querySelector('.panel.trash');
-        //~
-      //~ });
-    //~ }
   });
 });
 Plugsbee.connection.on('connecting', function() {
