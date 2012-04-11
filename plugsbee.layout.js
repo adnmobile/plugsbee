@@ -9,13 +9,13 @@ Plugsbee.layout = {
       case '':
         Plugsbee.layout.showFolders();
         break;
-			case 'account':
-				Plugsbee.layout.showAccount();
-				break;
-			case 'trash':
-				Plugsbee.layout.showTrash();
-				break;
-			default:
+      case 'account':
+        Plugsbee.layout.showAccount();
+        break;
+      case 'trash':
+        Plugsbee.layout.showTrash();
+        break;
+      default:
         var folder = Plugsbee.layout.getFolderFromName(decodeURIComponent(aPath));
         if (!folder)
           Plugsbee.layout.showFolders();
@@ -35,7 +35,7 @@ Plugsbee.layout = {
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
     thumbnail.label = aPbFolder.name;
     thumbnail.href = encodeURIComponent(aPbFolder.name);
-    thumbnail.elm.addEventListener('click', function(e) {   
+    thumbnail.elm.addEventListener('click', function(e) {
       e.preventDefault();
       history.pushState(null, null, this.firstChild.href);
       var event = document.createEvent('Event');
@@ -43,7 +43,7 @@ Plugsbee.layout = {
       window.dispatchEvent(event);
     }, true);
     aPbFolder.thumbnail = thumbnail;
-    
+
     var panel = new Widget.Panel();
     panel.elm.firstChild.setAttribute('data-require', 'network');
     panel.elm.setAttribute('data-name', aPbFolder.id);
@@ -85,7 +85,7 @@ Plugsbee.layout = {
     //Miniature
     aPbFolder.thumbnail.miniature = aPbFolder.miniature;
   },
-  
+
   //
   //File
   //
@@ -94,7 +94,7 @@ Plugsbee.layout = {
     thumbnail.elm.setAttribute('data-type', 'file');
     thumbnail.elm.setAttribute('data-id', aPbFile.id);
     thumbnail.draggable = true;
-    
+
     thumbnail.elm.classList.add('file');
     aPbFile.thumbnail = thumbnail;
 
@@ -113,7 +113,7 @@ Plugsbee.layout = {
 
     if (aPbFile.name)
       this.setFileName(aPbFile);
-      
+
     aPbFile.thumbnail.href = aPbFile.fileURL;
   },
   drawFile: function(aPbFile) {
@@ -124,7 +124,7 @@ Plugsbee.layout = {
     aPbFile.thumbnail.elm.parentNode.removeChild(aPbFile.thumbnail.elm);
     delete aPbFile.thumbnail;
   },
-  handleFile: function(aPbFile) { 
+  handleFile: function(aPbFile) {
     var panel = aPbFile.folder.panel.elm;
     aPbFile.thumbnail.elm = panel.insertBefore(aPbFile.thumbnail.elm, panel.lastChild);
   },
@@ -136,7 +136,7 @@ Plugsbee.layout = {
       aPbFile.thumbnail.href = encodeURIComponent(aPbFile.folder.name) + '/' + encodeURIComponent(aPbFile.name);
   },
   setFileMiniature: function(aPbFile, aMiniature) {
-    var miniature = aMiniature || aPbFile.miniature; 
+    var miniature = aMiniature || aPbFile.miniature;
     aPbFile.thumbnail.miniature = miniature;
   },
   toggleXMPPConsole: function() {
@@ -147,24 +147,24 @@ Plugsbee.layout = {
   currentFolder: {},
   currentFile: {},
   themeFolder : 'themes/'+gConfiguration.theme+'/',
-	init: function(e) {
+  init: function(e) {
     //
     //Deck
     //
     (function() {
-      
+
       var deck = Object.create(SWDeck);
       deck.rootElement = document.getElementById('deck');
       Plugsbee.layout.deck = deck;
-      
+
     })();
-    
-    
+
+
     //
     //Title
     //
     (function() {
-      
+
       var contextTitle = new Widget.Editabletext();
       contextTitle.value = gConfiguration.name;
 
@@ -204,7 +204,7 @@ Plugsbee.layout = {
     folderAdder.textContent = "New folder";
     folderAdder.setAttribute('data-require', "network");
     folderAdder.hidden = true;
-    folderAdder.addEventListener('click', Plugsbee.layout.addFolder); 
+    folderAdder.addEventListener('click', Plugsbee.layout.addFolder);
     //~ var input =  folderAdder.form.querySelector('input');
     //~ folderAdder.elm.onclick = function(aEvent) {
       //~ folderAdder.edit = true;
@@ -235,7 +235,7 @@ Plugsbee.layout = {
     uploadButton.textContent = "Add file";
     uploadButton.hidden = true;
     uploadButton.setAttribute('data-require', "network");
-    uploadButton.addEventListener('click', Plugsbee.layout.openFilePicker);  
+    uploadButton.addEventListener('click', Plugsbee.layout.openFilePicker);
     this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
 
     //
@@ -248,7 +248,7 @@ Plugsbee.layout = {
     emptyTrashButton.setAttribute('data-require', "network");
     emptyTrashButton.addEventListener('click', function(){
       Plugsbee.layout.emptyTrash();
-    });  
+    });
     this.emptyTrashButton = document.querySelector('div.right').appendChild(emptyTrashButton);
 
     //
@@ -264,6 +264,13 @@ Plugsbee.layout = {
       trash.href = 'trash';
       trash.miniature = Plugsbee.layout.themeFolder + 'trash.png';
       trash.elm.classList.add('trash');
+      trash.elm.addEventListener('click', function(e) {
+        e.preventDefault();
+        history.pushState(null, null, this.firstChild.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      }, true);
       trash.elm.addEventListener('dragenter', function(evt) {
         this.classList.add('dragenter');
       });
@@ -283,8 +290,8 @@ Plugsbee.layout = {
 
         var file = Plugsbee.files[id];
         var folder = Plugsbee.folders[id];
-        
-        
+
+
         if (folder)
           folder.moveToTrash();
         else if (file) {
@@ -333,25 +340,25 @@ Plugsbee.layout = {
       //~ elm.innerHTML = prettyPrintOne(elm.firstChild.outerHTML);
       document.getElementById('xmpp-console').appendChild(elm);
     });
-    
+
     //Settings
-		//~ var settingsForm = document.getElementById("settings-form");
-		//~ this.settingsForm = settingsForm;
-		//~ settingsForm.onsubmit = function(event) {
-			//~ saveSettings(settingsForm, event);
-		//~ }
-		//~ var consoleForm = document.getElementById("output");
-		//~ this.consoleForm = consoleForm;
-		//~ consoleForm.onsubmit = function(evt) {
-			//~ var input = this.querySelector('textarea');
-			//~ Plugsbee.connection.send(input.value);
-			//~ consoleForm.reset();
-			//~ evt.preventDefault();
-		//~ }
+    //~ var settingsForm = document.getElementById("settings-form");
+    //~ this.settingsForm = settingsForm;
+    //~ settingsForm.onsubmit = function(event) {
+      //~ saveSettings(settingsForm, event);
+    //~ }
+    //~ var consoleForm = document.getElementById("output");
+    //~ this.consoleForm = consoleForm;
+    //~ consoleForm.onsubmit = function(evt) {
+      //~ var input = this.querySelector('textarea');
+      //~ Plugsbee.connection.send(input.value);
+      //~ consoleForm.reset();
+      //~ evt.preventDefault();
+    //~ }
 
     //Login form
-		var loginForm = document.getElementById("login-form");
-		loginForm.onsubmit = function(aEvent) {
+    var loginForm = document.getElementById("login-form");
+    loginForm.onsubmit = function(aEvent) {
       var login = this.elements["login"].value;
       if(!login.match('@'))
         login += '@plugsbee.com';
@@ -368,8 +375,8 @@ Plugsbee.layout = {
       Plugsbee.connection.connect(login, password);
       Plugsbee.jid = login;
       aEvent.preventDefault();
-		}
-    
+    }
+
     //Registration form
     var registerForm = document.getElementById("register-form");
     if (gConfiguration.registration) {
@@ -380,7 +387,7 @@ Plugsbee.layout = {
         var fd = new FormData;
         fd.append('login', login);
         fd.append('password', password);
-        
+
         var xhr = new XMLHttpRequest();
         xhr.addEventListener("load",
           function() {
@@ -396,7 +403,7 @@ Plugsbee.layout = {
     }
     else
       registerForm.parentNode.removeChild(registerForm);
-	},
+  },
   openFilePicker: function() {
     document.getElementById('file-picker').click();
   },
@@ -405,29 +412,29 @@ Plugsbee.layout = {
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
     thumbnail.edit = true;
     var folders = document.getElementById('folders');
-    
+
     function dispatchEvent() {
       var cancelEvent = document.createEvent('CustomEvent');
       cancelEvent.initCustomEvent('cancel', false, false, false);
       thumbnail.form.dispatchEvent(cancelEvent);
-    };  
-    
+    };
+
     thumbnail.form.addEventListener('submit', function(e) {
       e.preventDefault();
       this.elements.name.removeEventListener('blur', dispatchEvent);
       var name = this.elements.name.value;
       if (name) {
         var pbFolder = Plugsbee.createFolder();
-        
+
         folders.removeChild(thumbnail.elm);
 
-  
+
         pbFolder.name = name;
         pbFolder.id = Math.random().toString().split('.')[1];
         pbFolder.host = gConfiguration.PubSubService;
         Plugsbee.layout.drawFolder(pbFolder);
-        
-        
+
+
         Plugsbee.remote.newFolder(pbFolder);
 
         Plugsbee.folders[pbFolder.id] = pbFolder;
@@ -444,7 +451,7 @@ Plugsbee.layout = {
     var folders = document.getElementById('folders');
     thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
     thumbnail.elm.querySelector('input').focus();
-  }, 
+  },
   showWelcome: function() {
     document.body.style.backgroundColor = 'white';
 
@@ -506,12 +513,12 @@ Plugsbee.layout = {
         folder.thumbnail.dropbox = false;
       }
     }
-    
+
     //Header
     this.navButton.elm.hidden = false;
     this.navButton.elm.textContent = "Account";
     this.navButton.setHref("account");
-    
+
     document.getElementById('folder-adder').hidden = false;
     document.getElementById('upload-button').hidden = true;
     this.emptyTrashButton.hidden = true;
@@ -519,7 +526,7 @@ Plugsbee.layout = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-		this.deck.selectedPanel = 'folders';
+    this.deck.selectedPanel = 'folders';
   },
   showFolder: function(aFolder) {
     Plugsbee.layout.deck.selectedPanel = 'folders';
@@ -558,8 +565,8 @@ Plugsbee.layout = {
       aFolder.rename(value);
     };
     Plugsbee.layout.deck.selectedPanel = aFolder.id;
-    
-    
+
+
     //~ this.title.elm.onclick = function(evt) {
       //~ if(this.title.edit !== true)
         //~ this.title.edit = true;
@@ -577,7 +584,7 @@ Plugsbee.layout = {
   },
   emptyTrash: function() {
     Plugsbee.folders['trash'].purge();
-  },    
+  },
   showTrash: function() {
     var aFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedPanel = 'folders';
@@ -612,10 +619,10 @@ Plugsbee.layout = {
     //Title
     this.contextTitle.value = aFolder.name;
     this.contextTitle.editable = false;
-    
+
     Plugsbee.layout.deck.selectedPanel = 'trash';
-    
-    
+
+
     //~ this.title.elm.onclick = function(evt) {
       //~ if(this.title.edit !== true)
         //~ this.title.edit = true;
@@ -667,7 +674,7 @@ Plugsbee.layout = {
         default:
           Plugsbee.layout.setFileMiniature(pbFile, gConfiguration.themeFolder + 'file.png');
       }
-      
+
       Plugsbee.remote.uploadFile(pbFile, aFiles[i],
         function(aPbFile, progression) {
           aPbFile.thumbnail.label = Math.round(progression)+'%';
@@ -680,7 +687,7 @@ Plugsbee.layout = {
           pbFile.folder.files[pbFile.id] = pbFile;
 
           Plugsbee.remote.newFile(pbFile);
-          
+
         }
       );
     }
@@ -738,9 +745,9 @@ window.setTimeout(function() {
 
   // Favicon
   document.head.insertAdjacentHTML('beforeend',
-    '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>' 
+    '<link rel="icon" type="image/png" sizes="16x16" href="'+gConfiguration.themeFolder+'icons/16x16.png"/>'
   );
-  
+
   // iOS stuff
   //
   // Icons //FIXME: This should works for Android
@@ -750,15 +757,15 @@ window.setTimeout(function() {
     '<link rel="apple-touch-icon" sizes="72x72" href="'+gConfiguration.themeFolder+'icons/72x72.png"/>' +
     '<link rel="apple-touch-icon" sizes="114x114" href="'+gConfiguration.themeFolder+'icons/114x114.png"/>'
   );
- 
+
   //
   // iOS web-app
   //
   //~ document.head.insertAdjacentHTML('beforeend',
-    //~ '<meta name="apple-mobile-web-app-capable" content="yes"/>' + 
+    //~ '<meta name="apple-mobile-web-app-capable" content="yes"/>' +
     //~ '<meta name="apple-mobile-web-app-status-bar-style" content="black"/>'
   //~ );
-  
+
   // FIXME add startup image -- 1004*768 for ipad and 320 x 460 for ipod portrait for both
   /*document.head.insertAdjacentHTML('beforeend',
     '<link rel="apple-touch-startup-image" href="/startup.png">'
