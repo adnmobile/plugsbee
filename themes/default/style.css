@@ -11,6 +11,7 @@ body {
   -moz-box-orient: vertical;
   -webkit-box-orient: vertical;
 */
+  overflow: hidden;
 }
 /*
  *header
@@ -22,8 +23,14 @@ header {
   background: -webkit-linear-gradient(top, #5A5A5A, #010101);  
   background: -moz-linear-gradient(top, #5A5A5A, #010101); 
 	height: 40px;
-  position: fixed;
-  width: 100%;
+  width: 867px;
+  margin: auto;
+  box-shadow: 0 10px 6px -6px #777;
+  -webkit-box-shadow: 0 10px 6px -6px #777;
+  -moz-box-shadow: 0 10px 6px -6px #777;
+  -moz-box-shadow: 0 0 1em black;
+  -webkit-box-shadow: 0 0 1em black;
+  box-shadow: 0 0 1em black;
 }
 /*
 #title {
@@ -35,13 +42,14 @@ header {
   display: none;
 }
 */
-/*
 header > * {
-  display: inline;
+  width: calc(100%/3);
+  width: -webkit-calc(100%/3);
+  width: -moz-calc(100%/3);
+  display: inline-block;
+  float: left;
 }
-*/
 header .center * {
-  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -49,24 +57,16 @@ header .center * {
   max-height: 100%;
   text-align: center;
 }
+header .left {
+  text-align: left;
+}
 header .center {
-  width: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
   text-align: center;
-  padding-top: 5px;
 }
 header .right {
-  position: fixed;
-  right: 5px;
-  top: 5px;
+  text-align: right;
 }
-header .left {
-  position: fixed;
-  left: 5px;
-  top: 5px;
-}
+
 /*
  * Dock
  */
@@ -77,6 +77,7 @@ header .left {
   bottom: 0;
   background-color: grey;
   width: 100%;
+  
 }
 #dock ul {
   list-style: none;
@@ -103,11 +104,15 @@ header .left {
  */
 #deck {
   background-color: white;
-  padding-top: 40px;
-  width: 100%;
-/*
-  height: 100%;
-*/
+  margin: auto;
+  width: 867px;
+  height: calc(100% - 40px);
+  height: -webkit-calc(100% - 40px);
+  height: -moz-calc(100% - 40px);
+  -moz-box-shadow: 0 0 1em black;
+  -webkit-box-shadow: 0 0 1em black;
+  box-shadow: 0 0 1em black;
+  overflow: auto;
 }
 section#account {
   text-align: center;
