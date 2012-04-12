@@ -134,6 +134,7 @@ Plugsbee.connection.on('connected', function() {
         }
       });
     }
+    Plugsbee.layout.handlePath();
   });
 });
 Plugsbee.connection.on('connecting', function() {

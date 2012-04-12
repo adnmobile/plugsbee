@@ -197,6 +197,38 @@ Plugsbee.layout = {
     this.navButton = navButton;
 
     //
+    //Edit button
+    //
+    var editButton = document.createElement('button');
+    editButton.id = "edit-button";
+    editButton.textContent = "Edit";
+    editButton.hidden = false;
+    editButton.addEventListener('click', function() {
+      console.log('test');
+    });
+    //~ var input =  folderAdder.form.querySelector('input');
+    //~ folderAdder.elm.onclick = function(aEvent) {
+      //~ folderAdder.edit = true;
+      //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
+      //~ folderAdder.form.querySelector('input').focus();
+    //~ };
+    //~ folderAdder.form.onsubmit = function(aEvent) {
+      //~ Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
+        //~ gUserInterface.handleFolder(folder);
+      //~ });
+      //~ folderAdder.edit = false;
+      //~ input.value = '';
+      //~ return false;
+    //~ }
+    //~ input.onblur = function(aEvent) {
+      //~ folderAdder.edit = false;
+      //~ input.value = '';
+      //~ return false;
+    //~ }
+    //~ folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
+    //~ this.editButton = document.querySelector('div.right').appendChild(editButton);
+
+    //
     //Folder adder
     //
     var folderAdder = document.createElement('button');
