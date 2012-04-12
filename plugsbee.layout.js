@@ -491,7 +491,7 @@ Plugsbee.layout = {
     this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
     //Title
-    this.contextTitle.value = gConfiguration.name;
+    this.contextTitle.value = 'Account';
     this.contextTitle.editable = false;
 
     this.deck.selectedPanel = 'account';
