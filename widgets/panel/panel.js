@@ -11,6 +11,7 @@ Widget.Panel = function() {
   thumbnail.miniature = div;
 
   thumbnail.label = "Add file";
+  thumbnail.elm.hidden = true;
   thumbnail.elm.addEventListener('click', function() {
     Plugsbee.layout.openFilePicker();
   });

@@ -65,7 +65,7 @@ Plugsbee.layout = {
     else {
       //Thumbnail
       var folders = document.getElementById('folders');
-      aPbFolder.thumbnail.elm = folders.insertBefore(aPbFolder.thumbnail.elm, folders.firstChild);
+      aPbFolder.thumbnail.elm = folders.insertBefore(aPbFolder.thumbnail.elm, folders.lastChild);
       //Panel
       var deck = document.getElementById('deck');
       aPbFolder.panel.elm = deck.appendChild(aPbFolder.panel.elm);
@@ -126,7 +126,7 @@ Plugsbee.layout = {
   },
   handleFile: function(aPbFile) {
     var panel = aPbFile.folder.panel.elm;
-    aPbFile.thumbnail.elm = panel.insertBefore(aPbFile.thumbnail.elm, panel.lastChild);
+    aPbFile.thumbnail.elm = panel.appendChild(aPbFile.thumbnail.elm);
   },
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
@@ -152,11 +152,9 @@ Plugsbee.layout = {
     //Deck
     //
     (function() {
-
       var deck = Object.create(SWDeck);
       deck.rootElement = document.getElementById('deck');
       Plugsbee.layout.deck = deck;
-
     })();
 
 
@@ -164,13 +162,9 @@ Plugsbee.layout = {
     //Title
     //
     (function() {
-
       var contextTitle = new Widget.Editabletext();
       contextTitle.value = gConfiguration.name;
-
       contextTitle.elm = document.querySelector('.center').appendChild(contextTitle.elm);
-
-
       Plugsbee.layout.contextTitle = contextTitle;
     })();
 
@@ -197,15 +191,41 @@ Plugsbee.layout = {
     this.navButton = navButton;
 
     //
-    //Edit button
+    //Edit folders button
     //
-    var editButton = document.createElement('button');
-    editButton.id = "edit-button";
-    editButton.textContent = "Edit";
-    editButton.hidden = false;
-    editButton.addEventListener('click', function() {
-      console.log('test');
+    var editFoldersButton = document.createElement('button');
+    editFoldersButton.textContent = "Edit";
+    editFoldersButton.hidden = true;
+    editFoldersButton.addEventListener('click', function() {
+      if (this.textContent === 'Edit') {
+        this.textContent = 'Done';
+        Plugsbee.layout.folderAdder.hidden = false;
+      }
+      else {
+        this.textContent = "Edit";
+        Plugsbee.layout.folderAdder.hidden = true;
+      }
     });
+    this.editFoldersButton = document.querySelector('div.right').appendChild(editFoldersButton);
+
+    //
+    //Edit files button
+    //
+    var editFilesButton = document.createElement('button');
+    editFilesButton.textContent = "Edit";
+    editFilesButton.hidden = true;
+    editFilesButton.addEventListener('click', function() {
+      if (this.textContent === 'Edit') {
+        this.textContent = 'Done';
+        Plugsbee.layout.currentFolder.panel.elm.querySelector('.upload').hidden = false;
+      }
+      else {
+        this.textContent = "Edit";
+        Plugsbee.layout.currentFolder.panel.elm.querySelector('.upload').hidden = true;
+      }
+    });
+    this.editFilesButton = document.querySelector('div.right').appendChild(editFilesButton);
+    
     //~ var input =  folderAdder.form.querySelector('input');
     //~ folderAdder.elm.onclick = function(aEvent) {
       //~ folderAdder.edit = true;
@@ -231,12 +251,6 @@ Plugsbee.layout = {
     //
     //Folder adder
     //
-    var folderAdder = document.createElement('button');
-    folderAdder.id = "folder-adder";
-    folderAdder.textContent = "New folder";
-    folderAdder.setAttribute('data-require', "network");
-    folderAdder.hidden = true;
-    folderAdder.addEventListener('click', Plugsbee.layout.addFolder);
     //~ var input =  folderAdder.form.querySelector('input');
     //~ folderAdder.elm.onclick = function(aEvent) {
       //~ folderAdder.edit = true;
@@ -257,18 +271,6 @@ Plugsbee.layout = {
       //~ return false;
     //~ }
     //~ folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
-    this.folderAdder = document.querySelector('div.right').appendChild(folderAdder);
-
-    //
-    //Upload button
-    //
-    var uploadButton = document.createElement('button');
-    uploadButton.id = "upload-button";
-    uploadButton.textContent = "Add file";
-    uploadButton.hidden = true;
-    uploadButton.setAttribute('data-require', "network");
-    uploadButton.addEventListener('click', Plugsbee.layout.openFilePicker);
-    this.uploadButton = document.querySelector('div.right').appendChild(uploadButton);
 
     //
     //Empty trash
@@ -282,6 +284,25 @@ Plugsbee.layout = {
       Plugsbee.layout.emptyTrash();
     });
     this.emptyTrashButton = document.querySelector('div.right').appendChild(emptyTrashButton);
+
+    //
+    //Folder adder
+    //
+    (function() {
+      var thumbnail = new Widget.Thumbnail();
+      thumbnail.elm.classList.add('upload');
+      thumbnail.draggable = false;
+      var div = document.createElement('div');
+      div.classList.add('area');
+      div.classList.add('miniature');
+      thumbnail.miniature = div;
+
+      thumbnail.label = "New folder";
+      thumbnail.elm.hidden = true;
+      thumbnail.elm.addEventListener('click', Plugsbee.layout.addFolder);
+      thumbnail.elm = document.getElementById('folders').appendChild(thumbnail.elm);
+      Plugsbee.layout.folderAdder = thumbnail.elm;
+    })();
 
     //
     //Trash
@@ -489,9 +510,9 @@ Plugsbee.layout = {
 
     //Header
     this.navButton.elm.hidden = true;
-    this.folderAdder.hidden = true;
-    this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
+    this.editFoldersButton.hidden = true;
+    this.editFilesButton.hidden = true;
     //Title
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
@@ -503,9 +524,9 @@ Plugsbee.layout = {
 
     //Header
     this.navButton.elm.hidden = true;
-    this.folderAdder.hidden = true;
-    this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
+    this.editFoldersButton.hidden = true;
+    this.editFilesButton.hidden = true;
     //Title
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
@@ -519,9 +540,9 @@ Plugsbee.layout = {
     this.navButton.elm.hidden = false;
     this.navButton.setHref('');
     this.navButton.elm.textContent = 'Folders';
-    this.folderAdder.hidden = true;
-    this.uploadButton.hidden = true;
     this.emptyTrashButton.hidden = true;
+    this.editFoldersButton.hidden = true;
+    this.editFilesButton.hidden = true;
     //Title
     this.contextTitle.value = 'Account';
     this.contextTitle.editable = false;
@@ -550,9 +571,8 @@ Plugsbee.layout = {
     this.navButton.elm.hidden = false;
     this.navButton.elm.textContent = "Account";
     this.navButton.setHref("account");
-
-    document.getElementById('folder-adder').hidden = false;
-    document.getElementById('upload-button').hidden = true;
+    this.editFoldersButton.hidden = false;
+    this.editFilesButton.hidden = true;
     this.emptyTrashButton.hidden = true;
     //Title
     this.contextTitle.value = gConfiguration.name;
@@ -587,8 +607,8 @@ Plugsbee.layout = {
     navButton.elm.hidden = false;
     navButton.elm.textContent = 'Folders';
     navButton.setHref('');
-    document.getElementById('folder-adder').hidden = true;
-    document.getElementById('upload-button').hidden = false;
+    this.editFoldersButton.hidden = true;
+    this.editFilesButton.hidden = false;
     this.emptyTrashButton.hidden = true;
     //Title
     this.contextTitle.value = aFolder.name;
@@ -645,8 +665,8 @@ Plugsbee.layout = {
     navButton.elm.hidden = false;
     navButton.elm.textContent = 'Folders';
     navButton.setHref('');
-    document.getElementById('folder-adder').hidden = true;
-    document.getElementById('upload-button').hidden = true;
+    this.editFoldersButton.hidden = true;
+    this.editFilesButton.hidden = true;
     this.emptyTrashButton.hidden = false;
     //Title
     this.contextTitle.value = aFolder.name;
