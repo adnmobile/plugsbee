@@ -65,15 +65,16 @@ Plugsbee.remote = {
   },
   newFolder: function(aFolder, onSuccess) {
     //~ if(!aFolder.id)
-      //~ aFolder.id = Math.random().toString().split('.')[1];
-    aFolder.id = aFolder.name;
+      //~ aFolder.id = aFolder.name;
+    //~ if(!aFolder.name)
+      //~ aFolder.name = aFolder.id;
     if(!aFolder.host)
       aFolder.host = gConfiguration.PubSubService;
       
     var fields = [
-      "<field var='pubsub#title'>" +
-        "<value>" + aFolder.name + "</value>" +
-      "</field>",
+      //~ "<field var='pubsub#title'>" +
+        //~ "<value>" + aFolder.name + "</value>" +
+      //~ "</field>",
       "<field var='pubsub#access_model'><value>open</value></field>",
       "<field var='pubsub#persist_items'><value>1</value></field>",
       "<field var='pubsub#max_items'><value>100</value></field>"

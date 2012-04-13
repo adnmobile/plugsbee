@@ -17,6 +17,9 @@ Plugsbee.layout = {
       case 'trash':
         Plugsbee.layout.showTrash();
         break;
+      case 'login':
+        Plugsbee.layout.showLogin();
+        break;
       default:
         var folder = Plugsbee.folders[aPath[1]];
         if (folder)
@@ -43,8 +46,14 @@ Plugsbee.layout = {
     thumbnail.elm.classList.add('folder');
     thumbnail.draggable = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
-    thumbnail.label = aPbFolder.name;
-    thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
+    if (aPbFolder.id === 'trash') {
+      thumbnail.href = 'trash';
+      thumbnail.label = 'Trash';
+    }
+    else {
+      thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
+      thumbnail.label = aPbFolder.name;
+    }
     thumbnail.elm.addEventListener('click', function(e) {
       e.preventDefault();
       history.pushState(null, null, this.firstChild.href);
@@ -227,6 +236,7 @@ Plugsbee.layout = {
     editFilesButton.addEventListener('click', function() {
       if (this.textContent === 'Edit') {
         this.textContent = 'Done';
+        console.log(Plugsbee.layout.currentFolder);
         Plugsbee.layout.currentFolder.panel.elm.querySelector('.upload').hidden = false;
       }
       else {
@@ -435,7 +445,9 @@ Plugsbee.layout = {
         localStorage.removeItem('login', login);
         localStorage.removeItem('password', password);
       }
-      Plugsbee.connection.connect(login, password);
+      location.pathname = '/';
+      //~ location.reload();
+      //~ Plugsbee.connection.connect(login, password);
       aEvent.preventDefault();
     }
 
@@ -492,7 +504,7 @@ Plugsbee.layout = {
 
 
         pbFolder.name = name;
-        pbFolder.id = Math.random().toString().split('.')[1];
+        pbFolder.id = name;
         pbFolder.host = gConfiguration.PubSubService;
         Plugsbee.layout.drawFolder(pbFolder);
 
@@ -532,7 +544,9 @@ Plugsbee.layout = {
     document.body.style.backgroundColor = 'white';
 
     //Header
-    this.navButton.elm.hidden = true;
+    this.navButton.elm.hidden = false;
+    this.navButton.elm.textContent = 'folders';
+    this.navButton.setHref('/')
     this.emptyTrashButton.hidden = true;
     this.editFoldersButton.hidden = true;
     this.editFilesButton.hidden = true;
@@ -561,12 +575,12 @@ Plugsbee.layout = {
   showFolders: function() {
     document.body.style.backgroundColor = 'white';
     //Move the folders thumbnails to their original location
-    var folders = document.getElementById('deck').appendChild(document.getElementById('folders'));
+    var folders = document.querySelector('section[data-name="folders"]').appendChild(document.getElementById('folders'));
     //Unhide the current folder
     if (Plugsbee.layout.currentFolder.thumbnail)
       Plugsbee.layout.currentFolder.thumbnail.elm.hidden = false;
-    folders.hidden = true;
-    folders.classList.add('panel');
+    //~ folders.hidden = true;
+    folders.parentNode.classList.add('panel');
 
     for (var i in Plugsbee.folders) {
       var folder = Plugsbee.folders[i];
@@ -578,8 +592,15 @@ Plugsbee.layout = {
 
     //Header
     this.navButton.elm.hidden = false;
-    this.navButton.elm.textContent = "Account";
-    this.navButton.setHref("account");
+    if (Plugsbee.connection.anonymous) {
+      this.navButton.setHref('login');
+      this.navButton.elm.textContent = "Log in";
+    }
+    else {
+      this.navButton.setHref('account');
+      this.navButton.elm.textContent = "Account";
+    }
+
     this.editFoldersButton.hidden = false;
     this.editFilesButton.hidden = true;
     this.emptyTrashButton.hidden = true;
@@ -604,7 +625,7 @@ Plugsbee.layout = {
     dock.hidden = true;
     //Move the folders thumbnails to the dock
     var folders = dock.appendChild(document.getElementById('folders'));
-    folders.classList.remove('panel');
+    folders.parentNode.classList.remove('panel');
     folders.hidden = false;
     //Hide the current folder
     aFolder.thumbnail.elm.hidden = true;
@@ -678,7 +699,7 @@ Plugsbee.layout = {
     this.editFilesButton.hidden = true;
     this.emptyTrashButton.hidden = false;
     //Title
-    this.contextTitle.value = aFolder.name;
+    this.contextTitle.value = 'Trash';
     this.contextTitle.editable = false;
 
     Plugsbee.layout.deck.selectedPanel = 'trash';

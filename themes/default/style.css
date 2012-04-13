@@ -101,6 +101,11 @@ header .right {
 #deck {
   background-color: white;
   overflow: auto;
+/*
+  max-height: calc(100% - 40px);
+  max-height: -webkit-calc(100% - 40px);
+  max-height: -moz-calc(100% - 40px);
+*/
   height: calc(100% - 40px);
   height: -webkit-calc(100% - 40px);
   height: -moz-calc(100% - 40px);

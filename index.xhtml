@@ -87,7 +87,10 @@
         <button data-require="network" onclick="Plugsbee.layout.logOut();">Log out</button>
         <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
       </section>
-      <ul id="folders" data-name="folders" class="panel"></ul>
+      <section data-name="folders" class="panel">
+        <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll close Plugsbee.</p>
+        <ul id="folders"></ul>
+      </section>
     </div>
     <input id="file-picker" multiple="multiple" type="file"/>
     <div id="xmpp-console" hidden="hidden"/>
