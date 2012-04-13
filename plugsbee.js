@@ -84,7 +84,6 @@ Plugsbee.Folder = {
   },
 };
 
-Plugsbee.connection.load('PLAIN');
 Plugsbee.connection.load('events');
 Plugsbee.connection.load('presence');
 Plugsbee.connection.load('dataforms');
@@ -99,21 +98,24 @@ window.addEventListener("load", function() {
   var password = localStorage.getItem('password');
   var login = localStorage.getItem('login');
   if(!password || !login) {
-    Plugsbee.layout.showLogin();
-    return;
+    Plugsbee.connection.load('ANONYMOUS');
+    Plugsbee.connection.connect('@plugsbee.com');
   }
-  Plugsbee.jid = login;
-  Plugsbee.connection.connect(login, password);
+  else {
+    Plugsbee.connection.load('PLAIN');
+    Plugsbee.connection.connect(login, password);
+  }
 });
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
   Plugsbee.layout.showFolders();
+
   Plugsbee.connection.presence.send({priority: '0'});
-  Plugsbee.connection.user = Plugsbee.connection.jid.node;
   Plugsbee.username = Plugsbee.connection.jid.node;
+
   if (gConfiguration.PubSubService === 'PEP')
-    gConfiguration.PubSubService = Plugsbee.jid;
+    gConfiguration.PubSubService = Plugsbee.connection.jid.bare;
 
   //Retrieves and handles folders from remote storage
   Plugsbee.remote.getFolders(function(pbFolders) {

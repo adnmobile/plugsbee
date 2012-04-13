@@ -436,7 +436,6 @@ Plugsbee.layout = {
         localStorage.removeItem('password', password);
       }
       Plugsbee.connection.connect(login, password);
-      Plugsbee.jid = login;
       aEvent.preventDefault();
     }
 
