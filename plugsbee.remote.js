@@ -43,6 +43,7 @@ Plugsbee.remote = {
         pbFile.fileURL = item.src;
         pbFile.name = item.name;
         pbFile.folderId = aPbFolder.id;
+        pbFile.folder = aPbFolder;
     
         pbFiles[pbFile.id] = pbFile;
       });

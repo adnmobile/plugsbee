@@ -23,7 +23,13 @@ Plugsbee.layout = {
           return Plugsbee.layout.showFolder(folder);
         
         Plugsbee.remote.getFolder(aPath[0], aPath[1], function(pbFolder) {
-          console.log(pbFolder);
+          Plugsbee.layout.buildFolder(pbFolder);
+          var deck = document.getElementById('deck');
+          pbFolder.panel.elm = deck.appendChild(pbFolder.panel.elm);
+          for (var i in pbFolder.files) {
+            Plugsbee.layout.drawFile(pbFolder.files[i]);
+          }
+          Plugsbee.layout.showFolder(pbFolder);
         });
     }
   },
