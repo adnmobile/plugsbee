@@ -5,17 +5,15 @@ html, body{
 body {
 	margin: 0px;
 	color: black;
-/*
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-orient: vertical;
-  -webkit-box-orient: vertical;
-*/
   overflow: hidden;
 }
 header, #deck {
   margin: auto;
   width: 867px;
+}
+#folders {
+  margin: 0;
+  padding: 0;
 }
 /*
  *header
@@ -27,6 +25,7 @@ header {
   background: -webkit-linear-gradient(top, #5A5A5A, #010101);  
   background: -moz-linear-gradient(top, #5A5A5A, #010101); 
 	height: 40px;
+  line-height: 40px;
 }
 /*
 #title {
@@ -100,7 +99,7 @@ header .right {
  */
 #deck {
   background-color: white;
-  overflow: auto;
+  overflow: hidden;
 /*
   max-height: calc(100% - 40px);
   max-height: -webkit-calc(100% - 40px);

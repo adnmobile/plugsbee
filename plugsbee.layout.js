@@ -84,7 +84,7 @@ Plugsbee.layout = {
     else {
       //Thumbnail
       var folders = document.getElementById('folders');
-      aPbFolder.thumbnail.elm = folders.insertBefore(aPbFolder.thumbnail.elm, folders.lastChild);
+      aPbFolder.thumbnail.elm = folders.insertBefore(aPbFolder.thumbnail.elm, folders.children[1]);
       //Panel
       var deck = document.getElementById('deck');
       aPbFolder.panel.elm = deck.appendChild(aPbFolder.panel.elm);
@@ -145,7 +145,7 @@ Plugsbee.layout = {
   },
   handleFile: function(aPbFile) {
     var panel = aPbFile.folder.panel.elm;
-    aPbFile.thumbnail.elm = panel.appendChild(aPbFile.thumbnail.elm);
+    aPbFile.thumbnail.elm = panel.insertBefore(aPbFile.thumbnail.elm, panel.children[1]);
   },
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
@@ -167,6 +167,10 @@ Plugsbee.layout = {
   currentFile: {},
   themeFolder : 'themes/'+gConfiguration.theme+'/',
   init: function(e) {
+    document.getElementById('deck').addEventListener('mousewheel', function(e) {
+      this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
+    });
+    
     //
     //Deck
     //
@@ -198,7 +202,7 @@ Plugsbee.layout = {
     navButton.elm = document.createElement('a');
     navButton.elm.id = 'nav-button';
     navButton.elm.hidden = true;
-    navButton.elm.textContent = Plugsbee.username;
+    navButton.elm.textContent = 'Log in';
     navButton.elm.onclick = function(e) {
       e.preventDefault();
       history.pushState(null, null, this.href);
@@ -212,7 +216,7 @@ Plugsbee.layout = {
     //
     //Edit folders button
     //
-    var editFoldersButton = document.createElement('button');
+    var editFoldersButton = document.createElement('a');
     editFoldersButton.textContent = "Edit";
     editFoldersButton.hidden = true;
     editFoldersButton.addEventListener('click', function() {
@@ -230,13 +234,13 @@ Plugsbee.layout = {
     //
     //Edit files button
     //
-    var editFilesButton = document.createElement('button');
+    var editFilesButton = document.createElement('a');
     editFilesButton.textContent = "Edit";
     editFilesButton.hidden = true;
     editFilesButton.addEventListener('click', function() {
       if (this.textContent === 'Edit') {
         this.textContent = 'Done';
-        console.log(Plugsbee.layout.currentFolder);
+        //~ console.log(Plugsbee.layout.currentFolder);
         Plugsbee.layout.currentFolder.panel.elm.querySelector('.upload').hidden = false;
       }
       else {
@@ -295,7 +299,7 @@ Plugsbee.layout = {
     //
     //Empty trash
     //
-    var emptyTrashButton = document.createElement('button');
+    var emptyTrashButton = document.createElement('a');
     emptyTrashButton.id = "empty-trash";
     emptyTrashButton.textContent = "Empty trash";
     emptyTrashButton.hidden = true;
@@ -523,7 +527,7 @@ Plugsbee.layout = {
     });
 
     var folders = document.getElementById('folders');
-    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
+    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.children[1]);
     thumbnail.elm.querySelector('input').focus();
   },
   showWelcome: function() {
