@@ -13,6 +13,10 @@ body {
 */
   overflow: hidden;
 }
+header, #deck {
+  margin: auto;
+  width: 867px;
+}
 /*
  *header
  */
@@ -23,8 +27,6 @@ header {
   background: -webkit-linear-gradient(top, #5A5A5A, #010101);  
   background: -moz-linear-gradient(top, #5A5A5A, #010101); 
 	height: 40px;
-  width: 867px;
-  margin: auto;
 }
 /*
 #title {
@@ -98,12 +100,10 @@ header .right {
  */
 #deck {
   background-color: white;
-  margin: auto;
-  width: 867px;
+  overflow: auto;
   height: calc(100% - 40px);
   height: -webkit-calc(100% - 40px);
   height: -moz-calc(100% - 40px);
-  overflow: auto;
 }
 section#account {
   text-align: center;

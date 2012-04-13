@@ -111,6 +111,7 @@ Plugsbee.connection.on('connected', function() {
   Plugsbee.layout.showFolders();
   Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.connection.user = Plugsbee.connection.jid.node;
+  Plugsbee.username = Plugsbee.connection.jid.node;
   if (gConfiguration.PubSubService === 'PEP')
     gConfiguration.PubSubService = Plugsbee.jid;
 
@@ -124,7 +125,6 @@ Plugsbee.connection.on('connected', function() {
       //Retrieves and handles files from remote storage
       Plugsbee.remote.getFiles(pbFolders[i], function(pbFiles) {
         for (var y in pbFiles) {
-
           var folder = Plugsbee.folders[pbFiles[y].folderId];
           folder.files[pbFiles[y].id] = pbFiles[y];
           pbFiles[y].folder = folder;

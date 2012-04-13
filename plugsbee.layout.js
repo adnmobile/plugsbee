@@ -2,10 +2,12 @@
 
 Plugsbee.layout = {
   handlePath: function() {
-    Plugsbee.layout.route(location.pathname.split('/')[1]);
+    var path = (decodeURIComponent(location.pathname)).split('/');
+    path.shift();
+    Plugsbee.layout.route(path);
   },
   route: function(aPath) {
-    switch (aPath) {
+    switch (aPath[0]) {
       case '':
         Plugsbee.layout.showFolders();
         break;
@@ -16,11 +18,13 @@ Plugsbee.layout = {
         Plugsbee.layout.showTrash();
         break;
       default:
-        var folder = Plugsbee.layout.getFolderFromName(decodeURIComponent(aPath));
-        if (!folder)
-          Plugsbee.layout.showFolders();
-        else
-          Plugsbee.layout.showFolder(folder);
+        var folder = Plugsbee.folders[aPath[1]];
+        if (folder)
+          return Plugsbee.layout.showFolder(folder);
+        
+        Plugsbee.remote.getFolder(aPath[0], aPath[1], function(pbFolder) {
+          console.log(pbFolder);
+        });
     }
   },
   //
@@ -34,7 +38,7 @@ Plugsbee.layout = {
     thumbnail.draggable = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder+'folder.png';
     thumbnail.label = aPbFolder.name;
-    thumbnail.href = encodeURIComponent(aPbFolder.name);
+    thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
     thumbnail.elm.addEventListener('click', function(e) {
       e.preventDefault();
       history.pushState(null, null, this.firstChild.href);
@@ -77,9 +81,9 @@ Plugsbee.layout = {
   },
   setFolderName: function(aPbFolder) {
     aPbFolder.thumbnail.label = aPbFolder.name;
-    aPbFolder.thumbnail.href = encodeURIComponent(aPbFolder.name);
-    for (var i in aPbFolder.files)
-      aPbFolder.files[i].thumbnail.href = encodeURIComponent(aPbFolder.files[i].folder.name) + '/' + encodeURIComponent(aPbFolder.files[i].name);
+    aPbFolder.thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
+    //~ for (var i in aPbFolder.files)
+      //~ aPbFolder.files[i].thumbnail.href = encodeURIComponent(aPbFolder.files[i].folder.name) + '/' + encodeURIComponent(aPbFolder.files[i].name);
   },
   setFolderMiniature: function(aPbFolder) {
     //Miniature

@@ -12,7 +12,7 @@ Plugsbee.remote = {
         var pbFolder = Plugsbee.createFolder();
         pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
         pbFolder.host = item.jid;
-        pbFolder.name = decodeURIComponent(item.name);
+        pbFolder.name = pbFolder.id;
         pbFolder.files = {};
 
         pbFolders[pbFolder.id] = pbFolder;
@@ -41,7 +41,7 @@ Plugsbee.remote = {
         pbFile.id = item.id;
         pbFile.type = item.type;
         pbFile.fileURL = item.src;
-        pbFile.name = decodeURIComponent(item.name);
+        pbFile.name = item.name;
         pbFile.folderId = aPbFolder.id;
     
         pbFiles[pbFile.id] = pbFile;
@@ -50,17 +50,30 @@ Plugsbee.remote = {
         aOnSuccess(pbFiles);
     });
   },
+  getFolder: function(aHost, aFolder, aOnSuccess) {
+    var pbFolder = Plugsbee.createFolder();
+    pbFolder.id = aFolder;
+    pbFolder.host = aHost + '@plugsbee.com';
+    pbFolder.name = aFolder;
+    pbFolder.files = {};
+    this.getFiles(pbFolder, function(pbFiles) {
+      pbFolder.files = pbFiles;
+      if (aOnSuccess)
+        aOnSuccess(pbFolder);
+    });
+  },
   newFolder: function(aFolder, onSuccess) {
-    if(!aFolder.id)
-      aFolder.id = Math.random().toString().split('.')[1];
+    //~ if(!aFolder.id)
+      //~ aFolder.id = Math.random().toString().split('.')[1];
+    aFolder.id = aFolder.name;
     if(!aFolder.host)
       aFolder.host = gConfiguration.PubSubService;
       
     var fields = [
       "<field var='pubsub#title'>" +
-        "<value>" + encodeURIComponent(aFolder.name) + "</value>" +
+        "<value>" + aFolder.name + "</value>" +
       "</field>",
-      "<field var='pubsub#access_model'><value>whitelist</value></field>",
+      "<field var='pubsub#access_model'><value>open</value></field>",
       "<field var='pubsub#persist_items'><value>1</value></field>",
       "<field var='pubsub#max_items'><value>100</value></field>"
     ];
@@ -87,7 +100,7 @@ Plugsbee.remote = {
     //~ else
     var entry = 
       "<entry xmlns='http://www.w3.org/2005/Atom'>" + 
-        "<title>" + encodeURIComponent(aPbFile.name) + "</title>" +
+        "<title>" + aPbFile.name + "</title>" +
         "<content src='" + aPbFile.fileURL + "' type='" + aPbFile.type + "'/>" +
       "</entry>";
 
