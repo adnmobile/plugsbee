@@ -198,7 +198,7 @@ Plugsbee.layout = {
     navButton.elm = document.createElement('a');
     navButton.elm.id = 'nav-button';
     navButton.elm.hidden = true;
-    navButton.elm.textContent = 'Account';
+    navButton.elm.textContent = Plugsbee.username;
     navButton.elm.onclick = function(e) {
       e.preventDefault();
       history.pushState(null, null, this.href);
@@ -538,7 +538,7 @@ Plugsbee.layout = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-    this.deck.selectedPanel = 'account';
+    this.deck.selectedPanel = Plugsbee.username;
   },
   showLogin: function() {
     document.body.style.backgroundColor = 'white';
@@ -567,7 +567,7 @@ Plugsbee.layout = {
     this.editFoldersButton.hidden = true;
     this.editFilesButton.hidden = true;
     //Title
-    this.contextTitle.value = 'Account';
+    this.contextTitle.value = Plugsbee.username;
     this.contextTitle.editable = false;
 
     this.deck.selectedPanel = 'account';
@@ -598,7 +598,7 @@ Plugsbee.layout = {
     }
     else {
       this.navButton.setHref('account');
-      this.navButton.elm.textContent = "Account";
+      this.navButton.elm.textContent = Plugsbee.username;
     }
 
     this.editFoldersButton.hidden = false;
