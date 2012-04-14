@@ -115,6 +115,7 @@ Plugsbee.connection.on('connected', function() {
 
   Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.username = Plugsbee.connection.jid.node;
+  Plugsbee.layout.accountMenu.textContent = Plugsbee.username;
 
   if (gConfiguration.PubSubService === 'PEP')
     gConfiguration.PubSubService = Plugsbee.connection.jid.bare;
@@ -129,6 +130,7 @@ Plugsbee.connection.on('connected', function() {
       Plugsbee.layout.drawFolder(pbFolder);
     });
     
+    Plugsbee.layout.handlePath();
     return;
   }
 

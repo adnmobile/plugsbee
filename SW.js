@@ -78,30 +78,69 @@ Object.defineProperty(SW, 'hidden', {
 	//~ },
   
   
-  
 //
 //deck
 //
-var SWDeck = Object.create(SW);
-SWDeck.rootElement = (function() {
-  return document.createElement('div');
-})();
+//~ var SWDeck = Object.create(SW);
+//~ SWDeck.rootElement = (function() {
+  //~ return document.createElement('div');
+//~ })();
 //selectedPanel property
-Object.defineProperty(SW, 'selectedPanel', {
+//~ Object.defineProperty(SWDeck, 'selectedPanel', {
+  //~ configurable: true,
+  //~ enumerable:   true,
+  //~ set: function(aPanel) {
+    //~ var panels = this.rootElement.children;
+    //~ for (var i = 0; i < panels.length; i++) {
+      //~ if (panels[i].getAttribute('data-name') === aPanel)
+        //~ panels[i].hidden = false;
+      //~ elsell
+        //~ panels[i].hidden = true;
+    //~ }
+  //~ },
+  //~ get: function() {
+    //~ return this.rootElement.hidden;
+  //~ },
+//~ });
+
+//
+//stack
+//
+var SWStack = Object.create(SW);
+//selectedPanel property
+Object.defineProperty(SWStack, 'selectedItem', {
   configurable: true,
   enumerable:   true,
-  set: function(aPanel) {
-    var panels = this.rootElement.querySelectorAll('.panel');
-    for (var i = 0; i < panels.length; i++) {
-      if(panels[i].getAttribute('data-name') === aPanel)
-        panels[i].hidden = false;
-      else
-        panels[i].hidden = true;
+  set: function(aName) {
+    var children = this.rootElement.children;
+    for (var i = 0; i < children.length; i++) {
+      if ( children[i].getAttribute('data-name') === aName) {
+         children[i].classList.add('visible');
+         children[i].classList.remove('hidden');
+       }
+      else {
+         children[i].classList.remove('visible');
+         children[i].classList.add('hidden');
+      }
     }
-  },
-  get: function() {
-    return this.rootElement.hidden;
-  },
+  }
+});
+Object.defineProperty(SWStack, 'selectedPanel', {
+  configurable: true,
+  enumerable:   true,
+  set: function(aName) {
+    var children = this.rootElement.children;
+    for (var i = 0; i < children.length; i++) {
+      if ( children[i].getAttribute('data-name') === aName) {
+         children[i].classList.add('visible');
+         children[i].classList.remove('hidden');
+       }
+      else {
+         children[i].classList.remove('visible');
+         children[i].classList.add('hidden');
+      }
+    }
+  }
 });
 
 //

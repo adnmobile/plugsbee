@@ -1,11 +1,12 @@
 .thumbnail {
   display: inline-block;
-  height: 80px;
+  height: 105px;
   width: 80px;
   margin-left: 32px;
   margin-right: 32px;
   margin-top: 16px;
   margin-bottom: 16px;
+  text-align: center;
 }
 /*
 .thumbnail .miniature * {
@@ -14,15 +15,13 @@
 */
 
 .thumbnail .miniature {
-  max-width: 84px;
-  max-height: 84px;
+  max-width: 80px;
+  max-height: 80px;
 }
 
 .thumbnail a {
   cursor: inherit;
   display: block;
-  max-width: 100%;
-  max-height: 100%;
 }
 .thumbnail figure {
   max-width: 100%;
@@ -30,12 +29,22 @@
   margin: 0;
   padding: 0;
 }
-.thumbnail figcaption {
+.thumbnail .label {
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 25px;
   max-width: 100%;
-  max-height: 100%;
   text-align: center;
+}
+.thumbnail input {
+	border: none;
+  max-width: 100%;
+  text-align: center;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
 }

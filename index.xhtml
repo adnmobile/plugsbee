@@ -55,7 +55,7 @@
       <div class="right"/>
     </header>
     <div id="deck">
-      <section id="login" data-name="login" class="panel" hidden="hidden">
+      <section id="login" data-name="login" class="hidden">
         <form id="login-form">
           <p>
             <label for="login" autofocus="autofocus">Login: </label>
@@ -83,11 +83,11 @@
           <input type="submit" value="Register"/>
         </form>
       </section>
-      <section id="account" data-name="account" class="panel" hidden="hidden">
+      <section id="account" data-name="account" class="hidden">
         <button data-require="network" onclick="Plugsbee.layout.logOut();">Log out</button>
         <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
       </section>
-      <section data-name="folders" class="panel">
+      <section data-name="folders" class="hidden">
         <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll close Plugsbee.</p>
         <ul id="folders"></ul>
       </section>

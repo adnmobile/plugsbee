@@ -7,23 +7,34 @@ body {
 	color: black;
   overflow: hidden;
 }
-header, #deck {
-  margin: auto;
-  width: 867px;
-}
+
 #folders {
   margin: 0;
   padding: 0;
+}
+header button {
+  border: none;
+  background-color: inherit;
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
 /*
  *header
  */
 header {
+  font-weight: bold;
   color: white;
-  background-color: black;
+  background-color: grey;
+/*
   background: -o-linear-gradient(top, #5A5A5A, #010101);  
   background: -webkit-linear-gradient(top, #5A5A5A, #010101);  
   background: -moz-linear-gradient(top, #5A5A5A, #010101); 
+*/
+  margin: auto;
+  max-width: 1024px;
 	height: 40px;
   line-height: 40px;
 }
@@ -43,6 +54,7 @@ header > * {
   width: -moz-calc(100%/3);
   display: inline-block;
   float: left;
+  height: 40px;
 }
 header .center * {
   white-space: nowrap;
@@ -55,24 +67,50 @@ header .center * {
 header .left {
   text-align: left;
 }
+header > .left > *{
+  position: absolute;
+}
+header > .right > *{
+  position: absolute;
+}
+.visible {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: opacity 0.5s linear;
+  -ms-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  -o-transition: opacity 0.5s linear;
+}
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
+  -webkit-transition: visibility 0s 0.5s, opacity 0.5s linear;
+  -ms-transition: visibility 0s 0.5s, opacity 0.5s linear;
+  -moz-transition: visibility 0s 0.5s, opacity 0.5s linear;
+  -o-transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
 header .center {
   text-align: center;
 }
 header .right {
   text-align: right;
 }
+header > .right > *{
+  margin-right: 20px !important;
+}
+header > .left > *{
+  margin-left: 20px !important;
+}
 
 /*
  * Dock
  */
 #dock {
-  overflow-x: auto;
-  overflow-y: hidden;
-  position: fixed;
-  bottom: 0;
-  background-color: grey;
-  width: 100%;
-  
+  overflow: hidden;
+  background-color: white;
+  max-width: 1024px;
+  margin: auto;
 }
 #dock ul {
   list-style: none;
@@ -98,6 +136,11 @@ header .right {
  *deck
  */
 #deck {
+  margin: auto;
+  width: 1022px;
+  border-bottom: solid 1px gray;
+  border-left: solid 1px gray;
+  border-right: solid 1px gray;
   background-color: white;
   overflow: hidden;
 /*
@@ -105,9 +148,18 @@ header .right {
   max-height: -webkit-calc(100% - 40px);
   max-height: -moz-calc(100% - 40px);
 */
-  height: calc(100% - 40px);
-  height: -webkit-calc(100% - 40px);
-  height: -moz-calc(100% - 40px);
+  height: calc(100% - 46px);
+  height: -webkit-calc(100% - 46px);
+  height: -moz-calc(100% - 46px);
+  
+  box-shadow: inset 0 0 15px gray;
+}
+#deck > * {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 section#account {
   text-align: center;
@@ -118,7 +170,9 @@ code {
   white-space: pre;
 };
 */
-
+.edit {
+  cursor: pointer !important;
+}
 /*
  * Uploader
  */
@@ -130,23 +184,21 @@ code {
 }
 .thumbnail.upload {
   color: #069045;
-  font-size: 18px;
+/*
+  font-weight: bold;
+*/
   cursor: pointer !important;
 }
 .thumbnail.upload .miniature {
   border: dashed 2px #069045;
   border-radius: 6px;
-  width: 80px;
-  height: 80px;
-  margin: auto;
-}
-.thumbnail.upload .text {
-  width: 80px;
-  height: 80px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 22.5px;
+  width: 76px;
+  height: 76px;
+  
   text-align: center;
+  font-size: 40px;
+  line-height: 80px;
+  font-weight: bold;
 }
 
 .panel {
@@ -171,6 +223,7 @@ code {
 .thumbnail.folder .miniature {
 /*
   width: 85px;
+  * 
 */
 }
 
@@ -179,6 +232,9 @@ code {
  */
 .thumbnail.file img.miniature {
   box-shadow: 0 0 0.5em black;
+}
+.thumbnail.file img[src="themes/default/files/empty.png"] {
+  box-shadow: none;
 }
 .thumbnail.file progress {
   max-width: inherit;
