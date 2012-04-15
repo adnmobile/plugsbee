@@ -199,6 +199,15 @@ Plugsbee.layout = {
     })();
 
     //
+    //Folders panel
+    //
+    (function() {
+      document.querySelector('section[data-name="folders"]').addEventListener('mousewheel', function(e) {
+        this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
+      });
+    })();
+
+    //
     //Left header
     //
     (function() {
