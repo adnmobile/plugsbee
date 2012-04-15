@@ -257,10 +257,15 @@ code {
 /*
  * Folder adder
  */
-#folder-adder input {
+#folder-adder input, header input {
   border: none;
   background: none;
   font-size: inherit;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  margin: 0;
+  padding: 0;
 }
 .thumbnail, #folder-adder, #upload-button, #empty-trash {
   cursor: pointer !important;

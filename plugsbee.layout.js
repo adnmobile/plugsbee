@@ -164,7 +164,7 @@ Plugsbee.layout = {
   handleFile: function(aPbFile) {
     var panel = aPbFile.folder.panel.elm;
     //~ aPbFile.thumbnail.elm = panel.insertBefore(aPbFile.thumbnail.elm, panel.firstChild);
-    aPbFile.thumbnail.elm = panel.appendChild(aPbFile.thumbnail.elm);
+    aPbFile.thumbnail.elm = panel.insertBefore(aPbFile.thumbnail.elm, panel.firstChild);
   },
   setFileName: function(aPbFile) {
     aPbFile.thumbnail.label = aPbFile.name;
@@ -623,7 +623,6 @@ Plugsbee.layout = {
     var thumbnail = new Widget.Thumbnail();
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
     thumbnail.elm.addEventListener('mouseenter', function() {
-      console.log('toto');
       this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
     });
     thumbnail.edit = true;
@@ -665,7 +664,7 @@ Plugsbee.layout = {
     });
 
     var folders = document.getElementById('folders');
-    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.children[1]);
+    thumbnail.elm = folders.insertBefore(thumbnail.elm, folders.firstChild);
     thumbnail.elm.querySelector('input').focus();
   },
   showWelcome: function() {
