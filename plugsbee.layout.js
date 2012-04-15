@@ -82,7 +82,10 @@ Plugsbee.layout = {
     panel.elm.setAttribute('data-name', aPbFolder.id);
     panel.elm.classList.add('hidden');
     panel.elm.addEventListener('mousewheel', function(e) {
-      this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
+      this.scrollTop = this.scrollTop-Math.round((e.wheelDelta/60)*60);
+    });
+    panel.elm.addEventListener('DOMMouseScroll', function(e) {
+      this.scrollTop = this.scrollTop-Math.round((e.detail/2)*60);
     });
     aPbFolder.panel = panel;
   },
