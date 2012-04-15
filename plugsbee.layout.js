@@ -2,7 +2,7 @@
 
 Plugsbee.layout = {
   handlePath: function() {
-    var path = (decodeURIComponent(location.pathname)).split('/');
+    var path = decodeURIComponent(location.pathname).split('/');
     path.shift();
     Plugsbee.layout.route(path);
   },
@@ -81,6 +81,9 @@ Plugsbee.layout = {
     var panel = new Widget.Panel();
     panel.elm.setAttribute('data-name', aPbFolder.id);
     panel.elm.classList.add('hidden');
+    panel.elm.addEventListener('mousewheel', function(e) {
+      this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
+    });
     aPbFolder.panel = panel;
   },
   drawFolder: function(aPbFolder) {
@@ -192,9 +195,6 @@ Plugsbee.layout = {
     (function() {
       var deck = Object.create(SWStack);
       deck.rootElement = document.getElementById('deck');
-      deck.rootElement.addEventListener('mousewheel', function(e) {
-        this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
-      });
       Plugsbee.layout.deck = deck;
     })();
 
@@ -290,32 +290,6 @@ Plugsbee.layout = {
     })();
   
     //
-    //Navigation button
-    //
-    //~ (function() {
-      //~ var navButton = {
-        //~ setHref: function(aHref) {
-          //~ this.elm.href = aHref;
-        //~ }
-      //~ };
-      //~ navButton.elm = document.createElement('a');
-      //~ navButton.elm.id = 'nav-button';
-      //~ navButton.elm.hidden = true;
-      //~ loginButton.classList.add('hidden');
-      //~ navButton.elm.textContent = 'Log in';
-      //~ navButton.elm.onclick = function(e) {
-        //~ e.preventDefault();
-        //~ history.pushState(null, null, this.href);
-        //~ var event = document.createEvent('Event');
-        //~ event.initEvent('popstate', true, true);
-        //~ window.dispatchEvent(event);
-      //~ };
-      //~ navButton.elm = document.querySelector('div.left').appendChild(navButton.elm);
-      //~ this.accountMenu = navButton;
-      //~ this.accountMenu.setHref('/');
-    //~ })();
-
-    //
     //Add folder button
     //
     (function() {
@@ -375,74 +349,30 @@ Plugsbee.layout = {
     //
     //Edit files button
     //
-    var editFilesButton = document.createElement('button');
-    editFilesButton.textContent = "⚙ Edit";
-    editFilesButton.setAttribute('data-require', 'upload');
-    editFilesButton.setAttribute('data-name', 'edit-files');
-    editFilesButton.setAttribute('data-state', 'off');
-    editFilesButton.classList.add('hidden');
-    editFilesButton.classList.add('button');
-    editFilesButton.classList.add('green');
-    editFilesButton.classList.add('edit');
-    editFilesButton.addEventListener('click', function() {
-      if (this.getAttribute('data-state') === 'off') {
-        this.textContent = '✔ Done';
-        this.setAttribute('data-state', 'on');
-        Plugsbee.layout.leftHeader.selectedItem = 'add-files';
-      }
-      else {
-        this.textContent = "⚙ Edit";
-        this.setAttribute('data-state', 'off');
-        Plugsbee.layout.leftHeader.selectedItem = 'folders';
-      }
-    });
-    this.editFilesButton = document.querySelector('div.right').appendChild(editFilesButton);
-    
-    //~ var input =  folderAdder.form.querySelector('input');
-    //~ folderAdder.elm.onclick = function(aEvent) {
-      //~ folderAdder.edit = true;
-      //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
-      //~ folderAdder.form.querySelector('input').focus();
-    //~ };
-    //~ folderAdder.form.onsubmit = function(aEvent) {
-      //~ Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
-        //~ gUserInterface.handleFolder(folder);
-      //~ });
-      //~ folderAdder.edit = false;
-      //~ input.value = '';
-      //~ return false;
-    //~ }
-    //~ input.onblur = function(aEvent) {
-      //~ folderAdder.edit = false;
-      //~ input.value = '';
-      //~ return false;
-    //~ }
-    //~ folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
-    //~ this.editButton = document.querySelector('div.right').appendChild(editButton);
-
-    //
-    //Folder adder
-    //
-    //~ var input =  folderAdder.form.querySelector('input');
-    //~ folderAdder.elm.onclick = function(aEvent) {
-      //~ folderAdder.edit = true;
-      //Workaround, the autofocus attribute doesn't works on Firefox (see thumbnail.js)
-      //~ folderAdder.form.querySelector('input').focus();
-    //~ };
-    //~ folderAdder.form.onsubmit = function(aEvent) {
-      //~ Plugsbee.createFolder(input.value, 'whitelist', function(folder) {
-        //~ gUserInterface.handleFolder(folder);
-      //~ });
-      //~ folderAdder.edit = false;
-      //~ input.value = '';
-      //~ return false;
-    //~ }
-    //~ input.onblur = function(aEvent) {
-      //~ folderAdder.edit = false;
-      //~ input.value = '';
-      //~ return false;
-    //~ }
-    //~ folderAdder.elm = document.getElementById('folders').appendChild(folderAdder.elm);
+    (function() {
+      var editFilesButton = document.createElement('button');
+      editFilesButton.textContent = "⚙ Edit";
+      editFilesButton.setAttribute('data-require', 'upload');
+      editFilesButton.setAttribute('data-name', 'edit-files');
+      editFilesButton.setAttribute('data-state', 'off');
+      editFilesButton.classList.add('hidden');
+      editFilesButton.classList.add('button');
+      editFilesButton.classList.add('green');
+      editFilesButton.classList.add('edit');
+      editFilesButton.addEventListener('click', function() {
+        if (this.getAttribute('data-state') === 'off') {
+          this.textContent = '✔ Done';
+          this.setAttribute('data-state', 'on');
+          Plugsbee.layout.leftHeader.selectedItem = 'add-files';
+        }
+        else {
+          this.textContent = "⚙ Edit";
+          this.setAttribute('data-state', 'off');
+          Plugsbee.layout.leftHeader.selectedItem = 'folders';
+        }
+      });
+      Plugsbee.layout.editFilesButton = document.querySelector('div.right').appendChild(editFilesButton);
+    })();
 
     //
     //Empty trash button
@@ -452,7 +382,7 @@ Plugsbee.layout = {
       emptyTrashButton.id = "empty-trash";
       emptyTrashButton.textContent = "Empty trash";
       emptyTrashButton.classList.add('hidden');
-	  emptyTrashButton.classList.add('button');
+      emptyTrashButton.classList.add('button');
       emptyTrashButton.classList.add('green');
       emptyTrashButton.setAttribute('data-require', "network");
       emptyTrashButton.setAttribute('data-name', "empty-trash");
@@ -515,7 +445,11 @@ Plugsbee.layout = {
       trash.elm = document.getElementById('folders').appendChild(trash.elm);
       //Panel
       var panel = new Widget.Panel();
+      panel.elm.addEventListener('mousewheel', function(e) {
+        this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
+      });
       panel.elm.classList.add('trash');
+      panel.elm.classList.add('hidden');
       panel.elm.setAttribute('data-name', 'trash');
       panel.elm = document.getElementById('deck').appendChild(panel.elm);
     })();
