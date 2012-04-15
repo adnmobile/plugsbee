@@ -20,7 +20,10 @@ body {
   cursor: pointer;
   border: none;
   display: inline-block;
-  padding: 0;
+  padding: 8px 20px;
+/*
+  margin: 0;
+*/
   font: inherit;
   text-shadow: inherit;
   line-height: normal;
@@ -35,7 +38,6 @@ body {
 }
 .button.green {
   color: inherit;
-  padding: 8px 20px;
   background: #e8e8e8;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -99,6 +101,10 @@ header > * {
   display: inline-block;
   float: left;
   height: 40px;
+}
+header .button {
+  margin-top: 5px;
+  padding: 5px;
 }
 header .center * {
   white-space: nowrap;
