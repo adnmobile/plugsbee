@@ -231,9 +231,9 @@ Plugsbee.layout = {
     //
     (function() {
       var loginButton = document.createElement('a');
-      loginButton.textContent = 'Login';
+      loginButton.textContent = '◀ Login';
       loginButton.setAttribute('data-name', 'login');
-	  loginButton.classList.add('button');
+      loginButton.classList.add('button');
       loginButton.classList.add('green');
       loginButton.href = '/login';
       loginButton.onclick = function(e) {
@@ -252,9 +252,9 @@ Plugsbee.layout = {
     //
     (function() {
       var foldersButton = document.createElement('a');
-      foldersButton.textContent = 'Folders';
+      foldersButton.textContent = '◀ Folders';
       foldersButton.setAttribute('data-name', 'folders');
-	  foldersButton.classList.add('button');
+      foldersButton.classList.add('button');
       foldersButton.classList.add('green');
       foldersButton.href = '/';
       foldersButton.onclick = function(e) {
@@ -273,9 +273,9 @@ Plugsbee.layout = {
     //
     (function() {
       var accountMenu = document.createElement('a');
-      accountMenu.textContent = '';
+      //~ accountMenu.textContent = '';
       accountMenu.setAttribute('data-name', 'account');
-	  accountMenu.classList.add('button');
+      accountMenu.classList.add('button');
       accountMenu.classList.add('green');
       accountMenu.classList.add('hidden');
       accountMenu.href = '/account';
@@ -320,9 +320,9 @@ Plugsbee.layout = {
     //
     (function() {
       var addFolderButton = document.createElement('button');
-      addFolderButton.textContent = "New folder";
+      addFolderButton.textContent = "+ New folder";
       addFolderButton.setAttribute('data-name', 'add-folder');
-	  addFolderButton.classList.add('button');
+      addFolderButton.classList.add('button');
       addFolderButton.classList.add('green');
       addFolderButton.classList.add('hidden');
       addFolderButton.addEventListener('click', Plugsbee.layout.addFolder);
@@ -334,9 +334,9 @@ Plugsbee.layout = {
     //
     (function() {
       var addFileButton = document.createElement('button');
-      addFileButton.textContent = "Add files";
+      addFileButton.textContent = "+ Add files";
       addFileButton.setAttribute('data-name', 'add-files');
-	  addFileButton.classList.add('button');
+      addFileButton.classList.add('button');
       addFileButton.classList.add('green');
       addFileButton.classList.add('hidden');
       addFileButton.addEventListener('click', Plugsbee.layout.openFilePicker);
@@ -347,20 +347,23 @@ Plugsbee.layout = {
     //Edit folders button
     //
     var editFoldersButton = document.createElement('button');
-    editFoldersButton.textContent = "Edit";
+    editFoldersButton.textContent = "⚙ Edit";
     editFoldersButton.classList.add('edit');
     editFoldersButton.setAttribute('data-name', 'edit-folders');
     editFoldersButton.setAttribute('data-require', 'upload');
-	editFoldersButton.classList.add('button');
+    editFoldersButton.setAttribute('data-state', 'off');
+    editFoldersButton.classList.add('button');
     editFoldersButton.classList.add('green');
     editFoldersButton.classList.add('hidden');
     editFoldersButton.addEventListener('click', function() {
-      if (this.textContent === 'Edit') {
-        this.textContent = 'Done';
+      if (this.getAttribute('data-state') === 'off') {
+        this.textContent = '✔ Done';
+        this.setAttribute('data-state', 'on');
         Plugsbee.layout.leftHeader.selectedItem = 'add-folder';
       }
       else {
-        this.textContent = "Edit";
+        this.textContent = "⚙ Edit";
+        this.setAttribute('data-state', 'off');
         if (Plugsbee.connection.anonymous)
           Plugsbee.layout.leftHeader.selectedItem = 'login';
         else
@@ -373,20 +376,23 @@ Plugsbee.layout = {
     //Edit files button
     //
     var editFilesButton = document.createElement('button');
-    editFilesButton.textContent = "Edit";
+    editFilesButton.textContent = "⚙ Edit";
     editFilesButton.setAttribute('data-require', 'upload');
     editFilesButton.setAttribute('data-name', 'edit-files');
+    editFilesButton.setAttribute('data-state', 'off');
     editFilesButton.classList.add('hidden');
-	editFilesButton.classList.add('button');
+    editFilesButton.classList.add('button');
     editFilesButton.classList.add('green');
     editFilesButton.classList.add('edit');
     editFilesButton.addEventListener('click', function() {
-      if (this.textContent === 'Edit') {
-        this.textContent = 'Done';
+      if (this.getAttribute('data-state') === 'off') {
+        this.textContent = '✔ Done';
+        this.setAttribute('data-state', 'on');
         Plugsbee.layout.leftHeader.selectedItem = 'add-files';
       }
       else {
-        this.textContent = "Edit";
+        this.textContent = "⚙ Edit";
+        this.setAttribute('data-state', 'off');
         Plugsbee.layout.leftHeader.selectedItem = 'folders';
       }
     });
