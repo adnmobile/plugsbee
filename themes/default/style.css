@@ -12,15 +12,6 @@ body {
   margin: 0;
   padding: 0;
 }
-header button {
-  border: none;
-  background-color: inherit;
-  color: inherit;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
 /*
  *buttons
  */
@@ -30,10 +21,8 @@ header button {
   border: none;
   display: inline-block;
   padding: 0;
-  text-decoration: inherit;
+  font: inherit;
   text-shadow: inherit;
-  font-family: inherit;
-  font-size: inherit;
   line-height: normal;
   box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.5);
   -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.5);
@@ -152,10 +141,10 @@ header .right {
   text-align: right;
 }
 header > .right > *{
-  margin-right: 20px !important;
+  right: 20px;
 }
 header > .left > *{
-  margin-left: 20px !important;
+  left: 20px;
 }
 
 /*
