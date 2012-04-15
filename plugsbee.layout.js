@@ -73,6 +73,9 @@ Plugsbee.layout = {
     thumbnail.elm.addEventListener('mouseout', function() {
       this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder.png';
     });
+    thumbnail.elm.addEventListener('click', function() {
+      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder.png';
+    });
     aPbFolder.thumbnail = thumbnail;
 
     var panel = new Widget.Panel();
