@@ -115,8 +115,15 @@ Plugsbee.layout = {
     }
   },
   eraseFolder: function(aFolder) {
-    aFolder.thumbnail.elm.parentNode.removeChild(aFolder.thumbnail.elm);
     aFolder.panel.elm.parentNode.removeChild(aFolder.panel.elm);
+    aFolder.thumbnail.elm.classList.add('fadeOut');
+    aFolder.thumbnail.elm.addEventListener('webkitAnimationEnd', function(e) {
+      this.parentNode.removeChild(this);
+    });
+    aFolder.thumbnail.elm.addEventListener('animationend', function(e) {
+      this.parentNode.removeChild(this);
+    });
+    
   },
   setFolderName: function(aPbFolder) {
     aPbFolder.thumbnail.label = aPbFolder.name;
@@ -139,6 +146,7 @@ Plugsbee.layout = {
     thumbnail.draggable = true;
 
     thumbnail.elm.classList.add('file');
+    thumbnail.elm.classList.add('fadeIn');
     aPbFile.thumbnail = thumbnail;
 
     if (aPbFile.fileURL) {
@@ -164,8 +172,17 @@ Plugsbee.layout = {
     this.handleFile(aPbFile);
   },
   eraseFile: function(aPbFile) {
-    aPbFile.thumbnail.elm.parentNode.removeChild(aPbFile.thumbnail.elm);
-    delete aPbFile.thumbnail;
+    aPbFile.thumbnail.elm.classList.remove('fadeIn');
+    aPbFile.thumbnail.elm.classList.add('fadeOut');
+    //FIXME why 2 catched animation event?
+    aPbFile.thumbnail.elm.addEventListener('webkitAnimationEnd', function(e) {
+      this.parentNode.removeChild(this);
+      delete aPbFile.thumbnail;
+    });
+    aPbFile.thumbnail.elm.addEventListener('animationend', function(e) {
+      this.parentNode.removeChild(this);
+      delete aPbFile.thumbnail;
+    });
   },
   handleFile: function(aPbFile) {
     var panel = aPbFile.folder.panel.elm;

@@ -60,7 +60,7 @@ body {
   background: linear-gradient(top, #b8cc98 51%,#a6bf7f 51%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8cc98', endColorstr='#a6bf7f',GradientType=0 );
 }
-#newFolder.fadeIn {
+.fadeIn {
   transition: opacity 0.5s linear;
   -moz-transition: opacity 0.5s linear;
   -webkit-transition: opacity 0.5s linear;
@@ -73,7 +73,7 @@ body {
   -moz-animation-name: fadein;
   -webkit-animation-name: fadein;
 }
-#newFolder.fadeOut {
+.fadeOut {
   transition: opacity 0.5s linear;
   -webkit-transition: opacity 0.5s linear;
   -ms-transition: opacity 0.5s linear;
