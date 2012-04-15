@@ -202,7 +202,7 @@ Plugsbee.layout = {
     //Folders panel
     //
     (function() {
-      document.querySelector('section[data-name="folders"]').addEventListener('mousewheel', function(e) {
+      document.querySelector('section[data-name="folders"]').addEventListener('DOMMouseScroll', function(e) {
         this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
       });
     })();
