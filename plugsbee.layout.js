@@ -56,11 +56,22 @@ Plugsbee.layout = {
       thumbnail.label = aPbFolder.name;
     }
     thumbnail.elm.addEventListener('click', function(e) {
-      e.preventDefault();
-      history.pushState(null, null, this.firstChild.href);
-      var event = document.createEvent('Event');
-      event.initEvent('popstate', true, true);
-      window.dispatchEvent(event);
+      if (e.target.classList.contains('menu')) {
+        var ul = this.querySelector('ul#voletMenu');
+        console.log(ul);
+        ul.hidden = !ul.hidden;
+
+        if (e.target.tagName === 'input' || e.target.tagName === 'menu'
+        || e.target.tagName === 'span')
+          return;
+      }
+      else{
+        e.preventDefault();
+        history.pushState(null, null, this.firstChild.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      }
     }, true);
     thumbnail.elm.addEventListener('focusin', function() {
       this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
@@ -457,6 +468,11 @@ Plugsbee.layout = {
         this.textContent = '✔ Done';
         this.setAttribute('data-state', 'on');
         Plugsbee.layout.leftHeader.selectedItem = 'add-folder';
+        for (var i in Plugsbee.folders) {
+          if(i != 'trash')
+          Plugsbee.folders[i].thumbnail.elm.classList.add('edit');
+          Plugsbee.folders[i].thumbnail.elm.classList.add('fadeIn');
+        }
       }
       else {
         this.textContent = "⚙ Edit";
@@ -464,7 +480,12 @@ Plugsbee.layout = {
         if (Plugsbee.connection.anonymous)
           Plugsbee.layout.leftHeader.selectedItem = 'login';
         else
-          Plugsbee.layout.leftHeader.selectedItem = 'account';
+        Plugsbee.layout.leftHeader.selectedItem = 'account';
+        for (var i in Plugsbee.folders) {
+          if(i != 'trash')
+          Plugsbee.folders[i].thumbnail.elm.classList.remove('edit');
+          Plugsbee.folders[i].thumbnail.elm.classList.remove('fadeOut');
+        }
       }
     });
     this.editFoldersButton = document.querySelector('div.right').appendChild(editFoldersButton);

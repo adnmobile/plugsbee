@@ -9,9 +9,18 @@ Widget.Thumbnail = function() {
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
+      "<menu>"+
+        "<ul>"+
+          "<li><span class='menu'>?</span>"+
+            "<ul id='voletMenu' hidden='hidden'>"+
+              "<li>Rename</li>"+
+              "<li>Delete</li>"+
+            "</ul>"+
+          "</li>"+
+        "</ul>"+
+      "</menu>"+
     "</li>";
   this.elm = elm.firstChild;
-  
   elm = document.createElement('div');
   elm.innerHTML = 
     "<form>"+
@@ -19,11 +28,6 @@ Widget.Thumbnail = function() {
     "</form>";
   this.form = elm.firstChild;
 
-  this.elm.addEventListener('click', function(e) {
-    if(e.target.tagName === 'input')
-      return;
-  }, true);
-  
   this.dragStart = function(evt) {
     //Set the drag image
     var img = this;
