@@ -144,6 +144,11 @@ Plugsbee.connection.on('connected', function() {
 
       //Retrieves and handles files from remote storage
       Plugsbee.remote.getFiles(pbFolders[i], function(pbFiles) {
+        if ((Object.keys(pbFiles).length) &&
+            (pbFiles[Object.keys(pbFiles)[0]].folderId === 'trash' )) {
+          console.log('toto');
+          Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash-full.png';
+        }
         for (var y in pbFiles) {
           var folder = Plugsbee.folders[pbFiles[y].folderId];
           folder.files[pbFiles[y].id] = pbFiles[y];

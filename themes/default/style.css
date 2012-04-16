@@ -186,7 +186,7 @@ header .button {
   margin-top: 5px;
   padding: 5px;
 }
-header .center * {
+header .middle * {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -198,6 +198,10 @@ header .left {
   text-align: left;
 }
 header > .left > *{
+  position: absolute;
+}
+header > .middle > *{
+  text-align: center;
   position: absolute;
 }
 header > .right > *{
@@ -220,7 +224,7 @@ header > .right > *{
   -moz-transition: visibility 0s 0.5s, opacity 0.5s linear;
   -o-transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
-header .center {
+header .middle {
   text-align: center;
 }
 header .right {
