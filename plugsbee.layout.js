@@ -874,6 +874,7 @@ Plugsbee.layout = {
         },
         function(pbFile, answer) {
           pbFile.fileURL = answer.src;
+          pbFile.thumbnail.href = answer.src;
           pbFile.thumbnail.draggable = true;
           pbFile.thumbnail.label = pbFile.name;
           Plugsbee.files[pbFile.id] = pbFile;
