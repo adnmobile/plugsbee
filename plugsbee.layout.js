@@ -57,8 +57,7 @@ Plugsbee.layout = {
     }
     thumbnail.elm.addEventListener('click', function(e) {
       if (e.target.classList.contains('menu')) {
-        var ul = this.querySelector('ul#voletMenu');
-        console.log(ul);
+        var ul = this.querySelector('ul#menuPanel');
         ul.hidden = !ul.hidden;
 
         if (e.target.tagName === 'input' || e.target.tagName === 'menu'
@@ -469,7 +468,8 @@ Plugsbee.layout = {
         this.setAttribute('data-state', 'on');
         Plugsbee.layout.leftHeader.selectedItem = 'add-folder';
         for (var i in Plugsbee.folders) {
-          if(i != 'trash')
+          if (i == 'trash')
+            return;
           Plugsbee.folders[i].thumbnail.elm.classList.add('edit');
           Plugsbee.folders[i].thumbnail.elm.classList.add('fadeIn');
         }
@@ -480,9 +480,10 @@ Plugsbee.layout = {
         if (Plugsbee.connection.anonymous)
           Plugsbee.layout.leftHeader.selectedItem = 'login';
         else
-        Plugsbee.layout.leftHeader.selectedItem = 'account';
+          Plugsbee.layout.leftHeader.selectedItem = 'account';
         for (var i in Plugsbee.folders) {
-          if(i != 'trash')
+          if (i == 'trash')
+            return;
           Plugsbee.folders[i].thumbnail.elm.classList.remove('edit');
           Plugsbee.folders[i].thumbnail.elm.classList.remove('fadeOut');
         }

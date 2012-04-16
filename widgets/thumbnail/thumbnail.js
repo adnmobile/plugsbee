@@ -12,7 +12,7 @@ Widget.Thumbnail = function() {
       "<menu>"+
         "<ul>"+
           "<li><span class='menu'>?</span>"+
-            "<ul id='voletMenu' hidden='hidden'>"+
+            "<ul id='menuPanel' hidden='hidden'>"+
               "<li>Rename</li>"+
               "<li>Delete</li>"+
             "</ul>"+
