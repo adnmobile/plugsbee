@@ -365,20 +365,12 @@ Plugsbee.layout = {
       thumbnail.edit = true;
       var folders = document.getElementById('folders');
 
-      function dispatchCancelEvent() {
-        var cancelEvent = document.createEvent('CustomEvent');
-        cancelEvent.initCustomEvent('cancel', false, false, false);
-        thumbnail.form.dispatchEvent(cancelEvent);
-      };
-
       thumbnail.form.addEventListener('submit', function(e) {
         e.preventDefault();
-        this.elements.name.removeEventListener('blur', dispatchCancelEvent);
         var name = this.elements.name.value;
         if (name) {
           var pbFolder = Plugsbee.createFolder();
 
-          thumbnail.elm.classList.remove('fadeOut');
           thumbnail.elm.hidden = true;
           thumbnail.form.reset();
 
@@ -397,23 +389,22 @@ Plugsbee.layout = {
         }
       });
       thumbnail.elm.addEventListener('webkitAnimationEnd', function(e) {
-        this.classList.remove('fadeOut');
-        if (e.animationName !== 'fadeout')
-          this.hidden = false;
-        else
+        if (e.animationName === 'fadeout')
           this.hidden = true;
       });
       thumbnail.elm.addEventListener('animationend', function(e) {
-        this.classList.remove('fadeOut');
-        if (e.animationName !== 'fadeout')
-          this.hidden = false;
-        else
+        if (e.animationName === 'fadeout')
           this.hidden = true;
       });
-      thumbnail.form.elements.name.addEventListener('blur', dispatchCancelEvent);
+      thumbnail.form.elements.name.addEventListener('blur', function() {
+        var cancelEvent = document.createEvent('CustomEvent');
+        cancelEvent.initCustomEvent('cancel', false, false, false);
+        thumbnail.form.dispatchEvent(cancelEvent); 
+      });
       thumbnail.form.addEventListener('cancel', function(e) {
+        Plugsbee.layout.folderAdder.elm.classList.add('fadeOut');
+        Plugsbee.layout.folderAdder.elm.classList.remove('fadeIn');
         thumbnail.form.reset();
-        thumbnail.elm.classList.add('fadeOut');
       });
 
       var folders = document.getElementById('folders');
@@ -701,6 +692,7 @@ Plugsbee.layout = {
   },
   showFolderAdder: function() {
     Plugsbee.layout.folderAdder.elm.classList.add('fadeIn');
+    Plugsbee.layout.folderAdder.elm.classList.remove('fadeOut');
     Plugsbee.layout.folderAdder.elm.hidden = false;
     Plugsbee.layout.folderAdder.form.querySelector('input').focus();
   },
