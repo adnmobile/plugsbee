@@ -113,6 +113,7 @@ Plugsbee.layout = {
       
     editableText.value = aPbFolder.name;
     editableText.elm.setAttribute('data-name', aPbFolder.id);
+    editableText.elm.classList.add('hidden');
     editableText.elm = document.querySelector('div.middle').appendChild(editableText.elm);
     aPbFolder.title = editableText;
   },
