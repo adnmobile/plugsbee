@@ -58,7 +58,9 @@ ul , li{
 	list-style: none;
 }
 /**** ELEMENTS ****/
-
+span.menu {
+  font-size: 25px;
+}
 menu {
   display: block;
   float:right;
