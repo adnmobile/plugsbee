@@ -61,30 +61,48 @@
     <div id="deck">
       <section id="login" data-name="login" class="hidden">
         <form id="login-form">
-          <p>
-            <label for="login" autofocus="autofocus">Login: </label>
-            <input name="login" required=""/>
-          </p>
-          <p>
-            <label for="password">Password: </label>
-            <input name="password" type="password" required=""/>
-          </p>
-          <p id="remember-input">
-            <input type="checkbox" name="remember" checked="checked"/>
-            <label for="checkbox">Remember me</label>
-          </p>
-          <input type="submit" value="Login"/>
+          <div>
+            <p>
+              <label for="login-login" autofocus="autofocus">Login: </label>
+              <input name="login" id="login-login" type="text" placeholder="Your login" required=""/>
+            </p>
+            <p>
+              <label for="password">Password: </label>
+              <input name="password" id="password" type="password" placeholder="********" required=""/>
+            </p>
+            <p id="remember-input">
+              <label for="remember">Remember me <input type="checkbox" name="remember" id="remember" checked="checked"/></label>
+            </p>
+            <p>
+              <input type="submit" class="button green" value="Login"/>
+            </p>
+          </div>
         </form>
         <form id="register-form">
           <p>
-            <label for="login">Login: </label>
-            <input name="login" required=""/>
+            <label for="login-register">Login:</label>
+            <input name="login" id="login-register" type="text" required=""/>
           </p>
           <p>
-            <label for="password">Password: </label>
-            <input name="password" type="password" required=""/>
+            <label for="name">Name:</label>
+            <input name="name" id="name" type="text" />
           </p>
-          <input type="submit" value="Register"/>
+          <p>
+            <label for="password-register">Password:</label>
+            <input name="password1" id="password-register" type="password" placeholder="********" required=""/>
+          </p>
+          <p>
+            <label for="confirm-register">Confirmation:</label>
+            <input name="confirm-register" id="confirm-register" type="password" onfocus="checkPassword(document.getElementById('password-register'), this);"
+              oninput="checkPassword(document.getElementById('confirm-register'), this);" placeholder="Confirm your password." required=""/>
+          </p>
+          <p>
+            <label for="email">Email:</label>
+            <input name="email" type="email" placeholder="john.doe@example.com"/>
+          </p>
+          <p>
+            <input type="submit" class="button green" value="Register"/>
+          </p>
         </form>
       </section>
       <section id="account" data-name="account" class="hidden">
@@ -101,7 +119,7 @@
           </script>
           <form>
             <p>
-              <label for="name">Name:</label><input type="text" id="name" name="name" placeholder="John Doe" required="required" />
+              <label for="name">Name:</label><input type="text" id="name" name="name" placeholder="John Doe"/>
             </p>
             <p>
               <label for="password1">Password:</label><input type="password" id="password1" name="password1" placeholder="********" required="required" />
@@ -112,7 +130,7 @@
               oninput="checkPassword(document.getElementById('password1'), this);" placeholder="Confirm your password." required="required" />
             </p>
             <p>
-              <label for="email">Email:</label><input type="email" id="email" name="email" placeholder="john.doe@example.com" required="required" />
+              <label for="email">Email:</label><input type="email" id="email" name="email" placeholder="john.doe@example.com" />
             </p>
             <p>
               <input type="submit" value="Ok" class="button green" />
@@ -135,12 +153,31 @@
         <ul id="folders"></ul>
       </section>
       <section data-name="edit-folder" id="edit-folder-panel" class="hidden">
-        <button id="delete-folder-button">Delete</button>
-        <button id="rename-folder-button">Rename</button>
+        <div>
+          <button id="delete-folder-button" class="button grey grey-red">Delete</button>
+          <button id="rename-folder-button" class="button grey">Rename</button>
+          <p>
+            <label for="edit-folder-name">Folder name:</label>
+            <input type="text" name="edit-folder-name" id="edit-folder-name" placeholder="Your folder name." required=""/>
+          </p>
+          <p>
+            <label for="edit-folder-public">Public: <input type="checkbox" name="edit-folder-public" id="edit-folder-public"/></label>
+          </p>
+          <p>
+            <label for="edit-folder-share">Share with:</label>
+            <input type="text" name="edit-folder-share" id="edit-folder-share" placeholder="Contact names."/>
+          </p>
+        </div>
       </section>
       <section data-name="edit-file" id="edit-file-panel" class="hidden">
-        <button id="delete-file-button">Delete</button>
-        <button id="rename-file-button">Rename</button>
+        <div>
+          <button id="delete-file-button" class="button grey grey-red">Delete</button>
+          <button id="rename-file-button" class="button grey">Rename</button>
+          <p>
+            <label for="edit-file-name">File name:</label>
+            <input type="text" name="edit-file-name" id="edit-file-name" placeholder="Your file name." required=""/>
+          </p>
+        </div>
       </section>
     </div>
     <input id="file-picker" multiple="multiple" type="file"/>

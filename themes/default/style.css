@@ -13,35 +13,10 @@ body {
   padding: 0;
 }
 /*
- * Account
+ * Forms
  */
-#account {
-  display: table;
-}
-#account div {
-  display: table-cell;
-  vertical-align: middle;
-  text-align: center;
-  padding: 0 30px;
-  width: 50%;
-}
-#account > div:first-child {
-  border-right: 1px solid #ccc;
-}
-#account > div div, #account > div div div {
-  display:inline-block;
-  vertical-align:middle;
-  line-height: auto;
-}
-#account > div div {
-  height: 100%;
-}
-#account > div div div {
-  height: 50%;
+section{
   width: 100%;
-}
-#account div button, input[type="submit"] {
-  display: inline;
 }
 label {
   cursor: pointer;
@@ -53,7 +28,7 @@ label {
 }
 form p {
   width: 70%;
-  margin: 10px auto;
+  margin: 25px auto;
   padding: 0;
   display: block;
   text-align: right;
@@ -90,11 +65,54 @@ input[type="text"]:focus, input[type="password"]:focus , input[type="email"]:foc
   background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
   background-image: linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
 }
-input::-webkit-input-placeholder, input:-moz-placeholder {
+input:-moz-placeholder {
   color: #aaa;
   font-style: italic;
 }
-
+input::-webkit-input-placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+/*
+ * Account panel
+ */
+#account {
+  display: table;
+}
+#account div {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 30px;
+  width: 50%;
+}
+#account > div:first-child {
+  border-right: 1px solid #ccc;
+}
+#account > div div, #account > div div div {
+  display:inline-block;
+  vertical-align:middle;
+  line-height: auto;
+}
+#account > div div {
+  height: 100%;
+}
+#account > div div div {
+  height: 50%;
+  width: 100%;
+}
+#account div button, input[type="submit"] {
+  display: inline;
+}
+/*
+ * Others panels
+ */
+#login form p, #edit-folder-panel p, #edit-file-panel p {
+  width: 40%;
+}
+#edit-folder-panel > div:first-child, #edit-file-panel > div:first-child {
+  margin: 20px;
+}
 /*
  *buttons
  */
@@ -110,6 +128,7 @@ input::-webkit-input-placeholder, input:-moz-placeholder {
 */
   font: inherit;
   text-shadow: inherit;
+  font-weight: bold;
   line-height: normal;
 }
 .button:active {
