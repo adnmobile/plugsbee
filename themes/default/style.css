@@ -13,6 +13,98 @@ body {
   padding: 0;
 }
 /*
+ * Account
+ */
+#account {
+  display: table;
+}
+#account div {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 30px;
+  width: 50%;
+}
+#account > div:first-child {
+  border-right: 1px solid #ccc;
+}
+#account > div div, #account > div div div {
+  display:inline-block;
+  vertical-align:middle;
+  line-height: auto;
+}
+#account > div div {
+  height: 100%;
+}
+#account > div div div {
+  height: 50%;
+  width: 100%;
+}
+#account div button {
+  display: inline;
+}
+label {
+  cursor: pointer;
+  float: left;
+  width: 150px;
+  margin-right: 40px;
+  text-align: right;
+  font-size: inherit;
+  padding-top: 9px;
+}
+form p {
+  overflow: hidden;
+  padding: 10px 0;
+}
+input::-moz-selection {
+  background: grey;
+  color: #fff;
+}
+input::selection {
+  background: grey;
+  color: #fff;
+}
+input[type="submit"] {
+  margin-left: 240px;
+}
+input[type="text"], input[type="password"], input[type="email"] {
+  border: 1px solid #aaa;
+  padding: 10px;
+  background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: -o-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  width: 290px;
+  line-height: 1em;
+  margin: 0;
+  font-size: inherit;
+  color: #888;
+  -moz-transition: all .3s linear 0s;
+  transition: all .3s linear 0s;
+  border-radius: 4px;
+}
+input[type="text"]:focus, input[type="password"]:focus , input[type="email"]:focus {
+  outline: none;
+  border-color: #888;
+  color: #666;
+  box-shadow: 0 0 6px rgba(0,0,0,.2);
+  background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(250,250,250) 80%);
+  background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: -o-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+  background-image: linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+}
+input::-webkit-input-placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+input:-moz-placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/*
  *buttons
  */
 .button {
@@ -36,7 +128,6 @@ body {
 }
 .button.green {
   color: inherit;
-  background: #e8e8e8;
   background: #c0d59f;
   background: -moz-linear-gradient(top, #c0d59f 51%, #aec985 51%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#c0d59f), color-stop(51%,#aec985));
@@ -46,7 +137,7 @@ body {
   background: linear-gradient(top, #c0d59f 51%,#aec985 51%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c0d59f', endColorstr='#aec985',GradientType=0 );
 }
-.button.green:hover {
+.button.green:hover, .button.green:active {
   background: #c0d59f;
   background: -moz-linear-gradient(top, #b8cc98 51%, #a6bf7f 51%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#b8cc98), color-stop(51%,#a6bf7f));
@@ -56,6 +147,38 @@ body {
   background: linear-gradient(top, #b8cc98 51%,#a6bf7f 51%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8cc98', endColorstr='#a6bf7f',GradientType=0 );
 }
+.button.grey {
+  color: inherit;
+  background: #d5d5d5;
+  background: -moz-linear-gradient(top, #d5d5d5 51%, #c9c9c9 51%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#d5d5d5), color-stop(51%,#c9c9c9));
+  background: -webkit-linear-gradient(top, #d5d5d5 51%,#c9c9c9 51%);
+  background: -o-linear-gradient(top, #d5d5d5 51%,#c9c9c9 51%);
+  background: -ms-linear-gradient(top, #d5d5d5 51%,#c9c9c9 51%);
+  background: linear-gradient(top, #d5d5d5 51%,#c9c9c9 51%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#c9c9c9',GradientType=0 );
+}
+.button.grey:hover, .button.grey:active {
+  background: #c9c9c9;
+  background: -moz-linear-gradient(top, #cccccc 51%, #bfbfbf 51%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#cccccc), color-stop(51%,#bfbfbf));
+  background: -webkit-linear-gradient(top, #cccccc 51%,#bfbfbf 51%);
+  background: -o-linear-gradient(top, #cccccc 51%,#bfbfbf 51%);
+  background: -ms-linear-gradient(top, #cccccc 51%,#bfbfbf 51%);
+  background: linear-gradient(top, #cccccc 51%,#bfbfbf 51%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#bfbfbf',GradientType=0 );
+}
+.button.grey-red:hover, .button.grey-red:active {
+  background: #c9c9c9;
+  background: -moz-linear-gradient(top, #cc9898 51%, #bf7f7f 51%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#cc9898), color-stop(51%,#bf7f7f));
+  background: -webkit-linear-gradient(top, #cc9898 51%,#bf7f7f 51%);
+  background: -o-linear-gradient(top, #cc9898 51%,#bf7f7f 51%);
+  background: -ms-linear-gradient(top, #cc9898 51%,#bf7f7f 51%);
+  background: linear-gradient(top, #cc9898 51%,#bf7f7f 51%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc9898', endColorstr='#bf7f7f',GradientType=0 );
+}
+
 .fadeIn {
   transition: opacity 0.5s linear;
   -moz-transition: opacity 0.5s linear;

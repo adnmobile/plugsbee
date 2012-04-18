@@ -88,8 +88,47 @@
         </form>
       </section>
       <section id="account" data-name="account" class="hidden">
-        <button data-require="network" onclick="Plugsbee.layout.logOut();">Log out</button>
-        <h2>Work in progress, see <a href="https://github.com/adnmobile/plugsbee/issues/7">bug #7</a>.</h2>
+        <div>
+          <script>
+           function checkPassword(password1, password2)
+           {
+             if (password1.value != password2.value) {
+               password2.setCustomValidity('Password confirmation in incorrect.');
+             } else {
+               password2.setCustomValidity('');
+             }
+           }
+          </script>
+            <form>
+                <p>
+                  <label for="name">Name:</label><input type="text" id="name" name="name" placeholder="John Doe" required="required" />
+                </p>
+                <p>
+                  <label for="password1">Password:</label><input type="password" id="password1" name="password1" placeholder="********" required="required" />
+                </p>
+                <p>
+                  <label for="password2">Confirmation:</label><input type="password" id="password2" name="password2"
+                  onfocus="checkPassword(document.getElementById('password1'), this);"
+                  oninput="checkPassword(document.getElementById('password1'), this);" placeholder="Confirm your password." required="required" />
+                </p>
+                <p>
+                  <label for="email">Email:</label><input type="email" id="email" name="email" placeholder="john.doe@example.com" required="required" />
+                </p>
+                <p>
+                  <input type="submit" value="Ok" class="button green" />
+                </p>
+            </form>
+        </div>
+        <div>
+          <div>
+            <div>
+              <button class="button grey" data-require="network" onclick="Plugsbee.layout.logOut();">Log out</button>
+            </div>
+            <div>
+              <button class="button grey grey-red" data-require="network" onclick="">Delete my account</button>
+            </div>
+          </div>
+        </div>
       </section>
       <section data-name="folders" class="hidden">
         <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll close Plugsbee.</p>
