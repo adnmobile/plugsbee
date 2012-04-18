@@ -4,9 +4,9 @@ Plugsbee.layout = {
   handlePath: function() {
     var path = decodeURIComponent(location.pathname).split('/');
     path.shift();
-    Plugsbee.layout.route(path);
+    Plugsbee.layout.route(path, location.search);
   },
-  route: function(aPath) {
+  route: function(aPath, aOptions) {
     switch (aPath[0]) {
       case '':
         Plugsbee.layout.showFolders();
@@ -22,8 +22,13 @@ Plugsbee.layout = {
         break;
       default:
         var folder = Plugsbee.folders[aPath[1]];
-        if (folder)
-          return Plugsbee.layout.showFolder(folder);
+        if (folder) {
+          if (aOptions === "?edit")
+            Plugsbee.layout.showFolderEdit(folder);
+          else 
+            Plugsbee.layout.showFolder(folder);
+          return;
+        }
         
         Plugsbee.remote.getFolder(aPath[0], aPath[1], function(pbFolder) {
           Plugsbee.layout.buildFolder(pbFolder);
@@ -47,6 +52,7 @@ Plugsbee.layout = {
     thumbnail.elm.classList.add('folder');
     thumbnail.draggable = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
+    //~ thumbnail.miniatureActive = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
     if (aPbFolder.id === 'trash') {
       thumbnail.href = 'trash';
       thumbnail.label = 'Trash';
@@ -55,38 +61,7 @@ Plugsbee.layout = {
       thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
       thumbnail.label = aPbFolder.name;
     }
-    thumbnail.elm.addEventListener('click', function(e) {
-      if (e.target.classList.contains('menu')) {
-        var ul = this.querySelector('ul#menuPanel');
-        ul.hidden = !ul.hidden;
-
-        if (e.target.tagName === 'input' || e.target.tagName === 'menu'
-        || e.target.tagName === 'span')
-          return;
-      }
-      else{
-        e.preventDefault();
-        history.pushState(null, null, this.firstChild.href);
-        var event = document.createEvent('Event');
-        event.initEvent('popstate', true, true);
-        window.dispatchEvent(event);
-      }
-    }, true);
-    thumbnail.elm.addEventListener('focusin', function() {
-      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
-    });
-    thumbnail.elm.addEventListener('focusout', function() {
-      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder.png';
-    });
-    thumbnail.elm.addEventListener('mouseover', function() {
-      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
-    });
-    thumbnail.elm.addEventListener('mouseout', function() {
-      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder.png';
-    });
-    thumbnail.elm.addEventListener('click', function() {
-      this.querySelector('img').src = Plugsbee.layout.themeFolder + 'folders/folder.png';
-    });
+    thumbnail.menu = false;
     aPbFolder.thumbnail = thumbnail;
 
     //Panel
@@ -101,7 +76,7 @@ Plugsbee.layout = {
       this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
     });
     aPbFolder.panel = panel;
-    
+  
     //Title
     if (aPbFolder.id === 'trash')
       return;
@@ -465,8 +440,7 @@ Plugsbee.layout = {
         for (var i in Plugsbee.folders) {
           if (i == 'trash')
             return;
-          Plugsbee.folders[i].thumbnail.elm.classList.add('edit');
-          Plugsbee.folders[i].thumbnail.elm.classList.add('fadeIn');
+          Plugsbee.folders[i].thumbnail.menu = true;
         }
       }
       else {
@@ -479,8 +453,8 @@ Plugsbee.layout = {
         for (var i in Plugsbee.folders) {
           if (i == 'trash')
             return;
-          Plugsbee.folders[i].thumbnail.elm.classList.remove('edit');
-          Plugsbee.folders[i].thumbnail.elm.classList.remove('fadeOut');
+          Plugsbee.folders[i].thumbnail.menu = false;
+          //~ Plugsbee.folders[i].thumbnail.elm.classList.remove('fadeOut');
         }
       }
     });
@@ -504,11 +478,17 @@ Plugsbee.layout = {
           this.textContent = '✔ Done';
           this.setAttribute('data-state', 'on');
           Plugsbee.layout.leftHeader.selectedItem = 'add-files';
+          //~ for (var  i in Plugsbee.layout.currentFolder.files) {
+            //~ Plugsbee.layout.currentFolder.files[i].thumbnail.menu = true;
+          //~ }
         }
         else {
           this.textContent = "⚙ Edit";
           this.setAttribute('data-state', 'off');
           Plugsbee.layout.leftHeader.selectedItem = 'folders';
+          //~ for (var  i in Plugsbee.layout.currentFolder.files) {
+            //~ Plugsbee.layout.currentFolder.files[i].thumbnail.menu = false;
+          //~ }
         }
       });
       Plugsbee.layout.editFilesButton = document.querySelector('div.right').appendChild(editFilesButton);
@@ -700,8 +680,6 @@ Plugsbee.layout = {
     Plugsbee.layout.folderAdder.form.querySelector('input').focus();
   },
   showWelcome: function() {
-    document.body.style.backgroundColor = 'white';
-
     //Header
     this.navButton.elm.hidden = true;
     this.emptyTrashButton.hidden = true;
@@ -714,8 +692,6 @@ Plugsbee.layout = {
     this.deck.selectedPanel = Plugsbee.username;
   },
   showLogin: function() {
-    document.body.style.backgroundColor = 'white';
-
     //Header
     this.leftHeader.selectedItem = '';
     this.rightHeader.selectedItem = '';
@@ -724,8 +700,6 @@ Plugsbee.layout = {
     this.deck.selectedPanel = 'login';
   },
   showAccount: function() {
-    document.body.style.backgroundColor = 'white';
-
     //Header
     this.leftHeader.selectedItem = 'folders';
     this.rightHeader.selectedItem = '';
@@ -734,7 +708,6 @@ Plugsbee.layout = {
     this.deck.selectedPanel = 'account';
   },
   showFolders: function() {
-    document.body.style.backgroundColor = 'white';
     //Move the folders thumbnails to their original location
     var folders = document.querySelector('section[data-name="folders"]').appendChild(document.getElementById('folders'));
     //Unhide the current folder
@@ -764,7 +737,6 @@ Plugsbee.layout = {
   },
   showFolder: function(aFolder) {
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    document.body.style.backgroundColor = 'white';
     //Makes the folders thumbnail as dropbox
     for (var i in Plugsbee.folders) {
       var folder = Plugsbee.folders[i];
@@ -807,6 +779,58 @@ Plugsbee.layout = {
 
     this.currentFolder = aFolder;
   },
+  updateFolderEditPanel: function(aPbFolder) {
+    var deleteFolderButton = document.getElementById('delete-folder-button');
+    deleteFolderButton.onclick = function() {
+      aPbFolder.moveToTrash();
+      document.querySelector('div.left > a[data-name="folders"]').click();
+    };
+  },
+  showFolderEdit: function(aFolder) {
+    //~ Plugsbee.layout.deck.selectedPanel = 'folders';
+    //Makes the folders thumbnail as dropbox
+    //~ for (var i in Plugsbee.folders) {
+      //~ var folder = Plugsbee.folders[i];
+      //~ if(!folder.trash) {
+        //~ folder.thumbnail.draggable = false;
+        //~ folder.thumbnail.dropbox = true;
+      //~ }
+    //~ }
+    //~ var dock = document.getElementById('dock');
+    //~ dock.hidden = true;
+    //Move the folders thumbnails to the dock
+    //~ var folders = dock.appendChild(document.getElementById('folders'));
+    //~ folders.parentNode.classList.remove('panel');
+    //~ folders.hidden = false;
+    //Hide the current folder
+    //~ aFolder.thumbnail.elm.hidden = true;
+    //Hide the folder adder for the moment
+    //~ gUserInterface.hidden = true;
+
+    //Header
+    this.leftHeader.selectedItem = 'folders';
+    this.rightHeader.selectedItem = '';
+    this.middleHeader.selectedItem = aFolder.id;
+
+    Plugsbee.layout.updateFolderEditPanel(aFolder);
+    Plugsbee.layout.deck.selectedPanel = 'edit-folder';
+
+
+    //~ this.title.elm.onclick = function(evt) {
+      //~ if(this.title.edit !== true)
+        //~ this.title.edit = true;
+    //~ };
+    //~ this.title.form.onsubmit = function(evt) {
+      //~ var value = this.title.value;
+      //~ this.title.edit = false;
+      //~ this.title.value = value;
+      //~ aFolder.name = value;
+      //~ Plugsbee.renameFolder(aFolder, value);
+      //~ evt.preventDefault();
+    //~ };
+
+    this.currentFolder = aFolder;
+  },
   emptyTrash: function() {
     Plugsbee.folders['trash'].purge();
     Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
@@ -814,7 +838,6 @@ Plugsbee.layout = {
   showTrash: function() {
     var aFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    document.body.style.backgroundColor = 'white';
     //Makes the folders thumbnail as dropbox
     for (var i in Plugsbee.folders) {
       var folder = Plugsbee.folders[i];

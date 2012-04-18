@@ -7,13 +7,8 @@
   margin-top: 16px;
   margin-bottom: 16px;
   text-align: center;
+  position: relative;
 }
-/*
-.thumbnail .miniature * {
-
-}
-*/
-
 .thumbnail .miniature {
   max-width: 80px;
   max-height: 80px;
@@ -48,154 +43,14 @@
   font: inherit;
   font-size: inherit;
 }
-.thumbnail menu {
-display: none;
-}
-.thumbnail.edit menu {
-display: block;
-}
-ul , li{
-	list-style: none;
-}
-/**** ELEMENTS ****/
-span.menu {
-  font-size: 25px;
-}
-menu {
-  display: block;
-  float:right;
+/*
+  edit
+*/
+.thumbnail > span.edit {
   position: absolute;
   height: 15px;
   padding: 0;
-  margin-top: -110px;
-  margin-left: 70px;
-}
-menu ul {
-    position: relative;
-    float:left;
-    padding: 0;
-}
-menu ul li {
-  float: left;
-  width: 100%;
-  position: relative;
-}
-menu ul li span {
-
-    float: left;
-    height: 15px;
-    width: 15px;
-    text-align: center;
-    font-size: 12px;
-    line-height: 12px;
-    text-decoration: none;
-    color: #333;
-    text-shadow: #FFF 0px 1px 1px;
-}
-menu ul li ul {
-  top: 15px;
-  width: 100px;
-  height: auto;
-  padding: 7px 0px;
-  position: absolute;
-  /*left: -9999px;*/
-	
-	-webkit-transition: all .2s ease;
-    
-    background: rgba(0,0,0,0.5);
-    background: -moz-linear-gradient(top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.6) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.5)), color-stop(100%,rgba(0,0,0,0.6)));
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-    background: -o-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-    background: linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-    -webkit-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-     -khtml-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-       -moz-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-         -o-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-            box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-}
-/*
-menu ul li:active ul {
-
-	-webkit-animation: anim .2s forwards linear;
-	-moz-animation: anim .2s forwards linear;
-	-ms-animation: anim .2s forwards linear;
-	-o-animation: anim .2s forwards linear;
-	animation: anim .2s forwards linear;
-}
-*/
-menu ul li ul li {
-    float: none;
-    height: auto;
-    width: 100px;
-    height: 20px;
-    padding: 4px 10px;
-    border-left: 0px;
-    background: transparent;
-    -webkit-box-shadow: none;
-     -khtml-box-shadow: none;
-       -moz-box-shadow: none;
-         -o-box-shadow: none;
-            box-shadow: none;
-    text-align: left;
-    color: #fff;
-    text-shadow: rgba(0,0,0,0.6) 0px -1px 1px;
-}
-
-
-
-/**** HOVER STATES ****/
-/*
-menu ul li:hover {
-    background: -webkit-linear-gradient(top, rgba(220,220,220,1) 0%,rgba(196,196,196,1) 50%,rgba(186,186,186,1) 50%,rgba(189,189,189,1) 100%);
-    -webkit-box-shadow: inset #9e9e9e 0px -2px 0px, inset #EEE 0px 0px 1px;
-     -khtml-box-shadow: inset #9e9e9e 0px -2px 0px, inset #EEE 0px 0px 1px;
-       -moz-box-shadow: inset #9e9e9e 0px -2px 0px, inset #EEE 0px 0px 1px;
-         -o-box-shadow: inset #9e9e9e 0px -2px 0px, inset #EEE 0px 0px 1px;
-            box-shadow: inset #9e9e9e 0px -2px 0px, inset #EEE 0px 0px 1px;
-}*/
-menu ul li ul li:hover{
-    text-decoration: underline;
-}
-menu ul li:hover ul {
-    display:;
-}
-menu ul li:hover ul li{
-    background: transparent;
-    -webkit-box-shadow: none;
-     -khtml-box-shadow: none;
-       -moz-box-shadow: none;
-         -o-box-shadow: none;
-            box-shadow: none;
-    text-shadow: rgba(0,0,0,0.6) 0px -1px 1px;
-}
-
-/**** ACTIVE STATES ****/
-
-
-
-@-webkit-keyframes anim {
-	0% { left:0; opacity: 0}
-	100% {left: 0; top: 0; opacity: 1}
-}
-
-@-moz-keyframes anim {
-	0% { left:0; opacity: 0}
-	100% {left: 0; top: 0; opacity: 1}
-}
-
-@-ms-keyframes anim {
-	0% { left:0; opacity: 0}
-	100% {left: 0; top: 0; opacity: 1}
-}
-
-@-o-keyframes anim {
-	0% { left:0; opacity: 0}
-	100% {left: 0; top: 0; opacity: 1}
-}
-
-@keyframes anim {
-	0% { left:0; opacity: 0}
-	100% {left: 0; top: 0; opacity: 1}
+  margin-top: -80px;
+  margin-left: 30px;
+  font-size: 25px;
 }

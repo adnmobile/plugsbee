@@ -9,24 +9,42 @@ Widget.Thumbnail = function() {
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
-      "<menu>"+
-        "<ul>"+
-          "<li><span class='menu'>⚙</span>"+
-            "<ul id='menuPanel' hidden='hidden'>"+
-              "<li>Rename</li>"+
-              "<li>Delete</li>"+
-            "</ul>"+
-          "</li>"+
-        "</ul>"+
-      "</menu>"+
+      "<span hidden='hidden' class='edit'>⚙</span>" +
     "</li>";
   this.elm = elm.firstChild;
-  elm = document.createElement('div');
+  var elm = document.createElement('div');
   elm.innerHTML = 
     "<form>"+
       "<input type='text' name='name' autofocus='autofocus'/>"+
     "</form>";
   this.form = elm.firstChild;
+  var that = this;
+  //~ this.elm.addEventListener('focusin', function() {
+    //~ if (this.getAttribute('data-menu') !== 'true')
+      //~ this.querySelector('img').src = this.miniatureActive;
+  //~ }, true);
+  //~ this.elm.addEventListener('focusout', function() {
+    //~ if (this.getAttribute('data-menu') !== 'true')
+      //~ this.querySelector('img').src = this.miniature;
+  //~ }, true);
+  //~ this.elm.addEventListener('mouseover', function() {
+    //~ console.log(this.miniatureActive);
+    //~ if (this.getAttribute('data-menu') !== 'true')
+      //~ this.querySelector('img').src = this.miniatureActive;
+  //~ }, true);
+  //~ this.elm.addEventListener('mouseout', function() {
+    //~ if (this.getAttribute('data-menu') !== 'true')
+      //~ this.querySelector('img').src = this.miniature;
+  //~ }, true);
+  this.elm.addEventListener('click', function(e) {
+    e.preventDefault();
+    //~ this.querySelector('img').src = this.miniature;
+    history.pushState(null, null, this.firstChild.href);
+    var event = document.createEvent('Event');
+    event.initEvent('popstate', true, true);
+    window.dispatchEvent(event);
+  }, true);
+
 
   this.dragStart = function(evt) {
     //Set the drag image
@@ -112,6 +130,7 @@ Widget.Thumbnail.prototype.__defineGetter__('dropbox', function() {
 //miniature property
 //
 Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
+  this._miniature = aMiniature;
   var figure = this.elm.querySelector('figure');
 
   function addMiniatureElm(aMiniatureElm) {
@@ -141,7 +160,7 @@ Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
   }
 });
 Widget.Thumbnail.prototype.__defineGetter__('miniature', function() {
-	return this.elm.getElementsByClassName('miniature')[0];
+	return this._miniature;
 });
 //
 //href property
@@ -170,11 +189,10 @@ Widget.Thumbnail.prototype.__defineGetter__('label', function() {
 //
 Widget.Thumbnail.prototype.__defineSetter__('edit', function(aBool) {
 	this._edit = aBool;
-  var that = this;
   var figcaption = this.elm.getElementsByTagName('figcaption')[0];
   if(aBool === true) {
     figcaption.textContent = '';
-    figcaption.appendChild(that.form);
+    figcaption.appendChild(this.form);
   }
   if(aBool === false) {
     figcaption.textContent = this.label;
@@ -182,5 +200,23 @@ Widget.Thumbnail.prototype.__defineSetter__('edit', function(aBool) {
 });
 Widget.Thumbnail.prototype.__defineGetter__('edit', function() {
 	return this._edit;
+});
+//
+//menu property
+//
+Widget.Thumbnail.prototype.__defineSetter__('menu', function(aBool) {
+	this._menu = aBool;
+  var menu = this.elm.querySelector('span.edit');
+  if(aBool === true) {
+    menu.hidden = false;
+    this.elm.getElementsByTagName('a')[0].setAttribute('href', this._href + '?edit');
+  }
+  if(aBool === false) {
+    menu.hidden = true;
+    this.elm.getElementsByTagName('a')[0].setAttribute('href', this._href);
+  }
+});
+Widget.Thumbnail.prototype.__defineGetter__('menu', function() {
+	return this._menu;
 });
 
