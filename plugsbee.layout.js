@@ -94,7 +94,8 @@ Plugsbee.layout = {
     panel.elm.setAttribute('data-name', aPbFolder.id);
     panel.elm.classList.add('hidden');
     panel.elm.addEventListener('mousewheel', function(e) {
-      this.scrollTop = this.scrollTop-Math.round((e.wheelDelta/60)*30);
+      if (e.wheelDeltaY)
+        this.scrollTop = this.scrollTop-Math.round((e.wheelDeltaY/60)*30);
     });
     panel.elm.addEventListener('DOMMouseScroll', function(e) {
       this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
@@ -108,6 +109,7 @@ Plugsbee.layout = {
     var editableText = new Widget.Editabletext();
     //~ editableText.editable = true;
     //~ editableText.onsubmit = function(value) {
+      //~ console.log(value);
       //~ aPbFolder.rename(value);
     //~ };
       
@@ -248,7 +250,8 @@ Plugsbee.layout = {
     (function() {
       var folders = document.querySelector('section[data-name="folders"]');
       folders.addEventListener('mousewheel', function(e) {
-        this.scrollTop = this.scrollTop-Math.round((e.wheelDelta/60)*30);
+        if (e.wheelDeltaY)
+          this.scrollTop = this.scrollTop-Math.round((e.wheelDeltaY/60)*30);
       });
       folders.addEventListener('DOMMouseScroll', function(e) {
         this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);

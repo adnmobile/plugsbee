@@ -145,7 +145,7 @@ header {
   max-width: 1024px;
   height: 40px;
   line-height: 40px;
-  position:relative;
+  position:relative;l
   -webkit-box-shadow: 0 10px 6px -6px #777;
   -moz-box-shadow: 0 10px 6px -6px #777;
   box-shadow: 0 10px 6px -6px #777;
@@ -158,31 +158,59 @@ header > * {
   float: left;
   height: 40px;
 }
-header .button {
-  margin-top: 5px;
-  padding: 5px;
-}
+/*
+ header left
+*/
 header .left {
   text-align: left;
 }
 header > .left > *{
   position: absolute;
+  left: 20px;
+}
+/*
+ header middle
+*/
+header .middle {
+  text-align: center;
+  position: relative;
 }
 header > .middle > *{
+  top: 0; left: 0;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
-  text-align: center;
-  position: fixed;
+  position: absolute;
   cursor: default;
+/*
   left: 50%;
   width: 400px;
   margin-left: -200px;
+*/
 }
+/*
+ header right
+*/
 header > .right > *{
   position: absolute;
+  right: 20px;
 }
+
+header .right {
+  text-align: right;
+}
+
+
+/*
+Hack for vertical centering buttons
+*/
+header .button {
+  margin-top: 5px;
+  padding: 5px;
+}
+
 .visible {
   visibility: visible;
   opacity: 1;
@@ -200,18 +228,7 @@ header > .right > *{
   -moz-transition: visibility 0s 0.5s, opacity 0.5s linear;
   -o-transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
-header .middle {
-  text-align: center;
-}
-header .right {
-  text-align: right;
-}
-header > .right > *{
-  right: 20px;
-}
-header > .left > *{
-  left: 20px;
-}
+
 
 /*
  * Dock
