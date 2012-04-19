@@ -86,8 +86,19 @@ Plugsbee.layout = {
     panel.elm.addEventListener('DOMMouseScroll', function(e) {
       this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
     });
+    panel.elm.addEventListener('drop', function(e) {
+      e.preventDefault();
+      var pbFolderId = this.getAttribute('data-name');
+      var pbFolder = Plugsbee.folders[pbFolderId];
+      if (e.dataTransfer.files) {
+        Plugsbee.layout.upload(e.dataTransfer.files, pbFolder);
+      }
+    });
+    panel.elm.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
     aPbFolder.panel = panel;
-  
+
     //Title
     if (aPbFolder.id === 'trash')
       return;
