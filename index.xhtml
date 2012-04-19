@@ -34,6 +34,7 @@
     <script type="application/javascript" src="lib/lightstring/plugins/pubsub.js"/>
     <script type="application/javascript" src="lib/lightstring/plugins/dataforms.js"/>
     <script type="application/javascript" src="lib/lightstring/plugins/PLAIN.js"/>
+    <script type="application/javascript" src="lib/lightstring/plugins/vcard.js"/>
     
     <!-- Plugsbee -->
     <script type="application/javascript" src="plugsbee.js"/>
@@ -78,14 +79,16 @@
             </p>
           </div>
         </form>
+      </section>
+      <section id="register" data-name="register" class="hidden">
         <form id="register-form">
           <p>
             <label for="login-register">Login:</label>
-            <input name="login" id="login-register" type="text" required=""/>
+            <input name="login" id="login-register" placeholder="johndoe" type="text" required="required"/>
           </p>
           <p>
             <label for="name">Name:</label>
-            <input name="name" id="name" type="text" />
+            <input name="name" id="name" placeholder="John Doe" type="text" />
           </p>
           <p>
             <label for="password-register">Password:</label>
@@ -94,7 +97,7 @@
           <p>
             <label for="confirm-register">Confirmation:</label>
             <input name="confirm-register" id="confirm-register" type="password" onfocus="checkPassword(document.getElementById('password-register'), this);"
-              oninput="checkPassword(document.getElementById('confirm-register'), this);" placeholder="Confirm your password." required=""/>
+              oninput="checkPassword(document.getElementById('confirm-register'), this);" placeholder="Confirm your password." required="required"/>
           </p>
           <p>
             <label for="email">Email:</label>
@@ -149,7 +152,7 @@
         </div>
       </section>
       <section data-name="folders" class="hidden">
-        <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll close Plugsbee.</p>
+        <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll quit Plugsbee. You can <a href="/login">login</a> or <a href="/register">register</a>.</p>
         <ul id="folders"></ul>
       </section>
       <section data-name="edit-folder" id="edit-folder-panel" class="hidden">

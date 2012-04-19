@@ -20,6 +20,9 @@ Plugsbee.layout = {
       case 'login':
         Plugsbee.layout.showLogin();
         break;
+      case 'register':
+        Plugsbee.layout.showRegister();
+        break;
       default:
         var folder = Plugsbee.folders[aPath[1]];
         if (folder) {
@@ -645,7 +648,7 @@ Plugsbee.layout = {
 
     //Registration form
     var registerForm = document.getElementById("register-form");
-    if (gConfiguration.registration) {
+    //~ if (gConfiguration.registration) {
       registerForm.onsubmit = function(aEvent) {
         var login = this.elements["login"].value;
         var password = this.elements["password"].value;
@@ -666,9 +669,9 @@ Plugsbee.layout = {
         xhr.send(fd);
         aEvent.preventDefault();
       }
-    }
-    else
-      registerForm.parentNode.removeChild(registerForm);
+    //~ }
+    //~ else
+      //~ registerForm.parentNode.removeChild(registerForm);
   },
   openFilePicker: function() {
     document.getElementById('file-picker').click();
@@ -693,11 +696,19 @@ Plugsbee.layout = {
   },
   showLogin: function() {
     //Header
-    this.leftHeader.selectedItem = '';
+    this.leftHeader.selectedItem = 'folders';
     this.rightHeader.selectedItem = '';
     this.rightHeader.selectedItem = 'title';
 
     this.deck.selectedPanel = 'login';
+  },
+  showRegister: function() {
+    //Header
+    this.leftHeader.selectedItem = 'folders';
+    this.rightHeader.selectedItem = '';
+    this.rightHeader.selectedItem = 'title';
+
+    this.deck.selectedPanel = 'register';
   },
   showAccount: function() {
     //Header
