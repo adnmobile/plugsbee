@@ -644,26 +644,45 @@ Plugsbee.layout = {
     //~ }
 
     //Login form
-    var loginForm = document.getElementById("login-form");
-    loginForm.onsubmit = function(aEvent) {
-      var login = this.elements["login"].value;
-      if(!login.match('@'))
-        login += '@plugsbee.com';
-      var password = this.elements["password"].value;
-      var remember = this.elements["remember"].checked;
-      if(remember) {
-        localStorage.setItem('login', login);
-        localStorage.setItem('password', password);
+    (function() {
+      var loginForm = document.getElementById("login-form");
+      loginForm.onsubmit = function(aEvent) {
+        var login = this.elements["login"].value;
+        if(!login.match('@'))
+          login += '@plugsbee.com';
+        var password = this.elements["password"].value;
+        var remember = this.elements["remember"].checked;
+        if(remember) {
+          localStorage.setItem('login', login);
+          localStorage.setItem('password', password);
+        }
+        else {
+          localStorage.removeItem('login', login);
+          localStorage.removeItem('password', password);
+        }
+        location.pathname = '/';
+        //~ location.reload();
+        //~ Plugsbee.connection.connect(login, password);
+        aEvent.preventDefault();
+      };
+    })();
+
+    //Account form
+    (function() {
+      var accountForm = document.getElementById("account-form");
+      accountForm.onsubmit = function(e) {
+        event.preventDefault();
+        var name = this.elements["name"].value;
+        var email = this.elements["email"].value;
+        
+        var pbProfile = {
+          name: name,
+          email: email
+        };
+        Plugsbee.remote.setProfile(pbProfile);
       }
-      else {
-        localStorage.removeItem('login', login);
-        localStorage.removeItem('password', password);
-      }
-      location.pathname = '/';
-      //~ location.reload();
-      //~ Plugsbee.connection.connect(login, password);
-      aEvent.preventDefault();
-    }
+      Plugsbee.layout.accountForm = accountForm;
+    })();
 
     //Registration form
     var registerForm = document.getElementById("register-form");

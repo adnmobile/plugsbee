@@ -1,6 +1,34 @@
 'use strict';
 
 Plugsbee.remote = {
+  getProfile: function(aOnSuccess) {
+    Plugsbee.connection.vcard.get(Plugsbee.connection.jid.bare, function(vcard) {
+      var pbProfile = {
+        name: '',
+        email: ''
+      };
+      var nameElm = vcard.getElementsByTagName('FN')[0];
+      if (nameElm)
+        pbProfile.name = nameElm.textContent;
+
+      var emailElm = vcard.getElementsByTagName('USERID')[0];
+      if (emailElm)
+        pbProfile.email = emailElm.textContent;
+
+      if (aOnSuccess)
+        aOnSuccess(pbProfile);
+    });
+  },
+  setProfile: function(aPbProfile, aOnSuccess) {
+    var fields = [
+      '<FN>' + aPbProfile.name + '</FN>',
+      '<EMAIL><INTERNET/><PREF/><USERID>' + aPbProfile.email + '</USERID></EMAIL>'
+    ];
+    Plugsbee.connection.vcard.set(fields, function(stanza) {
+      if (aOnSuccess)
+        aOnSuccess();
+    });
+  },
   getFolders: function(aOnSuccess) {
     Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
       var pbFolders = {};
