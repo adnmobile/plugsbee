@@ -656,30 +656,28 @@ Plugsbee.layout = {
 
     //Registration form
     var registerForm = document.getElementById("register-form");
-    //~ if (gConfiguration.registration) {
-      registerForm.onsubmit = function(aEvent) {
-        var login = this.elements["login"].value;
-        var password = this.elements["password"].value;
+    registerForm.onsubmit = function(aEvent) {
+      alert('coming soon');
+      return;
+      var login = this.elements["login"].value;
+      var password = this.elements["password"].value;
 
-        var fd = new FormData;
-        fd.append('login', login);
-        fd.append('password', password);
+      var fd = new FormData;
+      fd.append('login', login);
+      fd.append('password', password);
 
-        var xhr = new XMLHttpRequest();
-        xhr.addEventListener("load",
-          function() {
-            if(xhr.responseText === 'ok')
-              Plugsbee.connection.connect(login+'@plugsbee.com', password);
-          }, false
-        );
+      var xhr = new XMLHttpRequest();
+      xhr.addEventListener("load",
+        function() {
+          if(xhr.responseText === 'ok')
+            Plugsbee.connection.connect(login+'@plugsbee.com', password);
+        }, false
+      );
 
-        xhr.open('POST', 'http://plugsbee.com:8282');
-        xhr.send(fd);
-        aEvent.preventDefault();
-      }
-    //~ }
-    //~ else
-      //~ registerForm.parentNode.removeChild(registerForm);
+      xhr.open('POST', 'http://plugsbee.com:8282');
+      xhr.send(fd);
+      aEvent.preventDefault();
+    }
   },
   openFilePicker: function() {
     document.getElementById('file-picker').click();
