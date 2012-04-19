@@ -728,14 +728,6 @@ Plugsbee.layout = {
     //~ folders.hidden = true;
     folders.parentNode.classList.add('panel');
 
-    for (var i in Plugsbee.folders) {
-      var folder = Plugsbee.folders[i];
-      if(!folder.trash) {
-        folder.thumbnail.draggable = true;
-        folder.thumbnail.dropbox = false;
-      }
-    }
-
     //Header
     if (Plugsbee.connection.anonymous)
       this.leftHeader.selectedItem = 'login';
@@ -749,14 +741,6 @@ Plugsbee.layout = {
   },
   showFolder: function(aFolder) {
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    //Makes the folders thumbnail as dropbox
-    for (var i in Plugsbee.folders) {
-      var folder = Plugsbee.folders[i];
-      if(!folder.trash) {
-        folder.thumbnail.draggable = false;
-        folder.thumbnail.dropbox = true;
-      }
-    }
     var dock = document.getElementById('dock');
     dock.hidden = true;
     //Move the folders thumbnails to the dock
@@ -850,14 +834,6 @@ Plugsbee.layout = {
   showTrash: function() {
     var aFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    //Makes the folders thumbnail as dropbox
-    for (var i in Plugsbee.folders) {
-      var folder = Plugsbee.folders[i];
-      if(!folder.trash) {
-        folder.thumbnail.draggable = false;
-        folder.thumbnail.dropbox = true;
-      }
-    }
     var dock = document.getElementById('dock');
     dock.hidden = true;
     //Move the folders thumbnails to the dock
