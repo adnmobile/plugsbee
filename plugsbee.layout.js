@@ -54,6 +54,7 @@ Plugsbee.layout = {
     thumbnail.elm.setAttribute('data-id', aPbFolder.id);
     thumbnail.elm.classList.add('folder');
     thumbnail.draggable = true;
+    thumbnail.dropbox = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
     //~ thumbnail.miniatureActive = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
     if (aPbFolder.id === 'trash') {

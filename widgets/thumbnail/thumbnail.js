@@ -74,17 +74,18 @@ Widget.Thumbnail = function() {
   this.drop = function(evt) {
     this.classList.remove('dragenter');
 
-    var fileId = evt.dataTransfer.getData('Text');
-    var folderId = this.getAttribute('data-id');
-
-    var folder = Plugsbee.folders[folderId];
-    var file = Plugsbee.files[fileId];
-
-    file.move(folder);
-
-    //Hide the dock
-    document.getElementById('dock').hidden = true;
-
+    var pbFolderId = this.getAttribute('data-id');
+    var pbFolder = Plugsbee.folders[pbFolderId];
+    if (evt.dataTransfer.files) {
+      Plugsbee.layout.upload(evt.dataTransfer.files, pbFolder);
+    }
+    else {
+      var pbFileId = evt.dataTransfer.getData('Text');
+      var pbFile = Plugsbee.files[pbFileId];
+      pbFile.move(pbFolder);
+      //Hide the dock
+      document.getElementById('dock').hidden = true;
+    }
     evt.preventDefault();
   };
 };
