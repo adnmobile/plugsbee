@@ -89,6 +89,7 @@ Plugsbee.connection.load('presence');
 Plugsbee.connection.load('dataforms');
 Plugsbee.connection.load('disco');
 Plugsbee.connection.load('pubsub');
+Plugsbee.connection.load('vcard');
 
 //~ context.network.onLine = false;
 
@@ -111,6 +112,10 @@ window.addEventListener("load", function() {
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
+  Plugsbee.remote.getProfile(function(profile) {
+    Plugsbee.layout.accountForm.elements['name'].value = profile.name;
+    Plugsbee.layout.accountForm.elements['email'].value = profile.email;
+  });
   Plugsbee.layout.showFolders();
 
   Plugsbee.connection.presence.send({priority: '0'});
