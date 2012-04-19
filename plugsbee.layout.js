@@ -897,14 +897,14 @@ Plugsbee.layout = {
     Plugsbee.connection.disconnect();
     window.location.assign('/');
   },
-  upload: function(aFiles, aFolder) {
+  upload: function(aFiles, aPbFolder) {
     for (var i = 0; i < aFiles.length; i++) {
       var id = Math.random().toString().split('.')[1];
       var pbFile = Object.create(Plugsbee.File);
 
 
       pbFile.name = aFiles[i].name;
-      pbFile.folder = aFolder;
+      pbFile.folder = aPbFolder;
       pbFile.id = id;
       pbFile.type = aFiles[i].type;
       Plugsbee.layout.drawFile(pbFile);
