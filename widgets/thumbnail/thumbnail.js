@@ -36,14 +36,6 @@ Widget.Thumbnail = function() {
     //~ if (this.getAttribute('data-menu') !== 'true')
       //~ this.querySelector('img').src = this.miniature;
   //~ }, true);
-  this.elm.addEventListener('click', function(e) {
-    e.preventDefault();
-    //~ this.querySelector('img').src = this.miniature;
-    history.pushState(null, null, this.firstChild.href);
-    var event = document.createEvent('Event');
-    event.initEvent('popstate', true, true);
-    window.dispatchEvent(event);
-  }, true);
 
 
   this.dragStart = function(evt) {

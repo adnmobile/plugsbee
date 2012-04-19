@@ -56,6 +56,13 @@ Plugsbee.layout = {
     thumbnail.draggable = true;
     thumbnail.dropbox = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
+    thumbnail.elm.addEventListener('click', function(e) {
+      e.preventDefault();
+      history.pushState(null, null, this.firstChild.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
+    }, true);
     //~ thumbnail.miniatureActive = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
     if (aPbFolder.id === 'trash') {
       thumbnail.href = 'trash';
@@ -150,9 +157,9 @@ Plugsbee.layout = {
     thumbnail.elm.setAttribute('data-type', 'file');
     thumbnail.elm.setAttribute('data-id', aPbFile.id);
     thumbnail.draggable = true;
-
     thumbnail.elm.classList.add('file');
     thumbnail.elm.classList.add('fadeIn');
+
     aPbFile.thumbnail = thumbnail;
 
     if (aPbFile.fileURL) {
