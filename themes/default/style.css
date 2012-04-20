@@ -489,7 +489,7 @@ code {
 /*
  * Files
  */
-.thumbnail img.noshadow:not{
+.thumbnail img:not(.noshadow){
   box-shadow: 0 0 0.5em black;
 }
 .thumbnail.file progress {

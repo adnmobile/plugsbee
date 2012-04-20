@@ -56,6 +56,7 @@ Plugsbee.layout = {
     thumbnail.draggable = true;
     thumbnail.dropbox = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
+    thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
     thumbnail.elm.addEventListener('click', function(e) {
       e.preventDefault();
       history.pushState(null, null, this.firstChild.href);
@@ -537,6 +538,7 @@ Plugsbee.layout = {
       trash.elm.setAttribute('data-id', 'trash');
       trash.href = 'trash';
       trash.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
+      trash.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
       trash.elm.classList.add('trash');
       trash.elm.addEventListener('click', function(e) {
         e.preventDefault();
