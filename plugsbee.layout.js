@@ -177,6 +177,7 @@ Plugsbee.layout = {
     if (!category)
       category = "empty";
     Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'files/' + category + '.png');
+    thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
 
     if (aPbFile.name)
       this.setFileName(aPbFile);

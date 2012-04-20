@@ -489,11 +489,8 @@ code {
 /*
  * Files
  */
-.thumbnail.file img.miniature {
+.thumbnail img.noshadow:not{
   box-shadow: 0 0 0.5em black;
-}
-.thumbnail.file img[src="themes/default/files/empty.png"] {
-  box-shadow: none;
 }
 .thumbnail.file progress {
   max-width: inherit;
