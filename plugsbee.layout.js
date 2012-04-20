@@ -173,18 +173,10 @@ Plugsbee.layout = {
 
     aPbFile.thumbnail = thumbnail;
 
-    if (aPbFile.fileURL) {
-      switch (aPbFile.type) {
-        case 'image/png':
-        case 'image/jpeg':
-        case 'image/gif':
-        case 'image/svg+xml':
-          Plugsbee.layout.setFileMiniature(aPbFile, aPbFile.fileURL);
-          break;
-        default:
-          Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'files/empty.png');
-      }
-    }
+    var category = Plugsbee.mimetypes[aPbFile.type];
+    if (!category)
+      category = "empty";
+    Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'files/' + category + '.png');
 
     if (aPbFile.name)
       this.setFileName(aPbFile);
@@ -644,45 +636,26 @@ Plugsbee.layout = {
     //~ }
 
     //Login form
-    (function() {
-      var loginForm = document.getElementById("login-form");
-      loginForm.onsubmit = function(aEvent) {
-        var login = this.elements["login"].value;
-        if(!login.match('@'))
-          login += '@plugsbee.com';
-        var password = this.elements["password"].value;
-        var remember = this.elements["remember"].checked;
-        if(remember) {
-          localStorage.setItem('login', login);
-          localStorage.setItem('password', password);
-        }
-        else {
-          localStorage.removeItem('login', login);
-          localStorage.removeItem('password', password);
-        }
-        location.pathname = '/';
-        //~ location.reload();
-        //~ Plugsbee.connection.connect(login, password);
-        aEvent.preventDefault();
-      };
-    })();
-
-    //Account form
-    (function() {
-      var accountForm = document.getElementById("account-form");
-      accountForm.onsubmit = function(e) {
-        event.preventDefault();
-        var name = this.elements["name"].value;
-        var email = this.elements["email"].value;
-        
-        var pbProfile = {
-          name: name,
-          email: email
-        };
-        Plugsbee.remote.setProfile(pbProfile);
+    var loginForm = document.getElementById("login-form");
+    loginForm.onsubmit = function(aEvent) {
+      var login = this.elements["login"].value;
+      if(!login.match('@'))
+        login += '@plugsbee.com';
+      var password = this.elements["password"].value;
+      var remember = this.elements["remember"].checked;
+      if(remember) {
+        localStorage.setItem('login', login);
+        localStorage.setItem('password', password);
       }
-      Plugsbee.layout.accountForm = accountForm;
-    })();
+      else {
+        localStorage.removeItem('login', login);
+        localStorage.removeItem('password', password);
+      }
+      location.pathname = '/';
+      //~ location.reload();
+      //~ Plugsbee.connection.connect(login, password);
+      aEvent.preventDefault();
+    }
 
     //Registration form
     var registerForm = document.getElementById("register-form");

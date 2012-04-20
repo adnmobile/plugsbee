@@ -1,11 +1,11 @@
 'use strict';
 (function() {
-Plugsbee.mimetyes = {
+Plugsbee.mimetypes = {
   // PDF
   'application/pdf': 'pdf',
 
   // Text plain
-  'text/plain': 'text-plain'
+  'text/plain': 'text-plain',
 
   // Richtext
   'application/rtf': 'text-richtext',
@@ -29,7 +29,6 @@ Plugsbee.mimetyes = {
   'application/x-iwork-keynote-sffkey': 'presentation',
 
   // Video
-  'video/webm': 'video',
   'video/webm': 'video',
   'video/mp4v-es': 'video',
   'video/x-matroska': 'video',
