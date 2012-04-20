@@ -173,12 +173,16 @@ Plugsbee.layout = {
     thumbnail.elm.classList.add('fadeIn');
 
     aPbFile.thumbnail = thumbnail;
-
-    var category = Plugsbee.mimetypes[aPbFile.type];
-    if (!category)
-      category = "empty";
-    Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'files/' + category + '.png');
-    thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
+    if (!aPbFile.miniatureURL) {
+      var category = Plugsbee.mimetypes[aPbFile.type];
+      if (!category)
+        category = "empty";
+      Plugsbee.layout.setFileMiniature(aPbFile, gConfiguration.themeFolder + 'files/' + category + '.png');
+      thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
+    }
+    else {
+      Plugsbee.layout.setFileMiniature(aPbFile, aPbFile.miniatureURL);
+    }
 
     if (aPbFile.name)
       this.setFileName(aPbFile);
