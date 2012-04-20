@@ -74,9 +74,9 @@ Plugsbee.remote = {
         pbFile.folderId = aPbFolder.id;
         pbFile.folder = aPbFolder;
 
-        var miniature = node.querySelector('link');
-        if (miniature)
-          pbFile.miniature = miniature.getAttribute('href');
+        var preview = node.querySelector('link');
+        if (preview)
+          pbFile.miniatureURL = preview.getAttribute('src');
 
         pbFiles[pbFile.id] = pbFile;
       };
