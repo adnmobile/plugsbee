@@ -911,10 +911,10 @@ Plugsbee.layout = {
   },
   upload: function(aFiles, aPbFolder) {
     for (var i = 0; i < aFiles.length; i++) {
+      
       var id = Math.random().toString().split('.')[1];
+      var file = aFiles[i];
       var pbFile = Object.create(Plugsbee.File);
-
-
       pbFile.name = aFiles[i].name;
       pbFile.folder = aPbFolder;
       pbFile.id = id;
@@ -926,28 +926,73 @@ Plugsbee.layout = {
         case 'image/jpeg':
         case 'image/gif':
         case 'image/svg+xml':
-          Plugsbee.layout.setFileMiniature(pbFile, aFiles[i]);
+          //generate a miniatur
+          resizeImage(aFiles[i], 80, 80, function(canvas) {
+            //use it as a thumbnail
+            Plugsbee.layout.setFileMiniature(pbFile, canvas);
+
+            canvas.toBlob(function(blob) {
+              //upload the thumbnail
+              Plugsbee.remote.uploadFile(pbFile, blob,
+                //on progress
+                null,
+                //on success
+                function(pbFile, answer) {
+                  var img = document.createElement('img');
+                  img.onload = function() {
+                    Plugsbee.layout.setFileMiniature(pbFile, img);
+                  }
+                  img.src = answer.src;
+                  
+                  pbFile.miniatureURL = answer.src;
+                  //upload the original file
+                  Plugsbee.remote.uploadFile(pbFile, file,
+                    //on progress
+                    function(aPbFile, progression) {
+                      aPbFile.thumbnail.label = Math.round(progression)+'%';
+                    },
+                    //on success
+                    function(pbFile, answer) {
+                      console.log(answer);
+                      pbFile.fileURL = answer.src;
+                      pbFile.thumbnail.href = answer.src;
+                      pbFile.thumbnail.draggable = true;
+                      pbFile.thumbnail.label = pbFile.name;
+                      Plugsbee.files[pbFile.id] = pbFile;
+                      pbFile.folder.files[pbFile.id] = pbFile;
+
+                      Plugsbee.remote.newFile(pbFile);
+
+                    }
+                  );
+                }
+              );
+            });
+          });
           break;
         default:
+          //upload the original file
+          Plugsbee.remote.uploadFile(pbFile, file,
+            //on progress
+            function(aPbFile, progression) {
+              aPbFile.thumbnail.label = Math.round(progression)+'%';
+            },
+            //on success
+            function(pbFile, answer) {
+              console.log(answer);
+              pbFile.fileURL = answer.src;
+              pbFile.thumbnail.href = answer.src;
+              pbFile.thumbnail.draggable = true;
+              pbFile.thumbnail.label = pbFile.name;
+              Plugsbee.files[pbFile.id] = pbFile;
+              pbFile.folder.files[pbFile.id] = pbFile;
+
+              Plugsbee.remote.newFile(pbFile);
+
+            }
+          );
           Plugsbee.layout.setFileMiniature(pbFile, gConfiguration.themeFolder + 'files/empty.png');
       }
-
-      Plugsbee.remote.uploadFile(pbFile, aFiles[i],
-        function(aPbFile, progression) {
-          aPbFile.thumbnail.label = Math.round(progression)+'%';
-        },
-        function(pbFile, answer) {
-          pbFile.fileURL = answer.src;
-          pbFile.thumbnail.href = answer.src;
-          pbFile.thumbnail.draggable = true;
-          pbFile.thumbnail.label = pbFile.name;
-          Plugsbee.files[pbFile.id] = pbFile;
-          pbFile.folder.files[pbFile.id] = pbFile;
-
-          Plugsbee.remote.newFile(pbFile);
-
-        }
-      );
     }
   }
 };

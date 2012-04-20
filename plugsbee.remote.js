@@ -63,18 +63,23 @@ Plugsbee.remote = {
   getFiles: function(aPbFolder, aOnSuccess) {
     Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, function(stanza) {
       var pbFiles = {};
-      stanza.items.forEach(function(item) {
-
+      for (var i = 0; i < stanza.items.length; i++) {
+        var node = stanza.items[i];
+        
         var pbFile = Plugsbee.createFile();
-        pbFile.id = item.id;
-        pbFile.type = item.type;
-        pbFile.fileURL = item.src;
-        pbFile.name = item.name;
+        pbFile.id = node.getAttribute('id');
+        pbFile.type = node.querySelector('content').getAttribute('type');
+        pbFile.fileURL = node.querySelector('content').getAttribute('src');
+        pbFile.name = node.querySelector('title').textContent;
         pbFile.folderId = aPbFolder.id;
         pbFile.folder = aPbFolder;
-    
+
+        var miniature = node.querySelector('link');
+        if (miniature)
+          pbFile.miniature = miniature.getAttribute('href');
+
         pbFiles[pbFile.id] = pbFile;
-      });
+      };
       if (aOnSuccess)
         aOnSuccess(pbFiles);
     });
@@ -131,9 +136,12 @@ Plugsbee.remote = {
     var entry = 
       "<entry xmlns='http://www.w3.org/2005/Atom'>" + 
         "<title>" + aPbFile.name + "</title>" +
-        "<content src='" + aPbFile.fileURL + "' type='" + aPbFile.type + "'/>" +
-      "</entry>";
-
+        "<content src='" + aPbFile.fileURL + "' type='" + aPbFile.type + "'/>";
+    if (aPbFile.miniatureURL)
+      entry += '<link rel="preview" src="' + aPbFile.miniatureURL + '"/>';
+      
+    entry += "</entry>";
+          
     Plugsbee.connection.pubsub.publish(aPbFile.folder.host, 'urn:plugsbee:folder:'+aPbFile.folder.id, entry, aPbFile.id);
   },
   deleteFile: function(aPbFile, aOnSuccess) {
@@ -148,26 +156,30 @@ Plugsbee.remote = {
   purgeFolder: function(aPbFolder) {
     Plugsbee.connection.pubsub.purge(aPbFolder.host, 'urn:plugsbee:folder:'+aPbFolder.id);
   },
-  uploadFile: function(aPbFile, aFile, aOnProgress, aOnUploaded) {
+  uploadFile: function(aPbFile, aFile, aOnProgress, aOnSuccess) {
     var fd = new FormData;
-    fd.append(aPbFile.folder.id + '/' + aPbFile.id, aFile);
+    fd.append(aPbFile.id + '/' + aPbFile.name, aFile);
 
     var xhr = new XMLHttpRequest();
 
-    xhr.upload.addEventListener("progress",
-      function(evt) {
-        var progression = (evt.loaded/evt.total)*100;
-        aOnProgress(aPbFile, progression);
-      }, false
-    );
+    if (aOnProgress) {
+      xhr.upload.addEventListener("progress",
+        function(evt) {
+          var progression = (evt.loaded/evt.total)*100;
+          aOnProgress(aPbFile, progression);
+        }, false
+      );
+    };
 
-
-    xhr.addEventListener("load",
-      function(evt) {
-        var answer = JSON.parse(evt.target.responseText);
-        aOnUploaded(aPbFile, answer);
-      }, false
-    );
+    if (aOnSuccess) {
+      xhr.addEventListener("load",
+        function(evt) {
+          var answer = JSON.parse(evt.target.responseText);
+          if (aOnSuccess)
+            aOnSuccess(aPbFile, answer);
+        }, false
+      );
+    }
 
     xhr.open('POST', gConfiguration.uploadService);
     xhr.send(fd);

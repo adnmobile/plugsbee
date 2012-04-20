@@ -134,8 +134,10 @@ Widget.Thumbnail.prototype.__defineSetter__('miniature', function(aMiniature) {
       figure.replaceChild(aMiniature, miniature);
   };
   
-  if (aMiniature instanceof HTMLElement)
-    addMiniatureElm(aMiniature)
+  if (aMiniature instanceof HTMLElement) {
+    aMiniature.classList.add('miniature');
+    addMiniatureElm(aMiniature);
+  }
   else {
     var img = document.createElement('img');
     img.classList.add('miniature');
