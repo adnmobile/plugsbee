@@ -913,7 +913,7 @@ Plugsbee.layout = {
   },
   upload: function(aFiles, aPbFolder) {
     for (var i = 0; i < aFiles.length; i++) {
-      
+      console.log(aFiles[i].type);
       var id = Math.random().toString().split('.')[1];
       var file = aFiles[i];
       var pbFile = Object.create(Plugsbee.File);
@@ -993,7 +993,6 @@ Plugsbee.layout = {
 
             }
           );
-          Plugsbee.layout.setFileMiniature(pbFile, gConfiguration.themeFolder + 'files/empty.png');
       }
     }
   }
