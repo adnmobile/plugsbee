@@ -360,6 +360,7 @@ Plugsbee.layout = {
       var thumbnail = new Widget.Thumbnail();
       thumbnail.elm.id = 'newFolder';
       thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
+      thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
       thumbnail.edit = true;
       var folders = document.getElementById('folders');
 
