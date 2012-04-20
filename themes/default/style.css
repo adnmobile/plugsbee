@@ -407,12 +407,13 @@ header .button {
 }
 #deck > * {
   position: absolute;
-  max-width: 1022px;
   margin: 0;
   padding: 0;
-  height: calc(100% - 46px);
+  height: calc(100% - 40px);
   height: -webkit-calc(100% - 40px);
-  height: -moz-calc(100% - 46px);
+  height: -moz-calc(100% - 40px);
+  width: 100%;
+  max-width: 1022px;
   overflow: hidden;
 }
 section#account {
