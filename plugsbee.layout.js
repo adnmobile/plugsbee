@@ -382,7 +382,6 @@ Plugsbee.layout = {
           Plugsbee.remote.newFolder(pbFolder);
 
           Plugsbee.folders[pbFolder.id] = pbFolder;
-          console.log(pbFolder.thumbnail.menu);
           pbFolder.thumbnail.menu = true;
         }
         else {
