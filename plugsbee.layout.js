@@ -382,6 +382,7 @@ Plugsbee.layout = {
           Plugsbee.remote.newFolder(pbFolder);
 
           Plugsbee.folders[pbFolder.id] = pbFolder;
+          console.log(pbFolder.thumbnail.menu);
           pbFolder.thumbnail.menu = true;
         }
         else {
@@ -768,9 +769,12 @@ Plugsbee.layout = {
     //Header
     if (Plugsbee.connection.anonymous)
       this.leftHeader.selectedItem = 'login';
-    else
-      this.leftHeader.selectedItem = 'account';
-  
+    else {
+      if (Plugsbee.layout.editFoldersButton.getAttribute('data-state') === 'on')
+        this.leftHeader.selectedItem = 'add-folder';
+      else
+        this.leftHeader.selectedItem = 'account';
+    }
     this.rightHeader.selectedItem = 'edit-folders';
     this.middleHeader.selectedItem = 'title';
 
