@@ -382,6 +382,8 @@ Plugsbee.layout = {
           Plugsbee.remote.newFolder(pbFolder);
 
           Plugsbee.folders[pbFolder.id] = pbFolder;
+          console.log(pbFolder.thumbnail.menu);
+          pbFolder.thumbnail.menu = true;
         }
         else {
           dispatchEvent();
@@ -459,9 +461,8 @@ Plugsbee.layout = {
         this.setAttribute('data-state', 'on');
         Plugsbee.layout.leftHeader.selectedItem = 'add-folder';
         for (var i in Plugsbee.folders) {
-          if (i == 'trash')
-            return;
-          Plugsbee.folders[i].thumbnail.menu = true;
+          if (i != 'trash')
+            Plugsbee.folders[i].thumbnail.menu = true;
         }
       }
       else {
@@ -472,9 +473,8 @@ Plugsbee.layout = {
         else
           Plugsbee.layout.leftHeader.selectedItem = 'account';
         for (var i in Plugsbee.folders) {
-          if (i == 'trash')
-            return;
-          Plugsbee.folders[i].thumbnail.menu = false;
+          if (i != 'trash')
+            Plugsbee.folders[i].thumbnail.menu = false;
           //~ Plugsbee.folders[i].thumbnail.elm.classList.remove('fadeOut');
         }
       }
