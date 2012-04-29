@@ -425,7 +425,7 @@ Plugsbee.layout = {
       addFolderButton.classList.add('green');
       addFolderButton.classList.add('hidden');
       addFolderButton.addEventListener('click', Plugsbee.layout.showFolderAdder);
-      Plugsbee.layout.addFolderButton = document.querySelector('div.left').appendChild(addFolderButton);
+      Plugsbee.layout.addFolderButton = document.querySelector('div.right').appendChild(addFolderButton);
     })();
 
     //
@@ -439,10 +439,10 @@ Plugsbee.layout = {
       addFileButton.classList.add('green');
       addFileButton.classList.add('hidden');
       addFileButton.addEventListener('click', Plugsbee.layout.openFilePicker);
-      Plugsbee.layout.addFileButton = document.querySelector('div.left').appendChild(addFileButton);
+      Plugsbee.layout.addFileButton = document.querySelector('div.right').appendChild(addFileButton);
     })();
 
-    //
+    /*//
     //Edit folders button
     //
     var editFoldersButton = document.createElement('button');
@@ -512,7 +512,7 @@ Plugsbee.layout = {
         }
       });
       Plugsbee.layout.editFilesButton = document.querySelector('div.right').appendChild(editFilesButton);
-    })();
+    })();*/
 
     //
     //Empty trash button
@@ -768,13 +768,9 @@ Plugsbee.layout = {
     //Header
     if (Plugsbee.connection.anonymous)
       this.leftHeader.selectedItem = 'login';
-    else {
-      if (Plugsbee.layout.editFoldersButton.getAttribute('data-state') === 'on')
-        this.leftHeader.selectedItem = 'add-folder';
-      else
-        this.leftHeader.selectedItem = 'account';
-    }
-    this.rightHeader.selectedItem = 'edit-folders';
+    else
+      this.leftHeader.selectedItem = 'account';
+    this.rightHeader.selectedItem = 'add-folder';
     this.middleHeader.selectedItem = 'title';
 
     this.deck.selectedPanel = 'folders';
@@ -794,7 +790,7 @@ Plugsbee.layout = {
 
     //Header
     this.leftHeader.selectedItem = 'folders';
-    this.rightHeader.selectedItem = 'edit-files';
+    this.rightHeader.selectedItem = 'add-files';
     this.middleHeader.selectedItem = aFolder.id;
 
     Plugsbee.layout.deck.selectedPanel = aFolder.id;
