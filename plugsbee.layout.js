@@ -55,14 +55,19 @@ Plugsbee.layout = {
     thumbnail.elm.classList.add('folder');
     thumbnail.draggable = true;
     thumbnail.dropbox = true;
+    thumbnail.menu = true;
     thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/folder.png';
     thumbnail.elm.getElementsByClassName('miniature')[0].classList.add('noshadow');
     thumbnail.elm.addEventListener('click', function(e) {
-      e.preventDefault();
-      history.pushState(null, null, this.firstChild.href);
-      var event = document.createEvent('Event');
-      event.initEvent('popstate', true, true);
-      window.dispatchEvent(event);
+      if(e.target.tagName === "span") {
+       e.preventDefault();
+      }else{
+        e.preventDefault();
+        history.pushState(null, null, this.firstChild.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      }
     }, true);
     //~ thumbnail.miniatureActive = Plugsbee.layout.themeFolder + 'folders/folder-open.png';
     if (aPbFolder.id === 'trash') {
@@ -73,7 +78,7 @@ Plugsbee.layout = {
       thumbnail.href = encodeURIComponent(Plugsbee.username) + '/' + encodeURIComponent(aPbFolder.name);
       thumbnail.label = aPbFolder.name;
     }
-    thumbnail.menu = false;
+    thumbnail.menu = true;
     aPbFolder.thumbnail = thumbnail;
 
     //Panel
@@ -169,6 +174,7 @@ Plugsbee.layout = {
     thumbnail.elm.setAttribute('data-type', 'file');
     thumbnail.elm.setAttribute('data-id', aPbFile.id);
     thumbnail.draggable = true;
+    thumbnail.menu = true;
     thumbnail.elm.classList.add('file');
     thumbnail.elm.classList.add('fadeIn');
 
@@ -760,8 +766,10 @@ Plugsbee.layout = {
     //Move the folders thumbnails to their original location
     var folders = document.querySelector('section[data-name="folders"]').appendChild(document.getElementById('folders'));
     //Unhide the current folder
-    if (Plugsbee.layout.currentFolder.thumbnail)
+    if (Plugsbee.layout.currentFolder.thumbnail){
       Plugsbee.layout.currentFolder.thumbnail.elm.hidden = false;
+      Plugsbee.layout.currentFolder.thumbnail.elm.querySelector('span.edit').hidden = true;
+    }
     //~ folders.hidden = true;
     folders.parentNode.classList.add('panel');
 

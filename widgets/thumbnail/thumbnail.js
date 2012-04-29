@@ -9,8 +9,18 @@ Widget.Thumbnail = function() {
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
-      "<span hidden='hidden' class='edit'>⚙</span>" +
+      "<menu>"+
+        "<ul>"+
+          "<li><span hidden='hidden' class='edit'>X</span>"+
+            "<ul id='voletMenu' hidden='hidden'>"+
+              "<li>Rename</li>"+
+              "<li>Delete</li>"+
+            "</ul>"+
+          "</li>"+
+        "</ul>"+
+      "</menu>"+
     "</li>";
+
   this.elm = elm.firstChild;
   var elm = document.createElement('div');
   elm.innerHTML = 
@@ -79,6 +89,35 @@ Widget.Thumbnail = function() {
       document.getElementById('dock').hidden = true;
     }
     evt.preventDefault();
+  };
+  // Menu events
+  this.mouseEnterThumbnail = function(evt) {
+    this.querySelector('span.edit').hidden = false;
+  };
+  this.mouseClickMenu = function(evt) {
+    var menu = this.nextSibling;
+    if (menu.hidden){
+      for (var i in Plugsbee.folders) {
+        if (i != 'trash') {
+          Plugsbee.folders[i].thumbnail.elm.querySelector('ul#voletMenu').hidden = true;
+          Plugsbee.folders[i].thumbnail.elm.querySelector('span.edit').hidden = true;
+        }
+      }
+      if (Plugsbee.layout.currentFolder) {
+        for (var i in Plugsbee.layout.currentFolder.files) {
+          Plugsbee.layout.currentFolder.files[i].thumbnail.elm.querySelector('ul#voletMenu').hidden = true;
+          Plugsbee.layout.currentFolder.files[i].thumbnail.elm.querySelector('span.edit').hidden = true;
+        }
+      }
+      menu.hidden = false;
+    }
+    else
+      menu.hidden = true;
+  };
+  this.mouseOutThumbnail = function(evt) {
+    var menu = this.querySelector('ul#voletMenu');
+    if (menu.hidden)
+      this.querySelector('span.edit').hidden = true;
   };
 };
 //
@@ -179,6 +218,7 @@ Widget.Thumbnail.prototype.__defineSetter__('label', function(aLabel) {
 Widget.Thumbnail.prototype.__defineGetter__('label', function() {
 	return this._label;
 });
+
 //
 //edit property
 //
@@ -196,6 +236,7 @@ Widget.Thumbnail.prototype.__defineSetter__('edit', function(aBool) {
 Widget.Thumbnail.prototype.__defineGetter__('edit', function() {
 	return this._edit;
 });
+
 //
 //menu property
 //
@@ -203,8 +244,11 @@ Widget.Thumbnail.prototype.__defineSetter__('menu', function(aBool) {
 	this._menu = aBool;
   var menu = this.elm.querySelector('span.edit');
   if(aBool === true) {
-    menu.hidden = false;
-    this.elm.getElementsByTagName('a')[0].setAttribute('href', this._href + '?edit');
+    //menu.hidden = false;
+    this.elm.addEventListener('mouseover', this.mouseEnterThumbnail, false);
+    this.elm.addEventListener('mouseout', this.mouseOutThumbnail, false);
+    this.elm.querySelector('span.edit').addEventListener('click', this.mouseClickMenu, false);
+    //this.elm.getElementsByTagName('a')[0].setAttribute('href', this._href + '?edit');
   }
   if(aBool === false) {
     menu.hidden = true;
