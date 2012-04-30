@@ -508,6 +508,16 @@ a {
   margin-bottom: 16px;
   text-align: center;
 }
+.thumbnail input {
+	border: none;
+  max-width: 100%;
+  text-align: center;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+}
 .thumbnail .miniature {
   max-width: 80px;
   max-height: 80px;
@@ -533,53 +543,13 @@ a {
   max-width: 100%;
   text-align: center;
 }
-.thumbnail input {
-	border: none;
-  max-width: 100%;
-  text-align: center;
-  outline: none;
-  margin: 0;
-  padding: 0;
-  font: inherit;
-  font-size: inherit;
-}
-/*
-  Menu
-*/
-/*
-.thumbnail > span.edit {
-  position: absolute;
-  height: 15px;
-  padding: 0;
-  margin-top: -80px;
-  margin-left: 30px;
-  font-size: 25px;
-}
-.thumbnail.edit menu {
-  display: block;
-}*/
-ul,li{
-  list-style: none;
-}
-menu {
+.thumbnail .menu.icon {
   display: block;
   padding: 0;
   margin-top: -110px;
   margin-left: 60px;
   position: absolute;
   z-index: 1;
-}
-menu ul {
-  position: relative;
-  float:left;
-  padding: 0;
-}
-menu ul li {
-  float: left;
-  width: 100%;
-  position: relative;
-}
-menu ul li span {
   float: left;
   height: 25px;
   width: 25px;
@@ -587,45 +557,14 @@ menu ul li span {
   font-size: 25px;
   text-decoration: none;
   color: #333;
-  text-shadow: #FFF 0px 1px 1px;
 }
-menu ul li ul {
-  top: 25px;
-  width: 100px;
-  height: auto;
-  padding: 7px 0px;
+.thumbnail .menu.panel {
+  margin-top: -90px;
+  margin-left: 60px;
   position: absolute;
-  background: rgba(0,0,0,0.5);
-  background: -moz-linear-gradient(top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.6) 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.5)), color-stop(100%,rgba(0,0,0,0.6)));
-  background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-  background: -o-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-  background: linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-  background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.6) 100%);
-  -webkit-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-   -khtml-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-     -moz-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-       -o-box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
-          box-shadow: rgba(0,0,0,0.4) 0px 1px 2px, inset rgba(0,0,0,0.5) 0px 1px 0px, inset rgba(255,255,255,0.5) 0px 0px 3px, inset rgba(0,0,0,0.4) 0px -3px 0px, inset rgba(0,0,0,0.6) -1px 0px 0px, inset rgba(0,0,0,0.6) 1px 0px 0px;
 }
-menu ul li ul li {
-  float: none;
-  height: auto;
-  width: 100px;
-  height: 20px;
-  padding: 4px 10px;
-  border-left: 0px;
-  text-align: left;
-  color: #fff;
-  text-shadow: rgba(0,0,0,0.6) 0px -1px 1px;
-}
-/**** HOVER STATES ****/
-menu ul li ul li:hover{
-  text-decoration: underline;
-}
-menu ul li:hover ul {
-  display:;
-}
-menu ul li:hover ul li{
-  text-shadow: rgba(0,0,0,0.6) 0px -1px 1px;
+.thumbnail .menu.panel li {
+  float: left;
+  width: 100%;
+  list-style: none;
 }

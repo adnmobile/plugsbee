@@ -61,48 +61,43 @@ Plugsbee.layout = {
       "'>"+
         "<figure>"+
           "<img class='miniature noshadow' src='" +
-            Plugsbee.layout.themeFolder +
-              'folders/folder.png' +
+            Plugsbee.layout.themeFolder + 'folders/folder.png' +
           "'/>"+
           "<figcaption class='label'/>"+
-        "</figure>"+
-      "</a>"+
-      "<menu>"+
-        "<ul>"+
-          "<li><span hidden='hidden' class='edit'>X</span>"+
-            "<ul id='voletMenu' hidden='hidden'>"+
-              "<li>Rename</li>"+
-              "<li>Delete</li>"+
-            "</ul>"+
-          "</li>"+
-        "</ul>"+
-      "</menu>";
+        "</figure>" +
+      "</a>" +
+      "<span hidden='hidden' class='menu icon'>⚙</span>" +
+      "<ul hidden='hidden' class='menu panel'>" +
+        "<li>Rename</li>" +
+        "<li>Delete</li>" +
+      "</ul>";
     thumbnail.querySelector('.label').textContent = aPbFolder.name;
+
+    //Menu icon
     thumbnail.addEventListener('mouseover', function(e) {
-      this.querySelector('span.edit').hidden = false;
+      this.querySelector('.menu.icon').hidden = false;
     }, false);
     thumbnail.addEventListener('mouseout', function(e) {
-      var menu = this.querySelector('ul#voletMenu');
-      if (menu.hidden)
-        this.querySelector('span.edit').hidden = true;
+      this.querySelector('.menu.icon').hidden = true;
     }, false);
-    thumbnail.addEventListener('click', function(e) {
-      if (e.target.tagName === "span") {
-        var menu = this.querySelector('ul#voletMenu');
-        menu.hidden = !menu.hidden;
-      }
+    //Open the menu
+    thumbnail.querySelector('.menu.icon').addEventListener('mouseover', function(e) {
+      this.nextElementSibling.hidden = false;
     }, true);
+    //Close the menu
+    thumbnail.querySelector('.menu.icon').addEventListener('mouseout', function(e) {
+      this.nextElementSibling.hidden = true;
+    }, true);
+
+    //Open the folder
     thumbnail.addEventListener('click', function(e) {
-      if (e.target.tagName === "span") {
-        e.preventDefault();
-      }
-      else {
-        e.preventDefault();
-        history.pushState(null, null, this.firstChild.href);
-        var event = document.createEvent('Event');
-        event.initEvent('popstate', true, true);
-        window.dispatchEvent(event);
-      }
+      e.preventDefault();
+      if (e.target.tagName === "span")
+        return;
+      history.pushState(null, null, this.firstChild.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
     }, true);
     aPbFolder.thumbnail = thumbnail;
 
@@ -200,16 +195,11 @@ Plugsbee.layout = {
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
-      "<menu>"+
-        "<ul>"+
-          "<li><span hidden='hidden' class='edit'>X</span>"+
-            "<ul id='voletMenu' hidden='hidden'>"+
-              "<li>Rename</li>"+
-              "<li>Delete</li>"+
-            "</ul>"+
-          "</li>"+
-        "</ul>"+
-      "</menu>";
+      "<span hidden='hidden' class='menu icon'>⚙</span>"+
+      "<ul hidden='hidden' class='menu panel'>"+
+        "<li>Rename</li>"+
+        "<li>Delete</li>"+
+      "</ul>";
     thumbnail.querySelector('.label').textContent = aPbFile.name;
 
     if (!aPbFile.miniatureURL) {
@@ -222,21 +212,23 @@ Plugsbee.layout = {
     else {
       thumbnail.querySelector('.miniature').src = aPbFile.miniatureURL;
     }
-    
+
+    //Menu icon
     thumbnail.addEventListener('mouseover', function(e) {
-      this.querySelector('span.edit').hidden = false;
+      this.querySelector('.menu.icon').hidden = false;
     }, false);
     thumbnail.addEventListener('mouseout', function(e) {
-      var menu = this.querySelector('ul#voletMenu');
-      if (menu.hidden)
-        this.querySelector('span.edit').hidden = true;
+      this.querySelector('.menu.icon').hidden = true;
     }, false);
-    thumbnail.addEventListener('click', function(e) {
-      if (e.target.tagName === "span") {
-        var menu = this.querySelector('ul#voletMenu');
-        menu.hidden = !menu.hidden;
-      }
-    }, false);
+    //Open the menu
+    thumbnail.querySelector('.menu.icon').addEventListener('mouseover', function(e) {
+      this.nextElementSibling.hidden = false;
+    }, true);
+    //Close the menu
+    thumbnail.querySelector('.menu.icon').addEventListener('mouseout', function(e) {
+      this.nextElementSibling.hidden = true;
+    }, true);
+
     aPbFile.thumbnail = thumbnail;
   },
   drawFile: function(aPbFile) {
