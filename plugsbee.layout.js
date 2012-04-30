@@ -781,14 +781,38 @@ Plugsbee.layout = {
       pbFile.folder = aPbFolder;
       pbFile.id = id;
       pbFile.type = aFiles[i].type;
-      Plugsbee.layout.drawFile(pbFile);
-      pbFile.thumbnail.querySelector('a').removeAttribute("href");
-
+      //Thumbnail
+      var thumbnail = document.createElement('li');
+      thumbnail.setAttribute('data-type', 'file');
+      thumbnail.classList.add('thumbnail', 'file', 'fadeIn');
+      thumbnail.innerHTML =
+        "<a>" +
+          "<figure>" +
+            "<img class='miniature noshadow'/>" +
+            "<figcaption class='label'/>" +
+          "</figure>" +
+        "</a>" +
+        "<span hidden='hidden' class='cancel'>X</span>";
+      thumbnail.querySelector('.label').textContent = aFiles[i].name;
+      thumbnail.addEventListener('mouseover', function(e) {
+        this.querySelector('span.cancel').hidden = false;
+      }, false);
+      thumbnail.addEventListener('mouseout', function(e) {
+          this.querySelector('span.cancel').hidden = true;
+      }, false);
+      thumbnail.addEventListener('click', function(e) {
+        if (e.target.tagName === "span") {
+          this.parentNode.removeChild(this);
+        }
+      }, false);
+      pbFile.thumbnail = thumbnail;
+      Plugsbee.layout.handleFile(pbFile);
       switch (pbFile.type) {
         case 'image/png':
         case 'image/jpeg':
         case 'image/gif':
         case 'image/svg+xml':
+          pbFile.thumbnail.querySelector('.miniature').src = gConfiguration.themeFolder + 'files/image.png';
           //generate a miniatur
           resizeImage(aFiles[i], 80, 80, function(canvas) {
             //use it as a thumbnail
@@ -815,11 +839,8 @@ Plugsbee.layout = {
                     },
                     //on success
                     function(pbFile, answer) {
-                      console.log(answer);
-                      pbFile.fileURL = answer.src;
-                      pbFile.thumbnail.querySelector('a').setAttribute("href", answer.src);
-                      pbFile.thumbnail.draggable = true;
-                      pbFile.thumbnail.label = pbFile.name;
+                      pbFile.thumbnail.parentNode.removeChild(pbFile.thumbnail);
+                      Plugsbee.layout.drawFile(pbFile);
                       Plugsbee.files[pbFile.id] = pbFile;
                       pbFile.folder.files[pbFile.id] = pbFile;
 
@@ -833,6 +854,7 @@ Plugsbee.layout = {
           });
           break;
         default:
+          pbFile.thumbnail.querySelector('.miniature').src = gConfiguration.themeFolder + 'files/empty.png';
           //upload the original file
           Plugsbee.remote.uploadFile(pbFile, file,
             //on progress
@@ -841,11 +863,8 @@ Plugsbee.layout = {
             },
             //on success
             function(pbFile, answer) {
-              console.log(answer);
-              pbFile.fileURL = answer.src;
-              pbFile.thumbnail.href = answer.src;
-              pbFile.thumbnail.draggable = true;
-              pbFile.thumbnail.label = pbFile.name;
+              pbFile.thumbnail.parentNode.removeChild(pbFile.thumbnail);
+              Plugsbee.layout.drawFile(pbFile);
               Plugsbee.files[pbFile.id] = pbFile;
               pbFile.folder.files[pbFile.id] = pbFile;
 
