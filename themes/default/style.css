@@ -448,9 +448,6 @@ code {
   margin: 0;
   padding: 0;
 }
-.thumbnail, #folder-adder, #upload-button, #empty-trash {
-  cursor: pointer !important;
-} 
 /*
  * Folders
  */
@@ -513,7 +510,6 @@ a {
   max-height: 80px;
 }
 .thumbnail a {
-  cursor: inherit;
   display: block;
   position: asbolute;
   z-index: 2;

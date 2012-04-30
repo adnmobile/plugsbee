@@ -782,6 +782,7 @@ Plugsbee.layout = {
       pbFile.id = id;
       pbFile.type = aFiles[i].type;
       Plugsbee.layout.drawFile(pbFile);
+      pbFile.thumbnail.querySelector('a').removeAttribute("href");
 
       switch (pbFile.type) {
         case 'image/png':
@@ -805,7 +806,6 @@ Plugsbee.layout = {
                     Plugsbee.layout.setFileMiniature(pbFile, img);
                   }
                   img.src = answer.src;
-                  
                   pbFile.miniatureURL = answer.src;
                   //upload the original file
                   Plugsbee.remote.uploadFile(pbFile, file,
@@ -817,7 +817,7 @@ Plugsbee.layout = {
                     function(pbFile, answer) {
                       console.log(answer);
                       pbFile.fileURL = answer.src;
-                      pbFile.thumbnail.href = answer.src;
+                      pbFile.thumbnail.querySelector('a').setAttribute("href", answer.src);
                       pbFile.thumbnail.draggable = true;
                       pbFile.thumbnail.label = pbFile.name;
                       Plugsbee.files[pbFile.id] = pbFile;
