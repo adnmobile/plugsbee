@@ -399,9 +399,7 @@ code {
   white-space: pre;
 };
 */
-.edit {
-  cursor: pointer !important;
-}
+
 /*
  * Uploader
  */
@@ -417,6 +415,17 @@ code {
   font-weight: bold;
 */
   cursor: pointer !important;
+}
+.thumbnail .cancel {
+  cursor: pointer !important;
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  margin-left: 35px;
+  margin-top: -40px;
+  color: #ce0000;
+  font-size: 15px;
+  font-weight: bold;
 }
 .thumbnail.upload .miniature {
   border: dashed 2px #069045;
@@ -448,9 +457,6 @@ code {
   margin: 0;
   padding: 0;
 }
-.thumbnail, #folder-adder, #upload-button, #empty-trash {
-  cursor: pointer !important;
-} 
 /*
  * Folders
  */
@@ -523,7 +529,6 @@ a {
   max-height: 80px;
 }
 .thumbnail a {
-  cursor: inherit;
   display: block;
   position: asbolute;
   z-index: 2;
