@@ -78,11 +78,25 @@ Plugsbee.layout = {
         "</ul>"+
       "</menu>";
     thumbnail.querySelector('.label').textContent = aPbFolder.name;
-    
+    thumbnail.addEventListener('mouseover', function(e) {
+      this.querySelector('span.edit').hidden = false;
+    }, false);
+    thumbnail.addEventListener('mouseout', function(e) {
+      var menu = this.querySelector('ul#voletMenu');
+      if (menu.hidden)
+        this.querySelector('span.edit').hidden = true;
+    }, false);
     thumbnail.addEventListener('click', function(e) {
-      if(e.target.tagName === "span") {
-       e.preventDefault();
-      }else{
+      if (e.target.tagName === "span") {
+        var menu = this.querySelector('ul#voletMenu');
+        menu.hidden = !menu.hidden;
+      }
+    }, true);
+    thumbnail.addEventListener('click', function(e) {
+      if (e.target.tagName === "span") {
+        e.preventDefault();
+      }
+      else {
         e.preventDefault();
         history.pushState(null, null, this.firstChild.href);
         var event = document.createEvent('Event');
@@ -209,6 +223,20 @@ Plugsbee.layout = {
       thumbnail.querySelector('.miniature').src = aPbFile.miniatureURL;
     }
     
+    thumbnail.addEventListener('mouseover', function(e) {
+      this.querySelector('span.edit').hidden = false;
+    }, false);
+    thumbnail.addEventListener('mouseout', function(e) {
+      var menu = this.querySelector('ul#voletMenu');
+      if (menu.hidden)
+        this.querySelector('span.edit').hidden = true;
+    }, false);
+    thumbnail.addEventListener('click', function(e) {
+      if (e.target.tagName === "span") {
+        var menu = this.querySelector('ul#voletMenu');
+        menu.hidden = !menu.hidden;
+      }
+    }, false);
     aPbFile.thumbnail = thumbnail;
   },
   drawFile: function(aPbFile) {
