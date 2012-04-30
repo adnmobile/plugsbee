@@ -42,14 +42,6 @@
     <script type="application/javascript" src="plugsbee.layout.js"/>
     <script type="application/javascript" src="plugsbee.remote.js"/>
     <script type="application/javascript" src="mimetypes.js"/>
-
-    <!-- widgets -->
-    <script type="application/javascript" src="widgets/thumbnail/thumbnail.js"/>
-    <link rel="stylesheet" href="widgets/thumbnail/thumbnail.css" type="text/css"/>
-    <script type="application/javascript" src="widgets/panel/panel.js"/>
-    <link rel="stylesheet" href="widgets/panel/panel.css" type="text/css"/>
-    <script type="application/javascript" src="widgets/editabletext/editabletext.js"/>
-    <link rel="stylesheet" href="widgets/editabletext/editabletext.css" type="text/css"/>
   </head>
   <body>
     <header>
@@ -157,35 +149,28 @@
       </section>
       <section data-name="folders" class="hidden">
         <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll quit Plugsbee. You can <a href="/login">login</a> or <a href="/register">register</a>.</p>
-        <ul id="folders"></ul>
+        <ul id="folders">
+          <li id="folderAdder" hidden="hidden" class="thumbnail">
+            <figure>
+              <img class='miniature noshadow'/>
+              <figcaption class='label'>
+                <form>
+                  <input type='text' name='name' autofocus='autofocus'/>
+                </form>
+              </figcaption>
+            </figure>
+          </li>
+          <li data-id="trash" class="thumbnail trash">
+            <a href='trash'>
+              <figure>
+                <img class='miniature noshadow'/>
+                <figcaption class='label'>Trash</figcaption>
+              </figure>
+            </a>
+          </li>
+        </ul>
       </section>
-      <section data-name="edit-folder" id="edit-folder-panel" class="hidden">
-        <div>
-          <button id="delete-folder-button" class="button grey grey-red">Delete</button>
-          <button id="rename-folder-button" class="button grey">Rename</button>
-          <p>
-            <label for="edit-folder-name">Folder name:</label>
-            <input type="text" name="edit-folder-name" id="edit-folder-name" placeholder="Your folder name." required="required"/>
-          </p>
-          <p>
-            <label for="edit-folder-public">Public: <input type="checkbox" name="edit-folder-public" id="edit-folder-public"/></label>
-          </p>
-          <p>
-            <label for="edit-folder-share">Share with:</label>
-            <input type="text" name="edit-folder-share" id="edit-folder-share" placeholder="Contact names."/>
-          </p>
-        </div>
-      </section>
-      <section data-name="edit-file" id="edit-file-panel" class="hidden">
-        <div>
-          <button id="delete-file-button" class="button grey grey-red">Delete</button>
-          <button id="rename-file-button" class="button grey">Rename</button>
-          <p>
-            <label for="edit-file-name">File name:</label>
-            <input type="text" name="edit-file-name" id="edit-file-name" placeholder="Your file name." required="required"/>
-          </p>
-        </div>
-      </section>
+      <ul class="trash hidden" data-name="trash"/>
     </div>
     <input id="file-picker" multiple="multiple" type="file"/>
     <div id="xmpp-console" hidden="hidden"/>
