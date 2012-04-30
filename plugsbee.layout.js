@@ -583,7 +583,6 @@ Plugsbee.layout = {
           folder.moveToTrash();
         else if (file) {
           file.move(trash);
-          document.getElementById('dock').hidden = true;
           
         if (Object.keys(trash.files).length)
           trash.thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash-full.png';
@@ -785,16 +784,6 @@ Plugsbee.layout = {
   },
   showFolder: function(aFolder) {
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    var dock = document.getElementById('dock');
-    dock.hidden = true;
-    //Move the folders thumbnails to the dock
-    var folders = dock.appendChild(document.getElementById('folders'));
-    folders.parentNode.classList.remove('panel');
-    folders.hidden = false;
-    //Hide the current folder
-    aFolder.thumbnail.elm.hidden = true;
-    //Hide the folder adder for the moment
-    //~ gUserInterface.hidden = true;
 
     //Header
     this.leftHeader.selectedItem = 'folders';
@@ -802,20 +791,6 @@ Plugsbee.layout = {
     this.middleHeader.selectedItem = aFolder.id;
 
     Plugsbee.layout.deck.selectedPanel = aFolder.id;
-
-
-    //~ this.title.elm.onclick = function(evt) {
-      //~ if(this.title.edit !== true)
-        //~ this.title.edit = true;
-    //~ };
-    //~ this.title.form.onsubmit = function(evt) {
-      //~ var value = this.title.value;
-      //~ this.title.edit = false;
-      //~ this.title.value = value;
-      //~ aFolder.name = value;
-      //~ Plugsbee.renameFolder(aFolder, value);
-      //~ evt.preventDefault();
-    //~ };
 
     this.currentFolder = aFolder;
   },
@@ -826,51 +801,6 @@ Plugsbee.layout = {
       document.querySelector('div.left > a[data-name="folders"]').click();
     };
   },
-  showFolderEdit: function(aFolder) {
-    //~ Plugsbee.layout.deck.selectedPanel = 'folders';
-    //Makes the folders thumbnail as dropbox
-    //~ for (var i in Plugsbee.folders) {
-      //~ var folder = Plugsbee.folders[i];
-      //~ if(!folder.trash) {
-        //~ folder.thumbnail.draggable = false;
-        //~ folder.thumbnail.dropbox = true;
-      //~ }
-    //~ }
-    //~ var dock = document.getElementById('dock');
-    //~ dock.hidden = true;
-    //Move the folders thumbnails to the dock
-    //~ var folders = dock.appendChild(document.getElementById('folders'));
-    //~ folders.parentNode.classList.remove('panel');
-    //~ folders.hidden = false;
-    //Hide the current folder
-    //~ aFolder.thumbnail.elm.hidden = true;
-    //Hide the folder adder for the moment
-    //~ gUserInterface.hidden = true;
-
-    //Header
-    this.leftHeader.selectedItem = 'folders';
-    this.rightHeader.selectedItem = '';
-    this.middleHeader.selectedItem = aFolder.id;
-
-    Plugsbee.layout.updateFolderEditPanel(aFolder);
-    Plugsbee.layout.deck.selectedPanel = 'edit-folder';
-
-
-    //~ this.title.elm.onclick = function(evt) {
-      //~ if(this.title.edit !== true)
-        //~ this.title.edit = true;
-    //~ };
-    //~ this.title.form.onsubmit = function(evt) {
-      //~ var value = this.title.value;
-      //~ this.title.edit = false;
-      //~ this.title.value = value;
-      //~ aFolder.name = value;
-      //~ Plugsbee.renameFolder(aFolder, value);
-      //~ evt.preventDefault();
-    //~ };
-
-    this.currentFolder = aFolder;
-  },
   emptyTrash: function() {
     Plugsbee.folders['trash'].purge();
     Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
@@ -878,16 +808,6 @@ Plugsbee.layout = {
   showTrash: function() {
     var aFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedPanel = 'folders';
-    var dock = document.getElementById('dock');
-    dock.hidden = true;
-    //Move the folders thumbnails to the dock
-    var folders = document.getElementById('dock').appendChild(document.getElementById('folders'));
-    folders.classList.remove('panel');
-    folders.hidden = false;
-    //Hide the current folder
-    aFolder.thumbnail.elm.hidden = true;
-    //Hide the folder adder for the moment
-    //~ Plugsbee.layout.hidden = true;
 
     //Header
     this.leftHeader.selectedItem = 'folders';

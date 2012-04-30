@@ -362,32 +362,6 @@ header .button {
   -o-transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
 
-
-/*
- * Dock
- */
-#dock {
-  overflow: hidden;
-  background-color: white;
-  max-width: 1024px;
-  margin: auto;
-}
-#dock ul {
-  list-style: none;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-}
-#dock .thumbnail {
-  margin: 0 !important;
-  padding: 0 !important;
-  max-height: 52px !important;
-  max-width: 52px !important;
-}
-#dock .thumbnail img {
-  max-height: 32px !important;
-  max-width: 32px !important;
-}
 .thumbnail.dragenter {
   font-weight: bold;
 }

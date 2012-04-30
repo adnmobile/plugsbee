@@ -55,12 +55,8 @@ Widget.Thumbnail = function() {
     evt.dataTransfer.setDragImage(img, -10, -10);
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
-    //Show the dock
-    document.getElementById('dock').hidden = false;
   };
   this.dragEnd = function(evt) {
-    //Hide the dock
-    document.getElementById('dock').hidden = true;
   };
 
   this.dragEnter = function(evt) {
@@ -85,8 +81,6 @@ Widget.Thumbnail = function() {
       var pbFileId = evt.dataTransfer.getData('Text');
       var pbFile = Plugsbee.files[pbFileId];
       pbFile.move(pbFolder);
-      //Hide the dock
-      document.getElementById('dock').hidden = true;
     }
     evt.preventDefault();
   };
