@@ -193,10 +193,10 @@ Plugsbee.layout = {
         "</figure>"+
       "</a>"+
       "<span hidden='hidden' class='menu icon'>⚙</span>"+
-      "<ul hidden='hidden' class='menu panel'>"+
+      "<div hidden='hidden' class='menu panel'>"+
         "<li>Rename</li>"+
         "<li>Delete</li>"+
-      "</ul>";
+      "</div>";
     thumbnail.querySelector('.label').textContent = aPbFile.name;
 
     if (!aPbFile.miniatureURL) {
@@ -503,7 +503,7 @@ Plugsbee.layout = {
       thumbnail.querySelector('.miniature').src = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
       thumbnail.addEventListener('click', function(e) {
         e.preventDefault();
-        history.pushState(null, null, this.firstChild.href);
+        history.pushState(null, null, this.children[0].href);
         var event = document.createEvent('Event');
         event.initEvent('popstate', true, true);
         window.dispatchEvent(event);
