@@ -183,5 +183,7 @@ Plugsbee.remote = {
 
     xhr.open('POST', gConfiguration.uploadService);
     xhr.send(fd);
+    
+    return xhr;
   },
 };

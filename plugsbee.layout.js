@@ -821,13 +821,16 @@ Plugsbee.layout = {
       thumbnail.addEventListener('mouseout', function(e) {
           this.querySelector('span.cancel').hidden = true;
       }, false);
-      thumbnail.addEventListener('click', function(e) {
-        if (e.target.tagName === "span") {
-          this.parentNode.removeChild(this);
-        }
-      }, false);
+      thumbnail.querySelector('.cancel').addEventListener('click', function(e) {
+        fileUpload.abort();
+        miniatureUpload.abort();
+        this.parentNode.parentNode.removeChild(this.parentNode);
+      }, true);
       pbFile.thumbnail = thumbnail;
       Plugsbee.layout.handleFile(pbFile);
+      
+      var miniatureUpload;
+      var fileUpload;
 
       switch (pbFile.type) {
         case 'image/png':
@@ -844,8 +847,8 @@ Plugsbee.layout = {
             miniature.parentNode.replaceChild(canvas, miniature);
 
             canvas.toBlob(function(blob) {
-              //upload the thumbnail
-              Plugsbee.remote.uploadFile(pbFile, blob,
+              //upload the miniature
+              miniatureUpload = Plugsbee.remote.uploadFile(pbFile, blob,
                 //on progress
                 null,
                 //on success
@@ -859,7 +862,7 @@ Plugsbee.layout = {
                   
                   //upload the original file
                   pbFile.thumbnail.querySelector('.label').textContent = '0%';
-                  Plugsbee.remote.uploadFile(pbFile, file,
+                  fileUpload = Plugsbee.remote.uploadFile(pbFile, file,
                     //on progress
                     function(aPbFile, progression) {
                       aPbFile.thumbnail
@@ -888,7 +891,7 @@ Plugsbee.layout = {
                 .querySelector('.miniature')
                 .src = gConfiguration.themeFolder + 'files/empty.png';
           //upload the original file
-          Plugsbee.remote.uploadFile(pbFile, file,
+          fileUpload = Plugsbee.remote.uploadFile(pbFile, file,
             //on progress
             function(aPbFile, progression) {
               aPbFile.thumbnail
