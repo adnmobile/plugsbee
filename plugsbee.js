@@ -139,28 +139,12 @@ Plugsbee.connection.on('connected', function() {
     return;
   }
 
-  //Retrieves and handles folders from remote storage
   Plugsbee.remote.getFolders(function(pbFolders) {
     for (var i in pbFolders) {
 
       Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
       Plugsbee.layout.drawFolder(pbFolders[i]);
 
-      //Retrieves and handles files from remote storage
-      Plugsbee.remote.getFiles(pbFolders[i], function(pbFiles) {
-        if ((Object.keys(pbFiles).length) &&
-            (pbFiles[Object.keys(pbFiles)[0]].folderId === 'trash' )) {
-          Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash-full.png';
-        }
-        for (var y in pbFiles) {
-          var folder = Plugsbee.folders[pbFiles[y].folderId];
-          folder.files[pbFiles[y].id] = pbFiles[y];
-          pbFiles[y].folder = folder;
-
-          Plugsbee.layout.drawFile(pbFiles[y]);
-          Plugsbee.files[pbFiles[y].id] = pbFiles[y];
-        }
-      });
     }
     Plugsbee.layout.handlePath();
   });

@@ -26,10 +26,7 @@ Plugsbee.layout = {
       default:
         var folder = Plugsbee.folders[aPath[1]];
         if (folder) {
-          if (aOptions === "?edit")
-            Plugsbee.layout.showFolderEdit(folder);
-          else 
-            Plugsbee.layout.showFolder(folder);
+          Plugsbee.layout.showFolder(folder);
           return;
         }
         
@@ -721,17 +718,32 @@ Plugsbee.layout = {
 
     this.deck.selectedChild = 'folders';
   },
-  showFolder: function(aFolder) {
+  showFolder: function(aPbFolder) {
     this.deck.selectedChild = 'folders';
+
+    for (var i in aPbFolder.files) {
+      var thumbnail = aPbFolder.files[i].thumbnail;
+      thumbnail.parentNode.removeChild(thumbnail);
+      delete aPbFolder.files[i];
+    }
+    Plugsbee.remote.getFiles(aPbFolder, function(pbFiles) {
+      for (var y in pbFiles) {
+        aPbFolder.files[pbFiles[y].id] = pbFiles[y];
+        pbFiles[y].folder = aPbFolder;
+
+        Plugsbee.layout.drawFile(pbFiles[y]);
+        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
+      }
+    });
 
     //Header
     this.leftHeader.selectedChild = 'folders';
     this.rightHeader.selectedChild = 'add-files';
-    this.middleHeader.selectedChild = aFolder.id;
+    this.middleHeader.selectedChild = aPbFolder.id;
 
-    Plugsbee.layout.deck.selectedChild = aFolder.id;
+    Plugsbee.layout.deck.selectedChild = aPbFolder.id;
 
-    this.currentFolder = aFolder;
+    this.currentFolder = aPbFolder;
   },
   updateFolderEditPanel: function(aPbFolder) {
     var deleteFolderButton = document.getElementById('delete-folder-button');
@@ -745,8 +757,23 @@ Plugsbee.layout = {
     Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
   },
   showTrash: function() {
-    var aFolder = Plugsbee.folders['trash'];
+    var pbFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedPanel = 'folders';
+
+    for (var i in pbFolder.files) {
+      var thumbnail = pbFolder.files[i].thumbnail;
+      thumbnail.parentNode.removeChild(thumbnail);
+      delete pbFolder.files[i];
+    }
+    Plugsbee.remote.getFiles(pbFolder, function(pbFiles) {
+      for (var y in pbFiles) {
+        pbFolder.files[pbFiles[y].id] = pbFiles[y];
+        pbFiles[y].folder = pbFolder;
+
+        Plugsbee.layout.drawFile(pbFiles[y]);
+        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
+      }
+    });
 
     //Header
     this.leftHeader.selectedChild = 'folders';
