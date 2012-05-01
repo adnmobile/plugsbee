@@ -33,9 +33,9 @@ Plugsbee.layout = {
         Plugsbee.remote.getFolder(aPath[0], aPath[1], function(pbFolder) {
           Plugsbee.layout.buildFolder(pbFolder);
           var deck = document.getElementById('deck');
-          pbFolder.panel.elm = deck.appendChild(pbFolder.panel.elm);
+          pbFolder.panel = deck.appendChild(pbFolder.panel);
           for (var i in pbFolder.files) {
-            Plugsbee.layout.drawFile(pbFolder.files[ui]);
+            Plugsbee.layout.drawFile(pbFolder.files[i]);
           }
           Plugsbee.layout.showFolder(pbFolder);
         });
