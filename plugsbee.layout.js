@@ -681,7 +681,7 @@ Plugsbee.layout = {
     this.contextTitle.value = gConfiguration.name;
     this.contextTitle.editable = false;
 
-    this.deck.selectedPanel = Plugsbee.username;
+    this.deck.selectedChild = Plugsbee.username;
   },
   showLogin: function() {
     //Header
@@ -689,7 +689,7 @@ Plugsbee.layout = {
     this.rightHeader.selectedChild = '';
     this.rightHeader.selectedChild = 'title';
 
-    this.deck.selectedPanel = 'login';
+    this.deck.selectedChild = 'login';
   },
   showRegister: function() {
     //Header
@@ -697,7 +697,7 @@ Plugsbee.layout = {
     this.rightHeader.selectedChild = '';
     this.rightHeader.selectedChild = 'title';
 
-    this.deck.selectedPanel = 'register';
+    this.deck.selectedChild = 'register';
   },
   showAccount: function() {
     //Header
@@ -758,7 +758,7 @@ Plugsbee.layout = {
   },
   showTrash: function() {
     var pbFolder = Plugsbee.folders['trash'];
-    Plugsbee.layout.deck.selectedPanel = 'folders';
+    Plugsbee.layout.deck.selectedChild = 'folders';
 
     for (var i in pbFolder.files) {
       var thumbnail = pbFolder.files[i].thumbnail;
@@ -777,10 +777,10 @@ Plugsbee.layout = {
 
     //Header
     this.leftHeader.selectedChild = 'folders';
-    this.rightHeader.selectedItem = 'empty-trash';
-    this.middleHeader.selectedItem = 'trash';
+    this.rightHeader.selectedChild = 'empty-trash';
+    this.middleHeader.selectedChild = 'trash';
 
-    this.deck.selectedPanel = 'trash';
+    this.deck.selectedChild = 'trash';
 
     this.currentFolder = aFolder;
   },
