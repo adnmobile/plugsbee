@@ -409,35 +409,6 @@ code {
   height: 0;
   width: 0;
 }
-.thumbnail.upload {
-  color: #069045;
-/*
-  font-weight: bold;
-*/
-  cursor: pointer !important;
-}
-.thumbnail .cancel {
-  cursor: pointer !important;
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  margin-left: 35px;
-  margin-top: -40px;
-  color: #ce0000;
-  font-size: 15px;
-  font-weight: bold;
-}
-.thumbnail.upload .miniature {
-  border: dashed 2px #069045;
-  border-radius: 6px;
-  width: 76px;
-  height: 76px;
-  
-  text-align: center;
-  font-size: 40px;
-  line-height: 80px;
-  font-weight: bold;
-}
 
 .panel {
   padding: 0;
@@ -457,15 +428,7 @@ code {
   margin: 0;
   padding: 0;
 }
-/*
- * Folders
- */
-.thumbnail.folder .miniature {
-/*
-  width: 85px;
-  * 
-*/
-}
+
 
 /*
  * Files
@@ -513,6 +476,23 @@ a {
   margin-top: 16px;
   margin-bottom: 16px;
   text-align: center;
+}
+.thumbnail .cancel {
+  cursor: pointer !important;
+  color: #ce0000;
+  font-weight: bold;
+  display: block;
+  padding: 0;
+  margin-top: -110px;
+  margin-left: 60px;
+  position: absolute;
+  z-index: 1;
+  float: left;
+  height: 25px;
+  width: 25px;
+  text-align: center;
+  font-size: 25px;
+  text-decoration: none;
 }
 .thumbnail input {
 	border: none;

@@ -116,7 +116,6 @@ Plugsbee.connection.on('connected', function() {
     Plugsbee.layout.accountForm.elements['name'].value = profile.name;
     Plugsbee.layout.accountForm.elements['email'].value = profile.email;
   });
-  Plugsbee.layout.showFolders();
 
   Plugsbee.connection.presence.send({priority: '0'});
   Plugsbee.username = Plugsbee.connection.jid.node;
