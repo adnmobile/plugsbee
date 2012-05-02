@@ -183,6 +183,29 @@ Plugsbee.layout = {
 
     aPbFolder.thumbnail = thumbnail;
 
+    //Drag and drop
+    thumbnail.addEventListener('dragstart', function(evt) {
+      evt.dataTransfer.setData('pbFolder', aPbFolder.id);
+    });
+    thumbnail.addEventListener('dragenter', function(evt) {
+      this.classList.add('dragenter');
+    });
+    thumbnail.addEventListener('dragover', function(evt) {
+      this.classList.add('dragenter');
+      evt.preventDefault()
+    });
+    thumbnail.addEventListener('dragleave', function(evt) {
+      this.classList.remove('dragenter');
+    });
+    thumbnail.addEventListener('drop', function(evt) {
+      this.classList.remove('dragenter');
+      var pbFolderId = this.getAttribute('data-id');
+      var pbFolder = Plugsbee.folders[pbFolderId];
+      if (evt.dataTransfer.files)
+        Plugsbee.layout.upload(evt.dataTransfer.files, pbFolder);
+      evt.preventDefault();
+    });
+
     //Panel
     var panel = document.createElement('ul');
     panel.setAttribute('data-name', aPbFolder.id);
@@ -198,9 +221,8 @@ Plugsbee.layout = {
       e.preventDefault();
       var pbFolderId = this.getAttribute('data-name');
       var pbFolder = Plugsbee.folders[pbFolderId];
-      if (e.dataTransfer.files) {
+      if (e.dataTransfer.files)
         Plugsbee.layout.upload(e.dataTransfer.files, pbFolder);
-      }
     });
     panel.addEventListener('dragover', function(e) {
       e.preventDefault();
@@ -230,12 +252,12 @@ Plugsbee.layout = {
     aPbFolder.title = middle.appendChild(aPbFolder.title);
   },
   eraseFolder: function(aFolder) {
-    aFolder.panel.elm.parentNode.removeChild(aFolder.panel.elm);
-    aFolder.thumbnail.elm.classList.add('fadeOut');
-    aFolder.thumbnail.elm.addEventListener('webkitAnimationEnd', function(e) {
+    aFolder.panel.parentNode.removeChild(aFolder.panel);
+    aFolder.thumbnail.classList.add('fadeOut');
+    aFolder.thumbnail.addEventListener('webkitAnimationEnd', function(e) {
       this.parentNode.removeChild(this);
     });
-    aFolder.thumbnail.elm.addEventListener('animationend', function(e) {
+    aFolder.thumbnail.addEventListener('animationend', function(e) {
       this.parentNode.removeChild(this);
     });
     
@@ -269,12 +291,12 @@ Plugsbee.layout = {
           "<img class='miniature'/>"+
           "<figcaption class='label'/>"+
         "</figure>"+
-      "</a>"+
       "<a hidden='hidden' href='" + filePath + "?edit' class='menu icon'>⚙</a>"; /*+
       "<ul hidden='hidden' class='menu panel'>"+
         "<li>Rename</li>"+
         "<li>Delete</li>"+
       "</ul>";*/
+
     thumbnail.querySelector('.label').textContent = aPbFile.name;
 
     if (!aPbFile.miniatureURL) {
@@ -319,14 +341,14 @@ Plugsbee.layout = {
     this.handleFile(aPbFile);
   },
   eraseFile: function(aPbFile) {
-    aPbFile.thumbnail.elm.classList.remove('fadeIn');
-    aPbFile.thumbnail.elm.classList.add('fadeOut');
+    aPbFile.thumbnail.classList.remove('fadeIn');
+    aPbFile.thumbnail.classList.add('fadeOut');
     //FIXME why 2 catched animation event?
-    aPbFile.thumbnail.elm.addEventListener('webkitAnimationEnd', function(e) {
+    aPbFile.thumbnail.addEventListener('webkitAnimationEnd', function(e) {
       this.parentNode.removeChild(this);
       delete aPbFile.thumbnail;
     });
-    aPbFile.thumbnail.elm.addEventListener('animationend', function(e) {
+    aPbFile.thumbnail.addEventListener('animationend', function(e) {
       this.parentNode.removeChild(this);
       delete aPbFile.thumbnail;
     });
@@ -669,7 +691,7 @@ Plugsbee.layout = {
       thumbnail.querySelector('.miniature').src = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
       thumbnail.addEventListener('click', function(e) {
         e.preventDefault();
-        history.pushState(null, null, this.firstChild.href);
+        history.pushState(null, null, this.children[0].href);
         var event = document.createEvent('Event');
         event.initEvent('popstate', true, true);
         window.dispatchEvent(event);
@@ -687,23 +709,9 @@ Plugsbee.layout = {
       thumbnail.addEventListener('drop', function(evt) {
         evt.preventDefault();
         this.classList.remove('dragenter');
-        var id = evt.dataTransfer.getData('text/plain');
-        if (!id)
-          return;
-
-        var file = Plugsbee.files[id];
-        var folder = Plugsbee.folders[id];
-
-        var trash = Plugsbee.folders['trash']
-        
-        if (folder)
-          folder.moveToTrash();
-        else if (file) {
-          file.move(trash);
-          
-        if (Object.keys(trash.files).length)
-          trash.thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash-full.png';
-        }
+        var id = evt.dataTransfer.getData('pbFolder');
+        if (Plugsbee.folders[id])
+          Plugsbee.folders[id].moveToTrash();
       });
       //Panel
       var panel = document.querySelector('#deck > .trash');
@@ -948,7 +956,7 @@ Plugsbee.layout = {
 
     this.deck.selectedChild = 'trash';
 
-    this.currentFolder = aFolder;
+    this.currentFolder = pbFolder;
   },
   logOut: function() {
     localStorage.removeItem("login");
