@@ -147,9 +147,11 @@
           </div>
         </div>
       </section>
-      <section data-name="folders" class="hidden">
+<!--
+      <section >
         <p id="anonymous" hidden="hidden">You are not logged, everything you are uploading will be deleted as soon as you'll quit Plugsbee. You can <a href="/login">login</a> or <a href="/register">register</a>.</p>
-        <ul id="folders">
+-->
+        <ul id="folders" data-name="folders" class="hidden user">
           <li id="folderAdder" hidden="hidden" class="thumbnail">
             <figure>
               <img class='miniature noshadow'/>
@@ -169,7 +171,15 @@
             </a>
           </li>
         </ul>
+<!--
       </section>
+-->
+      <div class="hidden" data-name="folder-editor" id="folder-editor">
+        blablabla
+      </div>
+      <div class="hidden" data-name="file-editor" id="file-editor">
+        bliblibli
+      </div>
       <ul class="trash hidden" data-name="trash"/>
     </div>
     <input id="file-picker" multiple="multiple" type="file"/>

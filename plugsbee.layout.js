@@ -6,11 +6,8 @@ Plugsbee.layout = {
     path.shift();
     Plugsbee.layout.route(path, location.search);
   },
-  route: function(aPath, aOptions) {
-    switch (aPath[0]) {
-      case '':
-        Plugsbee.layout.showFolders();
-        break;
+  route: function(path, options) {
+    switch (path[0]) {
       case 'account':
         Plugsbee.layout.showAccount();
         break;
@@ -24,38 +21,115 @@ Plugsbee.layout = {
         Plugsbee.layout.showRegister();
         break;
       default:
-        var folder = Plugsbee.folders[aPath[1]];
-        if (folder) {
-          Plugsbee.layout.showFolder(folder);
-          return;
+        if (!path[0] || (path[0] === Plugsbee.user.id))
+          var pbUser = Plugsbee.user;
+        else {
+          var pbUser = Plugsbee.createUser();
+          pbUser.id = path[0];
+          pbUser.name = pbUser.id;
         }
-        
-        Plugsbee.remote.getFolder(aPath[0], aPath[1], function(pbFolder) {
-          Plugsbee.layout.buildFolder(pbFolder);
-          var deck = document.getElementById('deck');
-          pbFolder.panel = deck.appendChild(pbFolder.panel);
-          for (var i in pbFolder.files) {
-            Plugsbee.layout.drawFile(pbFolder.files[i]);
+        if (path[1]) {
+          Plugsbee.remote.getFolder(pbUser.id, path[1],
+            //on success
+            function(pbFolder) {
+              pbFolder.user = pbUser;
+              Plugsbee.folders[pbFolder.id] = pbFolder;
+              //file
+              if (path[2]) {
+                if (pbFolder.files[path[2]])
+                  Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
+                else
+                  alert('wrong URL');//FIXME error
+              }
+              //folder
+              else {
+                Plugsbee.layout.buildFolder(pbFolder);
+                var deck = document.getElementById('deck');
+                pbFolder.panel = deck.appendChild(pbFolder.panel);
+                pbFolder.title =
+                  document.querySelector('.middle').appendChild(pbFolder.title);
+                for (var i in pbFolder.files) {
+                  Plugsbee.layout.drawFile(pbFolder.files[i]);
+                }
+                Plugsbee.layout.showFolder(pbFolder);
+              }        
+            }
+          )
+        }
+        else {
+          //my folders
+          if (pbUser.id === Plugsbee.user.id) {
+            Plugsbee.layout.showHome();
+            Plugsbee.remote.getFolders(pbUser, function(pbFolders) {
+              pbUser.folders = pbFolders;
+              for (var i in pbUser.folders) {
+                Plugsbee.layout.drawFolder(pbUser.folders[i]);
+              }
+            });
           }
-          Plugsbee.layout.showFolder(pbFolder);
-        });
+          //someone folders
+          else {
+            Plugsbee.layout.drawUser(pbUser);      
+            Plugsbee.layout.showUser(pbUser);
+            Plugsbee.remote.getFolders(pbUser, function(pbFolders) {
+              pbUser.folders = pbFolders;
+              for (var i in pbUser.folders) {
+                Plugsbee.layout.drawFolder(pbUser.folders[i]);
+              }
+            });
+          }
+        }
     }
+  },
+  //
+  //User
+  //
+  buildUser: function(aPbUser) {
+    //Panel
+    var panel = document.createElement('ul');
+    panel.setAttribute('data-name', aPbUser.id);
+    panel.classList.add('hidden');
+    panel.addEventListener('mousewheel', function(e) {
+      if (e.wheelDeltaY)
+        this.scrollTop = this.scrollTop-Math.round((e.wheelDeltaY/60)*30);
+    });
+    panel.addEventListener('DOMMouseScroll', function(e) {
+      this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
+    });
+    aPbUser.panel = panel;
+
+    //Title
+    var title = document.createElement('span');
+    title.textContent = aPbUser.name;
+    title.setAttribute('data-name', aPbUser.id);
+    title.classList.add('hidden');
+    aPbUser.title = title;
+  },
+  drawUser: function(aPbUser) {
+    this.buildUser(aPbUser);
+    this.handleUser(aPbUser);
+  },
+  handleUser: function(aPbUser) {
+    //Panel
+    var deck = document.getElementById('deck');
+    aPbUser.panel = deck.appendChild(aPbUser.panel);
+    //Title
+    var middle = document.querySelector('div.middle');
+    aPbUser.title = middle.appendChild(aPbUser.title);
   },
   //
   //Folder
   //
   buildFolder: function(aPbFolder) {
+    var folderPath = encodeURIComponent(aPbFolder.user.id) + '/' +
+      encodeURIComponent(aPbFolder.name);
+
     //Thumbnail
     var thumbnail = document.createElement('li');
-    thumbnail.setAttribute('data-type', 'folder');
     thumbnail.setAttribute('data-id', aPbFolder.id);
     thumbnail.classList.add('thumbnail', 'folder');
     thumbnail.innerHTML =
-      "<a href='" +
-        encodeURIComponent(Plugsbee.username) +
-        '/' +
-        encodeURIComponent(aPbFolder.name) +
-      "'>"+
+      "<a href='" + folderPath + "'>"+
         "<figure>"+
           "<img class='miniature noshadow' src='" +
             Plugsbee.layout.themeFolder + 'folders/folder.png' +
@@ -63,11 +137,13 @@ Plugsbee.layout = {
           "<figcaption class='label'/>"+
         "</figure>" +
       "</a>" +
-      "<span hidden='hidden' class='menu icon'>⚙</span>" +
+      "<a hidden='hidden' href='" +
+        folderPath + '?edit' +
+      "' class='menu icon'>⚙</a>"; /*+
       "<ul hidden='hidden' class='menu panel'>" +
         "<li>Rename</li>" +
         "<li>Delete</li>" +
-      "</ul>";
+      "</ul>";*/
     thumbnail.querySelector('.label').textContent = aPbFolder.name;
 
     //Menu icon
@@ -77,25 +153,34 @@ Plugsbee.layout = {
     thumbnail.addEventListener('mouseout', function(e) {
       this.querySelector('.menu.icon').hidden = true;
     }, false);
-    //Open the menu
+    /*//Open the menu
     thumbnail.querySelector('.menu.icon').addEventListener('mouseover', function(e) {
       this.nextElementSibling.hidden = false;
     }, true);
     //Close the menu
     thumbnail.querySelector('.menu.icon').addEventListener('mouseout', function(e) {
       this.nextElementSibling.hidden = true;
-    }, true);
+    }, true);*/
 
     //Open the folder
-    thumbnail.addEventListener('click', function(e) {
+    thumbnail.firstChild.addEventListener('click', function(e) {
       e.preventDefault();
-      if (e.target.tagName === "span")
-        return;
-      history.pushState(null, null, this.firstChild.href);
+      history.pushState(null, null, this.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
+    }, false);
+    aPbFolder.thumbnail = thumbnail;
+    //Open the folder edit
+    thumbnail.lastChild.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      history.pushState(null, null, this.href);
       var event = document.createEvent('Event');
       event.initEvent('popstate', true, true);
       window.dispatchEvent(event);
     }, true);
+
     aPbFolder.thumbnail = thumbnail;
 
     //Panel
@@ -134,25 +219,15 @@ Plugsbee.layout = {
     this.handleFolder(aPbFolder);
   },
   handleFolder: function(aPbFolder) {
-    //Trash folder
-    if (aPbFolder.id === 'trash') {
-      //Thumbnail
-      aPbFolder.thumbnail.elm = document.querySelector('.thumbnail.trash');
-      aPbFolder.thumbnail.elm.hidden = false;
-      //Panel
-      aPbFolder.panel.elm = document.querySelector('#deck > .trash');
-    }
-    else {
-      //Thumbnail
-      var folders = document.getElementById('folders');
-      aPbFolder.thumbnail = folders.insertBefore(aPbFolder.thumbnail, folders.children[1]);
-      //Panel
-      var deck = document.getElementById('deck');
-      aPbFolder.panel = deck.appendChild(aPbFolder.panel);
-      //Title
-      var middle = document.querySelector('div.middle');
-      aPbFolder.title = middle.appendChild(aPbFolder.title);
-    }
+    //Thumbnail
+    var panel = aPbFolder.user.panel;
+    aPbFolder.thumbnail = panel.insertBefore(aPbFolder.thumbnail, panel.children[1]);
+    //Panel
+    var deck = document.getElementById('deck');
+    aPbFolder.panel = deck.appendChild(aPbFolder.panel);
+    //Title
+    var middle = document.querySelector('div.middle');
+    aPbFolder.title = middle.appendChild(aPbFolder.title);
   },
   eraseFolder: function(aFolder) {
     aFolder.panel.elm.parentNode.removeChild(aFolder.panel.elm);
@@ -180,9 +255,12 @@ Plugsbee.layout = {
   //File
   //
   buildFile: function(aPbFile) {
+    var filePath = encodeURIComponent(Plugsbee.username) + '/' +
+      encodeURIComponent(aPbFile.folder.name) + '/' +
+      encodeURIComponent(aPbFile.name);
+    
     //Thumbnail
     var thumbnail = document.createElement('li');
-    thumbnail.setAttribute('data-type', 'file');
     thumbnail.setAttribute('data-id', aPbFile.id);
     thumbnail.classList.add('thumbnail', 'file', 'fadeIn');
     thumbnail.innerHTML =
@@ -192,11 +270,11 @@ Plugsbee.layout = {
           "<figcaption class='label'/>"+
         "</figure>"+
       "</a>"+
-      "<span hidden='hidden' class='menu icon'>⚙</span>"+
+      "<a hidden='hidden' href='" + filePath + "?edit' class='menu icon'>⚙</a>"; /*+
       "<ul hidden='hidden' class='menu panel'>"+
         "<li>Rename</li>"+
         "<li>Delete</li>"+
-      "</ul>";
+      "</ul>";*/
     thumbnail.querySelector('.label').textContent = aPbFile.name;
 
     if (!aPbFile.miniatureURL) {
@@ -217,13 +295,21 @@ Plugsbee.layout = {
     thumbnail.addEventListener('mouseout', function(e) {
       this.querySelector('.menu.icon').hidden = true;
     }, false);
-    //Open the menu
+    /*//Open the menu
     thumbnail.querySelector('.menu.icon').addEventListener('mouseover', function(e) {
       this.nextElementSibling.hidden = false;
     }, true);
     //Close the menu
     thumbnail.querySelector('.menu.icon').addEventListener('mouseout', function(e) {
       this.nextElementSibling.hidden = true;
+    }, true);*/
+    thumbnail.lastChild.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      history.pushState(null, null, this.href);
+      var event = document.createEvent('Event');
+      event.initEvent('popstate', true, true);
+      window.dispatchEvent(event);
     }, true);
 
     aPbFile.thumbnail = thumbnail;
@@ -282,7 +368,7 @@ Plugsbee.layout = {
     //Folders panel
     //
     (function() {
-      var folders = document.querySelector('section[data-name="folders"]');
+      var folders = document.querySelector('#folders');
       folders.addEventListener('mousewheel', function(e) {
         if (e.wheelDeltaY)
           this.scrollTop = this.scrollTop-Math.round((e.wheelDeltaY/60)*30);
@@ -290,6 +376,7 @@ Plugsbee.layout = {
       folders.addEventListener('DOMMouseScroll', function(e) {
         this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
       });
+      Plugsbee.user.panel = folders;
     })();
 
     //
@@ -351,6 +438,69 @@ Plugsbee.layout = {
     })();
 
     //
+    //Folder button
+    //
+    (function() {
+      var folderButton = document.createElement('a');
+      //~ loginButton.textContent = '◀ Login';
+      folderButton.setAttribute('data-name', 'folder');
+      folderButton.classList.add('button');
+      folderButton.classList.add('green');
+      //~ loginButton.href = '/login';
+      folderButton.onclick = function(e) {
+        e.preventDefault();
+        history.pushState(null, null, this.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      };
+      folderButton.classList.add('hidden');
+      Plugsbee.layout.folderButton = document.querySelector('div.left').appendChild(folderButton);
+    })();
+
+    //
+    //User button
+    //
+    (function() {
+      var userButton = document.createElement('a');
+      //~ foldersButton.textContent = '◀ Folders';
+      userButton.setAttribute('data-name', 'user');
+      userButton.classList.add('button');
+      userButton.classList.add('green');
+      //~ foldersButton.href = '/';
+      userButton.onclick = function(e) {
+        e.preventDefault();
+        history.pushState(null, null, this.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      };
+      userButton.classList.add('hidden');
+      Plugsbee.layout.userButton = document.querySelector('div.left').appendChild(userButton);
+    })();
+
+    //
+    //Home button
+    //
+    (function() {
+      var homeButton = document.createElement('a');
+      homeButton.textContent = '◀ Home';
+      homeButton.setAttribute('data-name', 'home');
+      homeButton.classList.add('button');
+      homeButton.classList.add('green');
+      homeButton.href = '/';
+      homeButton.onclick = function(e) {
+        e.preventDefault();
+        history.pushState(null, null, this.href);
+        var event = document.createEvent('Event');
+        event.initEvent('popstate', true, true);
+        window.dispatchEvent(event);
+      };
+      homeButton.classList.add('hidden');
+      Plugsbee.layout.homeButton = document.querySelector('div.left').appendChild(homeButton);
+    })();
+
+    //
     //Folders button
     //
     (function() {
@@ -393,6 +543,22 @@ Plugsbee.layout = {
     })();
 
     //
+    //Folder editor
+    //
+    (function() {
+      
+      
+    })();
+
+    //
+    //File editor
+    //
+    (function() {
+      
+      
+    })();
+
+    //
     //Folder adder
     //
     (function() {
@@ -411,7 +577,7 @@ Plugsbee.layout = {
 
           pbFolder.name = name;
           pbFolder.id = name;
-          pbFolder.host = gConfiguration.PubSubService;
+          pbFolder.host = Plugsbee.user.id + '@plugsbee.com';
           Plugsbee.layout.drawFolder(pbFolder);
 
 
@@ -707,37 +873,34 @@ Plugsbee.layout = {
 
     this.deck.selectedChild = 'account';
   },
-  showFolders: function() {
+  showUser: function(pbUser) {
+    //Header
+    this.leftHeader.selectedChild = 'home';
+    this.middleHeader.selectedChild = pbUser.id;
+    this.rightHeader.selectedChild = '';
+
+    this.deck.selectedChild = pbUser.id;
+  },
+  showHome: function() {
     //Header
     if (Plugsbee.connection.anonymous)
       this.leftHeader.selectedChild = 'login';
     else
       this.leftHeader.selectedChild = 'account';
-    this.rightHeader.selectedChild = 'add-folder';
     this.middleHeader.selectedChild = 'title';
+    this.rightHeader.selectedChild = 'add-folder';
 
     this.deck.selectedChild = 'folders';
   },
   showFolder: function(aPbFolder) {
-    this.deck.selectedChild = 'folders';
-
-    for (var i in aPbFolder.files) {
-      var thumbnail = aPbFolder.files[i].thumbnail;
-      thumbnail.parentNode.removeChild(thumbnail);
-      delete aPbFolder.files[i];
+    if (aPbFolder.user.id === Plugsbee.user.id)
+      this.leftHeader.selectedChild = 'folders';
+    else {
+      this.userButton.textContent = '◀ ' + aPbFolder.user.name;
+      this.userButton.href = encodeURIComponent(aPbFolder.user.id);
+      this.leftHeader.selectedChild = 'user';
     }
-    Plugsbee.remote.getFiles(aPbFolder, function(pbFiles) {
-      for (var y in pbFiles) {
-        aPbFolder.files[pbFiles[y].id] = pbFiles[y];
-        pbFiles[y].folder = aPbFolder;
-
-        Plugsbee.layout.drawFile(pbFiles[y]);
-        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
-      }
-    });
-
     //Header
-    this.leftHeader.selectedChild = 'folders';
     this.rightHeader.selectedChild = 'add-files';
     this.middleHeader.selectedChild = aPbFolder.id;
 
@@ -745,12 +908,30 @@ Plugsbee.layout = {
 
     this.currentFolder = aPbFolder;
   },
-  updateFolderEditPanel: function(aPbFolder) {
-    var deleteFolderButton = document.getElementById('delete-folder-button');
-    deleteFolderButton.onclick = function() {
-      aPbFolder.moveToTrash();
-      document.querySelector('div.left > a[data-name="folders"]').click();
-    };
+  showFolderEditor: function(aPbFolder) {
+    //Header
+    this.leftHeader.selectedChild = 'folders';
+    this.middleHeader.selectedChild = aPbFolder.id;
+    this.rightHeader.selectedChild = '';
+    
+    Plugsbee.layout.deck.selectedChild = 'folder-editor';
+    
+    this.currentFolder = aPbFolder;
+  },
+  showFileEditor: function(aPbFile) {
+    var folderPath = encodeURIComponent(Plugsbee.username) + '/' +
+      encodeURIComponent(aPbFile.folder.name);
+
+    //Header
+    this.leftHeader.selectedChild = 'folder';
+    this.folderButton.textContent = '◀ ' + aPbFile.folder.name;
+    this.folderButton.href = folderPath;
+    //~ this.middleHeader.selectedChild = aPbFile.id;
+    this.rightHeader.selectedChild = '';
+    
+    Plugsbee.layout.deck.selectedChild = 'file-editor';
+    
+    this.currentFile = aPbFile;
   },
   emptyTrash: function() {
     Plugsbee.folders['trash'].purge();
@@ -759,21 +940,6 @@ Plugsbee.layout = {
   showTrash: function() {
     var pbFolder = Plugsbee.folders['trash'];
     Plugsbee.layout.deck.selectedChild = 'folders';
-
-    for (var i in pbFolder.files) {
-      var thumbnail = pbFolder.files[i].thumbnail;
-      thumbnail.parentNode.removeChild(thumbnail);
-      delete pbFolder.files[i];
-    }
-    Plugsbee.remote.getFiles(pbFolder, function(pbFiles) {
-      for (var y in pbFiles) {
-        pbFolder.files[pbFiles[y].id] = pbFiles[y];
-        pbFiles[y].folder = pbFolder;
-
-        Plugsbee.layout.drawFile(pbFiles[y]);
-        Plugsbee.files[pbFiles[y].id] = pbFiles[y];
-      }
-    });
 
     //Header
     this.leftHeader.selectedChild = 'folders';
@@ -793,7 +959,6 @@ Plugsbee.layout = {
   upload: function(aFiles, aPbFolder) {
     //~ for (var i = 0; i < aFiles.length; i++) {
 
-      var id = Math.random().toString().split('.')[1];
       //~ var file = aFiles[i];
       var file = aFiles[0];
       
@@ -802,12 +967,11 @@ Plugsbee.layout = {
       var pbFile = Object.create(Plugsbee.File);
       pbFile.name = file.name;
       pbFile.folder = aPbFolder;
-      pbFile.id = id;
+      pbFile.id = pbFile.name;
       pbFile.type = file.type;
 
       //Thumbnail
       var thumbnail = document.createElement('li');
-      thumbnail.setAttribute('data-type', 'file');
       thumbnail.classList.add('thumbnail', 'file', 'fadeIn');
       thumbnail.innerHTML =
         "<figure>" +

@@ -6,7 +6,6 @@ window.URL = window.webkitURL || window.URL;
 var Plugsbee = {
 	folders: {},
 	files: {},
-	contacts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService),
   createFolder: function() {
     var pbFolder = Object.create(Plugsbee.Folder);
@@ -16,6 +15,13 @@ var Plugsbee = {
     var pbFile = Object.create(Plugsbee.File);
     return pbFile;
   },
+  createUser: function() {
+    var pbUser = Object.create(Plugsbee.User);
+    return pbUser;
+  },
+};
+
+Plugsbee.User = {
 };
 
 Plugsbee.File = {
@@ -95,6 +101,7 @@ Plugsbee.connection.load('vcard');
 
 
 window.addEventListener("load", function() {
+  Plugsbee.user = Plugsbee.createUser();
   Plugsbee.layout.init();
 
   var password = localStorage.getItem('password');
@@ -112,42 +119,25 @@ window.addEventListener("load", function() {
 
 Plugsbee.connection.on('connected', function() {
   console.log('connected');
+  
+  Plugsbee.user.id = Plugsbee.connection.jid.node;
+  Plugsbee.user.name = Plugsbee.user.id;
+  
+  var path = decodeURIComponent(location.pathname).split('/');
+  path.shift();
+  var options = location.search;
+  
   Plugsbee.remote.getProfile(function(profile) {
     Plugsbee.layout.accountForm.elements['name'].value = profile.name;
     Plugsbee.layout.accountForm.elements['email'].value = profile.email;
   });
-
-  Plugsbee.connection.presence.send({priority: '0'});
-  Plugsbee.username = Plugsbee.connection.jid.node;
-  //~ Plugsbee.layout.accountMenu.textContent = '◀ ' + Plugsbee.username;
-  Plugsbee.layout.accountMenu.textContent = '◀ ' + Plugsbee.username;
+  //~ Plugsbee.connection.presence.send({priority: '0'});
+  Plugsbee.layout.accountMenu.textContent = '◀ ' + Plugsbee.user.name;
 
   if (gConfiguration.PubSubService === 'PEP')
     gConfiguration.PubSubService = Plugsbee.connection.jid.bare;
 
-  if (Plugsbee.connection.anonymous) {
-    document.getElementById('anonymous').hidden = false;
-    var pbFolder = Plugsbee.createFolder();
-    pbFolder.id = 'trash';
-  
-    Plugsbee.remote.newFolder(pbFolder, function() {
-      Plugsbee.folders['trash'] = pbFolder;
-      Plugsbee.layout.drawFolder(pbFolder);
-    });
-    
-    Plugsbee.layout.handlePath();
-    return;
-  }
-
-  Plugsbee.remote.getFolders(function(pbFolders) {
-    for (var i in pbFolders) {
-
-      Plugsbee.folders[pbFolders[i].id] = pbFolders[i];
-      Plugsbee.layout.drawFolder(pbFolders[i]);
-
-    }
-    Plugsbee.layout.handlePath();
-  });
+  Plugsbee.layout.handlePath();
 });
 Plugsbee.connection.on('connecting', function() {
   console.log('connecting');

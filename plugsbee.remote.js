@@ -29,39 +29,41 @@ Plugsbee.remote = {
         aOnSuccess();
     });
   },
-  getFolders: function(aOnSuccess) {
-    Plugsbee.connection.disco.items(Plugsbee.connection.jid.bare, function(stanza) {
-      var pbFolders = {};
-      stanza.items.forEach(function(item) {
-        if (!item.node.match('urn:plugsbee:folder:'))
-          return;
+  getFolders: function(pbUser, aOnSuccess) {
+    Plugsbee.connection.disco.items(pbUser.id + '@plugsbee.com',
+      //on success
+      function(stanza) {
+        var pbFolders = {};
+        stanza.items.forEach(function(item) {
+          if (!item.node.match('urn:plugsbee:folder:')) return;
           
-        
-        var pbFolder = Plugsbee.createFolder();
-        pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
-        pbFolder.host = item.jid;
-        pbFolder.name = pbFolder.id;
-        pbFolder.files = {};
+          var pbFolder = Plugsbee.createFolder();
+          pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
+          pbFolder.host = item.jid;
+          pbFolder.user = pbUser;
+          pbFolder.name = pbFolder.id;
+          pbFolder.files = {};
 
-        pbFolders[pbFolder.id] = pbFolder;
-      });
-      if(!pbFolders['trash']) {
-        var pbFolder = Plugsbee.createFolder();
-        pbFolder.id = 'trash';
-        pbFolder.name = 'Trash';
-        pbFolders['trash'] = pbFolder;
-      
-        Plugsbee.remote.newFolder(pbFolder, function() {
-          if (aOnSuccess)
-            aOnSuccess(pbFolders);
+          pbFolders[pbFolder.id] = pbFolder;
         });
+        //~ if(!pbFolders['trash']) {
+          //~ var pbFolder = Plugsbee.createFolder();
+          //~ pbFolder.id = 'trash';
+          //~ pbFolder.name = 'Trash';
+          //~ pbFolders['trash'] = pbFolder;
+        //~ 
+          //~ Plugsbee.remote.newFolder(pbFolder, function() {
+            //~ if (aOnSuccess)
+              //~ aOnSuccess(pbFolders);
+          //~ });
+        //~ }
+        if (aOnSuccess)
+          aOnSuccess(pbFolders);
       }
-      else if (aOnSuccess)
-        aOnSuccess(pbFolders);
-    });
+    );
   },
   getFiles: function(aPbFolder, aOnSuccess) {
-    Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, function(stanza) {
+    Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, undefined, function(stanza) {
       var pbFiles = {};
       for (var i = 0; i < stanza.items.length; i++) {
         var node = stanza.items[i];
@@ -96,18 +98,8 @@ Plugsbee.remote = {
         aOnSuccess(pbFolder);
     });
   },
-  newFolder: function(aFolder, onSuccess) {
-    //~ if(!aFolder.id)
-      //~ aFolder.id = aFolder.name;
-    //~ if(!aFolder.name)
-      //~ aFolder.name = aFolder.id;
-    if(!aFolder.host)
-      aFolder.host = gConfiguration.PubSubService;
-      
+  newFolder: function(aFolder, onSuccess) {      
     var fields = [
-      //~ "<field var='pubsub#title'>" +
-        //~ "<value>" + aFolder.name + "</value>" +
-      //~ "</field>",
       "<field var='pubsub#access_model'><value>open</value></field>",
       "<field var='pubsub#persist_items'><value>1</value></field>",
       "<field var='pubsub#max_items'><value>100</value></field>"
@@ -126,7 +118,7 @@ Plugsbee.remote = {
       "<field var='pubsub#title'><value>"+aFolder.name+"</value></field>"
     ];
 
-    Plugsbee.connection.pubsub.configure(gConfiguration.PubSubService, 'urn:plugsbee:folder:'+aFolder.id, fields);
+    Plugsbee.connection.pubsub.configure(aFolder.host, 'urn:plugsbee:folder:'+aFolder.id, fields);
   },
   newFile: function(aPbFile, aOnSuccess) {
     //~ if(aFile.miniature)
