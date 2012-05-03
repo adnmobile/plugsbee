@@ -279,9 +279,9 @@ header {
   height: 40px;
   line-height: 40px;
   position:relative;l
-  -webkit-box-shadow: 0 10px 6px -6px #777;
-  -moz-box-shadow: 0 10px 6px -6px #777;
-  box-shadow: 0 10px 6px -6px #777;
+  -webkit-box-shadow: 0 15px 10px -10px #aaa;
+  -moz-box-shadow: 0 15px 10px -10px #aaa;
+  box-shadow: 0 15px 10px -10px #aaa;
 }
 header > * {
   width: calc(100%/3);
