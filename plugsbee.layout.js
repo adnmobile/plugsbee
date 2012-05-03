@@ -40,7 +40,6 @@ Plugsbee.layout = {
               //file
               //
               if (path[2]) {
-                console.log(pbFolder.files);
                 if (pbFolder.files[path[2]])
                   Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
                 else
