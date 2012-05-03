@@ -21,9 +21,6 @@ Plugsbee.layout = {
         Plugsbee.layout.showRegister();
         break;
       default:
-        //
-        //user
-        //
         if (!path[0] || (path[0] === Plugsbee.user.id))
           var pbHost = Plugsbee.user;
         else if (Plugsbee.hosts[path[0]])
@@ -43,6 +40,7 @@ Plugsbee.layout = {
               //file
               //
               if (path[2]) {
+                console.log(pbFolder.files);
                 if (pbFolder.files[path[2]])
                   Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
                 else
@@ -52,15 +50,21 @@ Plugsbee.layout = {
               //folder
               //
               else {
-                Plugsbee.layout.buildFolder(pbFolder);
-                var deck = document.getElementById('deck');
-                pbFolder.panel = deck.appendChild(pbFolder.panel);
-                pbFolder.title =
-                  document.querySelector('.middle').appendChild(pbFolder.title);
-                for (var i in pbFolder.files) {
-                  Plugsbee.layout.drawFile(pbFolder.files[i]);
+                //editor
+                if (options === '?edit')
+                  Plugsbee.layout.showFolderEditor(pbFolder);
+                //viewer
+                else {
+                  Plugsbee.layout.buildFolder(pbFolder);
+                  var deck = document.getElementById('deck');
+                  pbFolder.panel = deck.appendChild(pbFolder.panel);
+                  pbFolder.title =
+                    document.querySelector('.middle').appendChild(pbFolder.title);
+                  for (var i in pbFolder.files) {
+                    Plugsbee.layout.drawFile(pbFolder.files[i]);
+                  }
+                  Plugsbee.layout.showFolder(pbFolder);
                 }
-                Plugsbee.layout.showFolder(pbFolder);
               }        
             }
           )
@@ -951,7 +955,7 @@ Plugsbee.layout = {
     this.currentFolder = aPbFolder;
   },
   showFileEditor: function(aPbFile) {
-    var folderPath = encodeURIComponent(Plugsbee.username) + '/' +
+    var folderPath = encodeURIComponent(aPbFile.folder.host.id) + '/' +
       encodeURIComponent(aPbFile.folder.name);
 
     //Header

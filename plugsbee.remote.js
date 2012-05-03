@@ -75,7 +75,7 @@ Plugsbee.remote = {
           pbFile.id = node.getAttribute('id');
           pbFile.type = node.querySelector('content').getAttribute('type');
           pbFile.fileURL = node.querySelector('content').getAttribute('src');
-          pbFile.name = node.querySelector('title').textContent;
+          pbFile.name = pbFile.id;
           pbFile.folderId = aPbFolder.id;
           pbFile.folder = aPbFolder;
 
