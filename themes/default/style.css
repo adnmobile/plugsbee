@@ -107,10 +107,10 @@ input::-webkit-input-placeholder {
 /*
  * Others panels
  */
-#login form p, #edit-folder-panel p, #edit-file-panel p {
+#login form p, #folder-editor p, #file-editor p {
   width: 40%;
 }
-#edit-folder-panel > div:first-child, #edit-file-panel > div:first-child {
+#folder-editor > div:first-child, #file-editor > div:first-child {
   margin: 20px;
 }
 /*
