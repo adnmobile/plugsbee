@@ -6,6 +6,7 @@ window.URL = window.webkitURL || window.URL;
 var Plugsbee = {
 	folders: {},
 	files: {},
+  hosts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService),
   createFolder: function() {
     var pbFolder = Object.create(Plugsbee.Folder);
@@ -15,13 +16,14 @@ var Plugsbee = {
     var pbFile = Object.create(Plugsbee.File);
     return pbFile;
   },
-  createUser: function() {
-    var pbUser = Object.create(Plugsbee.User);
-    return pbUser;
+  createHost: function() {
+    var pbHost = Object.create(Plugsbee.Host);
+    return pbHost;
   },
 };
 
-Plugsbee.User = {
+Plugsbee.Host = {
+  folders: {}
 };
 
 Plugsbee.File = {
@@ -101,7 +103,7 @@ Plugsbee.connection.load('vcard');
 
 
 window.addEventListener("load", function() {
-  Plugsbee.user = Plugsbee.createUser();
+  Plugsbee.user = Plugsbee.createHost();
   Plugsbee.layout.init();
 
   var password = localStorage.getItem('password');

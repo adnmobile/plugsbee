@@ -21,27 +21,36 @@ Plugsbee.layout = {
         Plugsbee.layout.showRegister();
         break;
       default:
+        //
+        //user
+        //
         if (!path[0] || (path[0] === Plugsbee.user.id))
-          var pbUser = Plugsbee.user;
+          var pbHost = Plugsbee.user;
+        else if (Plugsbee.hosts[path[0]])
+          var pbHost = Plugsbee.hosts[path[0]];
         else {
-          var pbUser = Plugsbee.createUser();
-          pbUser.id = path[0];
-          pbUser.name = pbUser.id;
+          var pbHost = Plugsbee.createHost();
+          pbHost.id = path[0];
+          pbHost.name = pbHost.id;
+          Plugsbee.hosts[pbHost.id] = pbHost;
         }
         if (path[1]) {
-          Plugsbee.remote.getFolder(pbUser.id, path[1],
-            //on success
+          Plugsbee.remote.getFolder(pbHost, path[1],
             function(pbFolder) {
-              pbFolder.user = pbUser;
-              Plugsbee.folders[pbFolder.id] = pbFolder;
+              pbFolder.host = pbHost;
+              pbHost.folders[pbFolder.id] = pbFolder;
+              //
               //file
+              //
               if (path[2]) {
                 if (pbFolder.files[path[2]])
                   Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
                 else
                   alert('wrong URL');//FIXME error
               }
+              //
               //folder
+              //
               else {
                 Plugsbee.layout.buildFolder(pbFolder);
                 var deck = document.getElementById('deck');
@@ -57,24 +66,32 @@ Plugsbee.layout = {
           )
         }
         else {
+          //
           //my folders
-          if (pbUser.id === Plugsbee.user.id) {
+          //
+          if (pbHost.id === Plugsbee.user.id) {
             Plugsbee.layout.showHome();
-            Plugsbee.remote.getFolders(pbUser, function(pbFolders) {
-              pbUser.folders = pbFolders;
-              for (var i in pbUser.folders) {
-                Plugsbee.layout.drawFolder(pbUser.folders[i]);
+            Plugsbee.remote.getFolders(pbHost, function(pbFolders) {
+              pbHost.folders = pbFolders;
+              for (var i in pbFolders) {
+                Plugsbee.layout.drawFolder(pbHost.folders[i]);
               }
             });
           }
+          //
           //someone folders
+          //
           else {
-            Plugsbee.layout.drawUser(pbUser);      
-            Plugsbee.layout.showUser(pbUser);
-            Plugsbee.remote.getFolders(pbUser, function(pbFolders) {
-              pbUser.folders = pbFolders;
-              for (var i in pbUser.folders) {
-                Plugsbee.layout.drawFolder(pbUser.folders[i]);
+            if (pbHost.panel)
+              Plugsbee.layout.eraseHost(pbHost);
+            Plugsbee.layout.drawHost(pbHost);
+            Plugsbee.layout.showHost(pbHost);
+            Plugsbee.remote.getFolders(pbHost, function(pbFolders) {
+              if (pbFolders['trash']) { delete pbFolders['trash'] }
+              pbHost.folders = pbFolders;
+              for (var i in pbHost.folders) {
+                if (i !== 'trash')
+                  Plugsbee.layout.drawFolder(pbHost.folders[i]);
               }
             });
           }
@@ -82,12 +99,12 @@ Plugsbee.layout = {
     }
   },
   //
-  //User
+  //Host
   //
-  buildUser: function(aPbUser) {
+  buildHost: function(aPbHost) {
     //Panel
     var panel = document.createElement('ul');
-    panel.setAttribute('data-name', aPbUser.id);
+    panel.setAttribute('data-name', aPbHost.id);
     panel.classList.add('hidden');
     panel.addEventListener('mousewheel', function(e) {
       if (e.wheelDeltaY)
@@ -96,32 +113,38 @@ Plugsbee.layout = {
     panel.addEventListener('DOMMouseScroll', function(e) {
       this.scrollTop = this.scrollTop-Math.round((e.detail/2)*30);
     });
-    aPbUser.panel = panel;
+    aPbHost.panel = panel;
 
     //Title
     var title = document.createElement('span');
-    title.textContent = aPbUser.name;
-    title.setAttribute('data-name', aPbUser.id);
+    title.textContent = aPbHost.name;
+    title.setAttribute('data-name', aPbHost.id);
     title.classList.add('hidden');
-    aPbUser.title = title;
+    aPbHost.title = title;
   },
-  drawUser: function(aPbUser) {
-    this.buildUser(aPbUser);
-    this.handleUser(aPbUser);
+  eraseHost: function(aPbHost) {
+    //Panel
+    aPbHost.panel.parentNode.removeChild(aPbHost.panel);
+    //Title
+    aPbHost.title.parentNode.removeChild(aPbHost.title);
   },
-  handleUser: function(aPbUser) {
+  drawHost: function(aPbHost) {
+    this.buildHost(aPbHost);
+    this.handleHost(aPbHost);
+  },
+  handleHost: function(aPbHost) {
     //Panel
     var deck = document.getElementById('deck');
-    aPbUser.panel = deck.appendChild(aPbUser.panel);
+    aPbHost.panel = deck.appendChild(aPbHost.panel);
     //Title
     var middle = document.querySelector('div.middle');
-    aPbUser.title = middle.appendChild(aPbUser.title);
+    aPbHost.title = middle.appendChild(aPbHost.title);
   },
   //
   //Folder
   //
   buildFolder: function(aPbFolder) {
-    var folderPath = encodeURIComponent(aPbFolder.user.id) + '/' +
+    var folderPath = encodeURIComponent(aPbFolder.host.id) + '/' +
       encodeURIComponent(aPbFolder.name);
 
     //Thumbnail
@@ -242,7 +265,7 @@ Plugsbee.layout = {
   },
   handleFolder: function(aPbFolder) {
     //Thumbnail
-    var panel = aPbFolder.user.panel;
+    var panel = aPbFolder.host.panel;
     aPbFolder.thumbnail = panel.insertBefore(aPbFolder.thumbnail, panel.children[1]);
     //Panel
     var deck = document.getElementById('deck');
@@ -277,20 +300,21 @@ Plugsbee.layout = {
   //File
   //
   buildFile: function(aPbFile) {
-    var filePath = encodeURIComponent(Plugsbee.username) + '/' +
+    var filePath = encodeURIComponent(aPbFile.folder.host.id) + '/' +
       encodeURIComponent(aPbFile.folder.name) + '/' +
       encodeURIComponent(aPbFile.name);
-    
+
     //Thumbnail
     var thumbnail = document.createElement('li');
     thumbnail.setAttribute('data-id', aPbFile.id);
     thumbnail.classList.add('thumbnail', 'file', 'fadeIn');
     thumbnail.innerHTML =
-      "<a href='" + aPbFile.fileURL + "'>"+
-        "<figure>"+
-          "<img class='miniature'/>"+
-          "<figcaption class='label'/>"+
-        "</figure>"+
+      "<a href='" + aPbFile.fileURL + "'>" +
+        "<figure>" +
+          "<img class='miniature'/>" +
+          "<figcaption class='label'/>" +
+        "</figure>" +
+      "</a>" +
       "<a hidden='hidden' href='" + filePath + "?edit' class='menu icon'>⚙</a>"; /*+
       "<ul hidden='hidden' class='menu panel'>"+
         "<li>Rename</li>"+
@@ -881,13 +905,13 @@ Plugsbee.layout = {
 
     this.deck.selectedChild = 'account';
   },
-  showUser: function(pbUser) {
+  showHost: function(aPbHost) {
     //Header
     this.leftHeader.selectedChild = 'home';
-    this.middleHeader.selectedChild = pbUser.id;
+    this.middleHeader.selectedChild = aPbHost.id;
     this.rightHeader.selectedChild = '';
 
-    this.deck.selectedChild = pbUser.id;
+    this.deck.selectedChild = aPbHost.id;
   },
   showHome: function() {
     //Header
@@ -901,11 +925,11 @@ Plugsbee.layout = {
     this.deck.selectedChild = 'folders';
   },
   showFolder: function(aPbFolder) {
-    if (aPbFolder.user.id === Plugsbee.user.id)
+    if (aPbFolder.host.id === Plugsbee.user.id)
       this.leftHeader.selectedChild = 'folders';
     else {
-      this.userButton.textContent = '◀ ' + aPbFolder.user.name;
-      this.userButton.href = encodeURIComponent(aPbFolder.user.id);
+      this.userButton.textContent = '◀ ' + aPbFolder.host.name;
+      this.userButton.href = encodeURIComponent(aPbFolder.host.id);
       this.leftHeader.selectedChild = 'user';
     }
     //Header

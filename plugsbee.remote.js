@@ -29,8 +29,8 @@ Plugsbee.remote = {
         aOnSuccess();
     });
   },
-  getFolders: function(pbUser, aOnSuccess) {
-    Plugsbee.connection.disco.items(pbUser.id + '@plugsbee.com',
+  getFolders: function(pbHost, aOnSuccess) {
+    Plugsbee.connection.disco.items(pbHost.id + '@plugsbee.com',
       //on success
       function(stanza) {
         var pbFolders = {};
@@ -39,8 +39,7 @@ Plugsbee.remote = {
           
           var pbFolder = Plugsbee.createFolder();
           pbFolder.id = item.node.split('urn:plugsbee:folder:')[1];
-          pbFolder.host = item.jid;
-          pbFolder.user = pbUser;
+          pbFolder.host = pbHost;
           pbFolder.name = pbFolder.id;
           pbFolder.files = {};
 
@@ -63,33 +62,38 @@ Plugsbee.remote = {
     );
   },
   getFiles: function(aPbFolder, aOnSuccess) {
-    Plugsbee.connection.pubsub.items(aPbFolder.host, 'urn:plugsbee:folder:' + aPbFolder.id, undefined, function(stanza) {
-      var pbFiles = {};
-      for (var i = 0; i < stanza.items.length; i++) {
-        var node = stanza.items[i];
-        
-        var pbFile = Plugsbee.createFile();
-        pbFile.id = node.getAttribute('id');
-        pbFile.type = node.querySelector('content').getAttribute('type');
-        pbFile.fileURL = node.querySelector('content').getAttribute('src');
-        pbFile.name = node.querySelector('title').textContent;
-        pbFile.folderId = aPbFolder.id;
-        pbFile.folder = aPbFolder;
+    Plugsbee.connection.pubsub.items(
+      aPbFolder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:' + aPbFolder.id,
+      undefined,
+      function(stanza) {
+        var pbFiles = {};
+        for (var i = 0; i < stanza.items.length; i++) {
+          var node = stanza.items[i];
+          
+          var pbFile = Plugsbee.createFile();
+          pbFile.id = node.getAttribute('id');
+          pbFile.type = node.querySelector('content').getAttribute('type');
+          pbFile.fileURL = node.querySelector('content').getAttribute('src');
+          pbFile.name = node.querySelector('title').textContent;
+          pbFile.folderId = aPbFolder.id;
+          pbFile.folder = aPbFolder;
 
-        var preview = node.querySelector('link');
-        if (preview)
-          pbFile.miniatureURL = preview.getAttribute('src');
+          var preview = node.querySelector('link');
+          if (preview)
+            pbFile.miniatureURL = preview.getAttribute('src');
 
-        pbFiles[pbFile.id] = pbFile;
-      };
-      if (aOnSuccess)
-        aOnSuccess(pbFiles);
-    });
+          pbFiles[pbFile.id] = pbFile;
+        };
+        if (aOnSuccess)
+          aOnSuccess(pbFiles);
+      }
+    );
   },
-  getFolder: function(aHost, aFolder, aOnSuccess) {
+  getFolder: function(aPbHost, aFolder, aOnSuccess) {
     var pbFolder = Plugsbee.createFolder();
     pbFolder.id = aFolder;
-    pbFolder.host = aHost + '@plugsbee.com';
+    pbFolder.host = aPbHost;
     pbFolder.name = aFolder;
     pbFolder.files = {};
     this.getFiles(pbFolder, function(pbFiles) {
