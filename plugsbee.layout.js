@@ -51,6 +51,7 @@ Plugsbee.layout = {
             pbFolder.name = path[1];
             pbFolder.files = {};
             pbFolder.host = pbHost;
+            pbHost.folders[path[1]] = pbFolder;
             Plugsbee.layout.drawFolder(pbFolder);
           }
           Plugsbee.remote.getFiles(pbFolder,
