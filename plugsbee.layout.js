@@ -246,7 +246,7 @@ Plugsbee.layout = {
       this.classList.remove('dragenter');
       var pbFolderId = this.getAttribute('data-id');
       var pbFolder = Plugsbee.user.folders[pbFolderId];
-      if (evt.dataTransfer.files)
+      if (evt.dataTransfer.files.length)
         Plugsbee.layout.upload(evt.dataTransfer.files, pbFolder);
       evt.preventDefault();
     });
@@ -266,7 +266,7 @@ Plugsbee.layout = {
       e.preventDefault();
       var pbFolderId = this.getAttribute('data-name');
       var pbFolder = Plugsbee.user.folders[pbFolderId];
-      if (e.dataTransfer.files)
+      if (e.dataTransfer.files.length)
         Plugsbee.layout.upload(e.dataTransfer.files, pbFolder);
     });
     panel.addEventListener('dragover', function(e) {
@@ -756,7 +756,8 @@ Plugsbee.layout = {
         this.classList.remove('dragenter');
         var id = evt.dataTransfer.getData('pbFolder');
         var folder = Plugsbee.user.folders[id];
-        folder.moveToTrash();
+        if (folder)
+          folder.moveToTrash();
       });
       Plugsbee.trash.thumbnail = thumbnail;
       //Panel
