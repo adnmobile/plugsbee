@@ -14,10 +14,10 @@ Plugsbee.layout = {
       case 'trash':
         Plugsbee.remote.getFiles(Plugsbee.trash, function(aPbFiles) {
           for (var i in aPbFiles) {
-            if (Plugsbee.trash.files[i])
-              return;
-            else
+            if (!Plugsbee.trash.files[i]) {
               Plugsbee.layout.drawFile(aPbFiles[i]);
+              Plugsbee.trash.files[i] = aPbFiles[i];
+            }
           }
         });
         Plugsbee.layout.showTrash();
@@ -244,7 +244,7 @@ Plugsbee.layout = {
     thumbnail.addEventListener('drop', function(evt) {
       this.classList.remove('dragenter');
       var pbFolderId = this.getAttribute('data-id');
-      var pbFolder = Plugsbee.folders[pbFolderId];
+      var pbFolder = Plugsbee.user.folders[pbFolderId];
       if (evt.dataTransfer.files)
         Plugsbee.layout.upload(evt.dataTransfer.files, pbFolder);
       evt.preventDefault();
@@ -264,7 +264,7 @@ Plugsbee.layout = {
     panel.addEventListener('drop', function(e) {
       e.preventDefault();
       var pbFolderId = this.getAttribute('data-name');
-      var pbFolder = Plugsbee.folders[pbFolderId];
+      var pbFolder = Plugsbee.user.folders[pbFolderId];
       if (e.dataTransfer.files)
         Plugsbee.layout.upload(e.dataTransfer.files, pbFolder);
     });
@@ -649,7 +649,7 @@ Plugsbee.layout = {
 
           Plugsbee.remote.newFolder(pbFolder);
 
-          Plugsbee.folders[pbFolder.id] = pbFolder;
+          Plugsbee.user.folders[pbFolder.id] = pbFolder;
         }
         else {
           var cancelEvent = document.createEvent('CustomEvent');
@@ -988,11 +988,10 @@ Plugsbee.layout = {
     this.currentFile = aPbFile;
   },
   emptyTrash: function() {
-    Plugsbee.folders['trash'].purge();
-    Plugsbee.folders['trash'].thumbnail.miniature = Plugsbee.layout.themeFolder + 'folders/user-trash.png';
+    Plugsbee.trash.purge();
   },
   showTrash: function() {
-    var pbFolder = Plugsbee.folders['trash'];
+    var pbFolder = Plugsbee.trash;
     Plugsbee.layout.deck.selectedChild = 'folders';
 
     //Header
@@ -1092,7 +1091,6 @@ Plugsbee.layout = {
                       pbFile.thumbnail.parentNode.removeChild(pbFile.thumbnail);
                       pbFile.fileURL = answer.src;
                       Plugsbee.layout.drawFile(pbFile);
-                      Plugsbee.files[pbFile.id] = pbFile;
                       pbFile.folder.files[pbFile.id] = pbFile;
 
                       Plugsbee.remote.newFile(pbFile);
@@ -1120,7 +1118,6 @@ Plugsbee.layout = {
             function(pbFile, answer) {
               pbFile.thumbnail.parentNode.removeChild(pbFile.thumbnail);
               Plugsbee.layout.drawFile(pbFile);
-              Plugsbee.files[pbFile.id] = pbFile;
               pbFile.folder.files[pbFile.id] = pbFile;
 
               Plugsbee.remote.newFile(pbFile);

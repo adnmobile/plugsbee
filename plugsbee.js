@@ -4,8 +4,6 @@
 window.URL = window.webkitURL || window.URL;
 
 var Plugsbee = {
-	folders: {},
-	files: {},
   hosts: {},
 	connection: new Lightstring.Connection(gConfiguration.WebsocketService),
   createFolder: function() {
@@ -31,8 +29,7 @@ Plugsbee.File = {
   delete: function() {
     Plugsbee.layout.eraseFile(this);
     Plugsbee.remote.deleteFile(this);
-    delete Plugsbee.files[this.id];
-    delete Plugsbee.folders[this.folder.id].files[this.id];
+    delete this.folder.files[this.id];
   },
   move: function(aPbFolder) {
     Plugsbee.layout.eraseFile(this);
@@ -65,7 +62,7 @@ Plugsbee.Folder = {
     Plugsbee.remote.purgeFolder(this);
     for (var i in this.files) {
       Plugsbee.layout.eraseFile(this.files[i]);
-      delete Plugsbee.files[this.files[i]];
+      delete this.files[i];
     }
   },
   //~ rename: function(aName) {
@@ -82,7 +79,7 @@ Plugsbee.Folder = {
   delete: function() {
     Plugsbee.layout.eraseFolder(this);
     Plugsbee.remote.deleteFolder(this);
-    delete Plugsbee.folders[this.id];
+    delete this.host.folders[this.id];
   },
 };
 
