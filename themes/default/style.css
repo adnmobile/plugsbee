@@ -37,7 +37,7 @@ input::-moz-selection, input::selection {
   background: grey;
   color: #fff;
 }
-input[type="text"], input[type="password"], input[type="email"] {
+input[type="text"], input[type="password"], input[type="email"], select {
   border: 1px solid #aaa;
   padding: 3%;
   background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
@@ -54,7 +54,7 @@ input[type="text"], input[type="password"], input[type="email"] {
   transition: all .3s linear 0s;
   border-radius: 4px;
 }
-input[type="text"]:focus, input[type="password"]:focus , input[type="email"]:focus {
+input[type="text"]:focus, input[type="password"]:focus , input[type="email"]:focus, select:focus {
   outline: none;
   border-color: #888;
   color: #666;
@@ -64,6 +64,10 @@ input[type="text"]:focus, input[type="password"]:focus , input[type="email"]:foc
   background-image: -o-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
   background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
   background-image: linear-gradient(bottom, rgb(255,255,255) 20%, rgb(240,240,240) 80%);
+}
+input[type="radio"] {
+  display: block;
+  float: left;
 }
 input:-moz-placeholder {
   color: #aaa;
@@ -107,11 +111,16 @@ input::-webkit-input-placeholder {
 /*
  * Others panels
  */
-#login form p, #folder-editor p, #file-editor p {
+#login form p {
   width: 40%;
 }
+#folder-editor p, #file-editor p {
+  width: 100%;
+}
 #folder-editor > div:first-child, #file-editor > div:first-child {
-  margin: 20px;
+  margin: auto;
+  text-align: center;
+  width: 35%;
 }
 /*
  *buttons

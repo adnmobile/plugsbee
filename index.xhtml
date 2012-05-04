@@ -178,32 +178,40 @@
       </section>
 -->
       <div class="hidden" data-name="folder-editor" id="folder-editor">
-        <div>
-          <button id="delete-folder-button" class="button grey grey-red">Delete</button>
-<!--
-          <button id="rename-folder-button" class="button grey">Rename</button>
-          <p>
-            <label for="edit-folder-name">Folder name:</label>
-            <input type="text" name="edit-folder-name" id="edit-folder-name" placeholder="Your folder name." required=""/>
-          </p>
--->
-          <p>
-            <label for="edit-folder-public">Public: <input type="checkbox" name="edit-folder-public" id="edit-folder-public"/></label>
-          </p>
+        <!--
           <p>
             <label for="edit-folder-share">Share with:</label>
             <input type="text" name="edit-folder-share" id="edit-folder-share" placeholder="Contact names."/>
+          </p>-->
+        <div>
+          <p>
+            <label for="edit-folder-name">Name:</label>
+            <input type="text" name="edit-folder-name" id="edit-folder-name" placeholder="Your folder name." required=""/>
           </p>
+          <p>
+            <input type="radio" id="edit-folder-public" name="share"/>
+            <label for="edit-folder-public">Public</label>
+          </p>
+          <p>
+            <input type="radio" id="edit-folder-private" name="share"/>
+            <label for="edit-folder-private">Private</label>
+          </p>
+          <button id="edit-folder-ok" class="button green">Ok</button>
+          <button id="delete-folder-button" class="button grey grey-red">Delete</button>
         </div>
       </div>
       <div class="hidden" data-name="file-editor" id="file-editor">
         <div>
-          <button id="delete-file-button" class="button grey grey-red">Delete</button>
-          <button id="rename-file-button" class="button grey">Rename</button>
           <p>
             <label for="edit-file-name">File name:</label>
             <input type="text" name="edit-file-name" id="edit-file-name" placeholder="Your file name." required=""/>
           </p>
+          <p>
+            <label for="edit-file-folders-list">Folder:</label>
+            <select id="edit-file-folders-list"></select>
+          </p>
+          <button id="edit-file-ok" class="button green">Ok</button>
+          <button id="delete-file-button" class="button grey grey-red">Delete</button>
         </div>
       </div>
       <ul class="trash hidden" data-name="trash"/>
