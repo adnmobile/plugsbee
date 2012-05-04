@@ -104,6 +104,9 @@ Plugsbee.connection.load('vcard');
 
 window.addEventListener("load", function() {
   Plugsbee.user = Plugsbee.createHost();
+  Plugsbee.trash = Plugsbee.createFolder();
+  Plugsbee.trash.id = 'trash';
+  Plugsbee.trash.host = Plugsbee.user;
   Plugsbee.layout.init();
 
   var password = localStorage.getItem('password');

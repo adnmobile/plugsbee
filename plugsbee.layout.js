@@ -12,6 +12,14 @@ Plugsbee.layout = {
         Plugsbee.layout.showAccount();
         break;
       case 'trash':
+        Plugsbee.remote.getFiles(Plugsbee.trash, function(aPbFiles) {
+          for (var i in aPbFiles) {
+            if (Plugsbee.trash.files[i])
+              return;
+            else
+              Plugsbee.layout.drawFile(aPbFiles[i]);
+          }
+        });
         Plugsbee.layout.showTrash();
         break;
       case 'login':
@@ -29,13 +37,24 @@ Plugsbee.layout = {
           var pbHost = Plugsbee.createHost();
           pbHost.id = path[0];
           pbHost.name = pbHost.id;
-          Plugsbee.hosts[pbHost.id] = pbHost;
+          Plugsbee.layout.drawHost(pbHost);
+          Plugsbee.hosts[path[0]] = pbHost;
         }
         if (path[1]) {
-          Plugsbee.remote.getFolder(pbHost, path[1],
-            function(pbFolder) {
-              pbFolder.host = pbHost;
-              pbHost.folders[pbFolder.id] = pbFolder;
+          if (pbHost.folders[path[1]]) {
+            var pbFolder = pbHost.folders[path[1]];
+          }
+          else {
+            var pbFolder = Plugsbee.createFolder();
+            pbFolder.id = path[1];
+            pbFolder.host = pbHost;
+            pbFolder.name = path[1];
+            pbFolder.files = {};
+            pbFolder.host = pbHost;
+            Plugsbee.layout.drawFolder(pbFolder);
+          }
+          Plugsbee.remote.getFiles(pbFolder,
+            function(pbFiles) {
               //
               //file
               //
@@ -54,13 +73,11 @@ Plugsbee.layout = {
                   Plugsbee.layout.showFolderEditor(pbFolder);
                 //viewer
                 else {
-                  Plugsbee.layout.buildFolder(pbFolder);
-                  var deck = document.getElementById('deck');
-                  pbFolder.panel = deck.appendChild(pbFolder.panel);
-                  pbFolder.title =
-                    document.querySelector('.middle').appendChild(pbFolder.title);
-                  for (var i in pbFolder.files) {
-                    Plugsbee.layout.drawFile(pbFolder.files[i]);
+                  for (var i in pbFiles) {
+                    if (!pbFolder.files[i]) {
+                      Plugsbee.layout.drawFile(pbFiles[i]);
+                      pbFolder.files[i] = pbFiles[i];
+                    }
                   }
                   Plugsbee.layout.showFolder(pbFolder);
                 }
@@ -75,9 +92,11 @@ Plugsbee.layout = {
           if (pbHost.id === Plugsbee.user.id) {
             Plugsbee.layout.showHome();
             Plugsbee.remote.getFolders(pbHost, function(pbFolders) {
-              pbHost.folders = pbFolders;
               for (var i in pbFolders) {
-                Plugsbee.layout.drawFolder(pbHost.folders[i]);
+                if ((i !== 'trash') && (!pbHost.folders[i])) {
+                  pbHost.folders[i] = pbFolders[i];
+                  Plugsbee.layout.drawFolder(pbFolders[i]);
+                }
               }
             });
           }
@@ -85,16 +104,14 @@ Plugsbee.layout = {
           //someone folders
           //
           else {
-            if (pbHost.panel)
-              Plugsbee.layout.eraseHost(pbHost);
-            Plugsbee.layout.drawHost(pbHost);
             Plugsbee.layout.showHost(pbHost);
             Plugsbee.remote.getFolders(pbHost, function(pbFolders) {
               if (pbFolders['trash']) { delete pbFolders['trash'] }
-              pbHost.folders = pbFolders;
-              for (var i in pbHost.folders) {
-                if (i !== 'trash')
+              for (var i in pbFolders) {
+                if (!pbHost.folders[i]) {
+                  pbHost.folders[i] = pbFolders[i];
                   Plugsbee.layout.drawFolder(pbHost.folders[i]);
+                }
               }
             });
           }
@@ -260,7 +277,7 @@ Plugsbee.layout = {
     title.textContent = aPbFolder.name;
     title.setAttribute('data-name', aPbFolder.id);
     title.classList.add('hidden');
-    aPbFolder.title = title;
+    aPbFolder.title = title;    
   },
   drawFolder: function(aPbFolder) {
     this.buildFolder(aPbFolder);
@@ -286,7 +303,6 @@ Plugsbee.layout = {
     aFolder.thumbnail.addEventListener('animationend', function(e) {
       this.parentNode.removeChild(this);
     });
-    
   },
   setFolderName: function(aPbFolder) {
     aPbFolder.thumbnail.label = aPbFolder.name;
@@ -740,11 +756,13 @@ Plugsbee.layout = {
         if (Plugsbee.folders[id])
           Plugsbee.folders[id].moveToTrash();
       });
+      Plugsbee.trash.thumbnail = thumbnail;
       //Panel
       var panel = document.querySelector('#deck > .trash');
       panel.addEventListener('mousewheel', function(e) {
         this.scrollTop = this.scrollTop-Math.round(e.wheelDelta);
       });
+      Plugsbee.trash.panel = panel;
     })();
 
     //
