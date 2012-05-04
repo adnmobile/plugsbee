@@ -111,7 +111,7 @@ input::-webkit-input-placeholder {
 /*
  * Others panels
  */
-#login form p {
+#login form p, #register form p {
   width: 40%;
 }
 #folder-editor p, #file-editor p {
