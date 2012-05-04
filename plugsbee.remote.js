@@ -102,7 +102,7 @@ Plugsbee.remote = {
         aOnSuccess(pbFolder);
     });
   },
-  newFolder: function(aFolder, onSuccess) {      
+  newFolder: function(aPbFolder, onSuccess) {      
     var fields = [
       "<field var='pubsub#access_model'><value>open</value></field>",
       "<field var='pubsub#persist_items'><value>1</value></field>",
@@ -111,29 +111,46 @@ Plugsbee.remote = {
     
     Plugsbee.connection.pubsub.create(
       aPbFolder.host.id + '@plugsbee.com',
-      'urn:plugsbee:folder:'+aFolder.id, fields,
+      'urn:plugsbee:folder:' + aPbFolder.id, fields,
       function() {
         if(onSuccess)
-          onSuccess(aFolder);
+          onSuccess(aPbFolder);
     });
   },
-  deleteFolder: function(aPbFolder) {
+  deleteFolder: function(aPbFolder, aOnSuccess) {
     Plugsbee.connection.pubsub['delete'](
       aPbFolder.host.id + '@plugsbee.com',
-      'urn:plugsbee:folder:' + aPbFolder.id);
+      'urn:plugsbee:folder:' + aPbFolder.id,
+      //on success
+      function() {
+        if (aOnSuccess)
+          aOnSuccess();
+      }
+    );
   },
-  renameFolder: function(aFolder) {
-    var fields = [
-      "<field var='pubsub#title'><value>"+aFolder.name+"</value></field>"
-    ];
-
-    Plugsbee.connection.pubsub.configure(aFolder.host, 'urn:plugsbee:folder:'+aFolder.id, fields);
-  },
+  //~ renameFolder: function(aPbFolder, aNewName, aOnSuccess) {
+    //~ var oldName = aPbFolder.id;
+    //~ aPbFolder.id = aNewName;
+//~ 
+    //~ //create the folder
+    //~ this.newFolder(aPbFolder, function() {
+      //~ console.log(Object.keys(aPbFolder.files));
+      //~ return;
+      //~ for (var i in aPbFolder.files)
+        //~ aPbFolder.files[i].move(aPbFolder);
+        //~ 
+      //~ //delete the folder
+      //~ aPbFolder.id = oldName;
+      //~ Plugsbee.remote.deleteFolder(aPbFolder, function() {
+        //~ aPbFolder.id = aNewName;
+        //~ if (aOnSuccess) {
+          //~ aOnSuccess(aPbFolder);
+        //~ }
+      //~ });
+      //~ aPbFolder.id = aNewName;
+    //~ });
+  //~ },
   newFile: function(aPbFile, aOnSuccess) {
-    //~ if(aFile.miniature)
-      //~ var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>" + aPbFile.name + "</title><content src='"+aFile.src+"' type='"+aFile.type+"'/><link rel='preview' type='image/png' href='" + aPbFile.miniature+"'/></entry>";
-      //~ var entry = "<entry xmlns='http://www.w3.org/2005/Atom'><title>" + aPbFile.name + "</title><content src='"+aPbFile.fileURL+"' type='"+aPbFile.type+"'/></entry>";
-    //~ else
     var entry = 
       "<entry xmlns='http://www.w3.org/2005/Atom'>" + 
         "<title>" + aPbFile.name + "</title>" +

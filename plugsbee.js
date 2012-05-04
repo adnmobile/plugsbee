@@ -68,11 +68,11 @@ Plugsbee.Folder = {
       delete Plugsbee.files[this.files[i]];
     }
   },
-  rename: function(aName) {
-    this.name = aName;
-    Plugsbee.layout.setFolderName(this);
-    Plugsbee.remote.renameFolder(this);
-  },
+  //~ rename: function(aName) {
+    //~ Plugsbee.remote.renameFolder(this, aName);
+    //~ return;
+    //~ Plugsbee.layout.setFolderName(this);
+  //~ },
   moveToTrash: function() {
     for (var i in this.files)
       this.files[i].move(Plugsbee.trash);
