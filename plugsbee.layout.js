@@ -60,8 +60,6 @@ Plugsbee.layout = {
               //file
               //
               if (path[2]) {
-                console.log(pbFiles);
-                console.log(path[2]);
                 if (!pbFiles[2]) {
                   Plugsbee.layout.show404();
                 }
