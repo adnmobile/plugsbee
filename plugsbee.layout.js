@@ -60,8 +60,10 @@ Plugsbee.layout = {
               //file
               //
               if (path[2]) {
+                console.log(pbFiles);
+                console.log(path[2]);
                 if (!pbFiles[2]) {
-                  alert('wrong URL');//FIXME error
+                  Plugsbee.layout.show404();
                 }
                 else
                   Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
@@ -904,11 +906,19 @@ Plugsbee.layout = {
 
     this.deck.selectedChild = Plugsbee.username;
   },
+  show404: function() {
+    //Header
+    this.leftHeader.selectedChild = 'folders';
+    this.rightHeader.selectedChild = 'title';
+    this.rightHeader.selectedChild = 'title';
+
+    this.deck.selectedChild = '404';
+  },
   showLogin: function() {
     //Header
     this.leftHeader.selectedChild = 'folders';
+    this.middleHeader.selectedChild = 'title';
     this.rightHeader.selectedChild = '';
-    this.rightHeader.selectedChild = 'title';
 
     this.deck.selectedChild = 'login';
   },
