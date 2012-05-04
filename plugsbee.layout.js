@@ -59,10 +59,11 @@ Plugsbee.layout = {
               //file
               //
               if (path[2]) {
-                if (pbFolder.files[path[2]])
-                  Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
-                else
+                if (!pbFiles[2]) {
                   alert('wrong URL');//FIXME error
+                }
+                else
+                  Plugsbee.layout.showFileEditor(pbFolder.files[path[2]]);
               }
               //
               //folder
@@ -430,7 +431,7 @@ Plugsbee.layout = {
     })();
 
     //
-    //Folders panel
+    //User panel
     //
     (function() {
       var folders = document.querySelector('#folders');
@@ -642,7 +643,7 @@ Plugsbee.layout = {
 
           pbFolder.name = name;
           pbFolder.id = name;
-          pbFolder.host = Plugsbee.user.id + '@plugsbee.com';
+          pbFolder.host = Plugsbee.user;
           Plugsbee.layout.drawFolder(pbFolder);
 
 
