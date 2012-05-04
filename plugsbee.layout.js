@@ -754,8 +754,8 @@ Plugsbee.layout = {
         evt.preventDefault();
         this.classList.remove('dragenter');
         var id = evt.dataTransfer.getData('pbFolder');
-        if (Plugsbee.folders[id])
-          Plugsbee.folders[id].moveToTrash();
+        var folder = Plugsbee.user.folders[id];
+        folder.moveToTrash();
       });
       Plugsbee.trash.thumbnail = thumbnail;
       //Panel

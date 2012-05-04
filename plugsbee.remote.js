@@ -109,13 +109,18 @@ Plugsbee.remote = {
       "<field var='pubsub#max_items'><value>100</value></field>"
     ];
     
-    Plugsbee.connection.pubsub.create(aFolder.host, 'urn:plugsbee:folder:'+aFolder.id, fields, function() {
-      if(onSuccess)
-        onSuccess(aFolder);
+    Plugsbee.connection.pubsub.create(
+      aPbFolder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:'+aFolder.id, fields,
+      function() {
+        if(onSuccess)
+          onSuccess(aFolder);
     });
   },
-  deleteFolder: function(aFolder) {
-    Plugsbee.connection.pubsub['delete'](aFolder.host, 'urn:plugsbee:folder:'+aFolder.id);
+  deleteFolder: function(aPbFolder) {
+    Plugsbee.connection.pubsub['delete'](
+      aPbFolder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:' + aPbFolder.id);
   },
   renameFolder: function(aFolder) {
     var fields = [
@@ -138,10 +143,16 @@ Plugsbee.remote = {
       
     entry += "</entry>";
           
-    Plugsbee.connection.pubsub.publish(aPbFile.folder.host, 'urn:plugsbee:folder:'+aPbFile.folder.id, entry, aPbFile.id);
+    Plugsbee.connection.pubsub.publish(
+      aPbFile.folder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:'+aPbFile.folder.id, entry, aPbFile.id);
   },
   deleteFile: function(aPbFile, aOnSuccess) {
-    Plugsbee.connection.pubsub.retract(aPbFile.folder.host, 'urn:plugsbee:folder:'+aPbFile.folder.id, aPbFile.id);
+    Plugsbee.connection.pubsub.retract(
+      aPbFile.folder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:' + aPbFile.folder.id,
+      aPbFile.id
+    );
   },
   renameFile: function(aFile, aOnSuccess) {
     this.newFile(aFile, function() {
@@ -150,7 +161,10 @@ Plugsbee.remote = {
     });
   },
   purgeFolder: function(aPbFolder) {
-    Plugsbee.connection.pubsub.purge(aPbFolder.host, 'urn:plugsbee:folder:'+aPbFolder.id);
+    Plugsbee.connection.pubsub.purge(
+      aPbFolder.host.id + '@plugsbee.com',
+      'urn:plugsbee:folder:' + aPbFolder.id
+    );
   },
   uploadFile: function(aPbFile, aFile, aOnProgress, aOnSuccess) {
     var fd = new FormData;

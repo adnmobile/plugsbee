@@ -39,24 +39,18 @@ Plugsbee.File = {
     Plugsbee.remote.deleteFile(this);
 
     //Delete the file reference within the previous folder
-    delete Plugsbee.folders[this.folder.id].files[this.id];
+    delete this.folder.files[this.id];
 
     //Update the folder reference
     this.folder = aPbFolder;
     //Add the file reference within the folder files object
-    Plugsbee.folders[this.folder.id].files[this.id] = this;
-    
-    //New ID
-    var id = Math.random().toString().split('.')[1];
-    this.id = id;
+    aPbFolder.files[this.id] = this;
+
     //Build the layout file object
     Plugsbee.layout.drawFile(this);
-    
+
     //Add the remote file
     Plugsbee.remote.newFile(this);
-
-    Plugsbee.files[this.id] = this;
-    
   },
   rename: function(aName) {
     this.name = aName;
@@ -81,7 +75,7 @@ Plugsbee.Folder = {
   },
   moveToTrash: function() {
     for (var i in this.files)
-      this.files[i].move(Plugsbee.folders['trash']);
+      this.files[i].move(Plugsbee.trash);
       
     this.delete();
   },
